@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agenda de Tutorías</title>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+  :root{
+    --bg:#eef2f9; --card:#fff; --ink:#0f172a; --muted:#64748b;
+    --line:#e2e8f0; --brand:#4f46e5; --brand2:#7c3aed;
+    --ok:#059669; --warn:#d97706; --danger:#dc2626; --radius:14px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.5;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+
+  /* Topbar */
+  .topbar{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;padding:22px 0 28px}
+  .topbar-row{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+  .topbar h1{margin:0 0 4px;font-size:1.5rem}
+  .topbar p{margin:0;opacity:.9;font-size:.9rem}
+  .tabs{display:flex;gap:6px;background:rgba(255,255,255,.15);padding:5px;border-radius:11px}
+  .tab{
+    border:none;background:transparent;color:#fff;font:inherit;font-size:.88rem;font-weight:600;
+    padding:8px 16px;border-radius:8px;cursor:pointer;transition:.15s;
+  }
+  .tab:hover{background:rgba(255,255,255,.15)}
+  .tab.active{background:#fff;color:var(--brand)}
+
+  .tab-panel{padding:26px 0 60px}
+  .grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:22px}
+  @media (max-width:900px){.grid{grid-template-columns:1fr}}
+
+  .card{background:var(--card);border-radius:var(--radius);padding:22px;box-shadow:0 8px 24px rgba(15,23,42,.07)}
+  .card h2{font-size:1.05rem;margin:0 0 14px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+  .card h3{font-size:1rem;margin:0}
+  .card h4{font-size:.9rem;margin:20px 0 10px;color:#334155}
+  .card h2:not(:first-child){margin-top:26px}
+
+  .field{margin-bottom:14px;display:flex;flex-direction:column;gap:6px}
+  .field label{font-size:.85rem;font-weight:600;color:#334155}
+  input,select,textarea{
+    width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;
+    font:inherit;font-size:.92rem;background:#fff;color:var(--ink);
+    transition:border-color .15s, box-shadow .15s;
+  }
+  input:focus,select:focus,textarea:focus{
+    outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(79,70,229,.15);
+  }
+  textarea{resize:vertical}
+  .hint{font-size:.85rem;color:var(--muted);margin:6px 0 12px}
+
+  /* Slots */
+  .slots{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+  .slot{
+    display:flex;gap:12px;align-items:flex-start;cursor:pointer;
+    border:2px solid var(--line);border-radius:12px;padding:12px 14px;background:#fff;transition:.15s;
+  }
+  .slot:hover:not(.full){border-color:#c7d2fe;background:#f8faff}
+  .slot input{accent-color:var(--brand);width:18px;height:18px;margin-top:3px;flex:0 0 auto}
+  .slot.selected{border-color:var(--brand);background:#eef2ff;box-shadow:0 0 0 3px rgba(79,70,229,.12)}
+  .slot.full{opacity:.55;cursor:not-allowed;background:#f8fafc}
+  .slot-body{flex:1;min-width:0}
+  .slot-head{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+  .slot-num{font-weight:700;font-size:.95rem;color:var(--brand)}
+  .slot-prof{font-size:.86rem;color:#334155;margin-top:2px}
+  .slot-hora{font-size:.86rem;color:var(--muted);margin-top:2px}
+
+  .badge{font-size:.74rem;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
+  .badge-ok{background:#dcfce7;color:#166534}
+  .badge-warn{background:#fef3c7;color:#92400e}
+  .badge-full{background:#fee2e2;color:#991b1b}
+
+  .btn-primary{
+    width:100%;padding:13px;border:none;border-radius:11px;
+    background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;
+    font:inherit;font-weight:700;font-size:.95rem;cursor:pointer;transition:.15s;
+  }
+  .btn-primary:hover:not(:disabled){filter:brightness(1.08);transform:translateY(-1px)}
+  .btn-primary:disabled{background:#cbd5e1;cursor:not-allowed;transform:none}
+
+  .btn-primary-sm{
+    padding:8px 14px;border:none;border-radius:9px;
+    background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;
+    font:inherit;font-size:.82rem;font-weight:700;cursor:pointer;
+  }
+  .btn-primary-sm:hover{filter:brightness(1.08)}
+
+  .btn-ghost{
+    padding:8px 13px;border:1.5px solid var(--line);border-radius:9px;
+    background:#fff;font:inherit;font-size:.82rem;font-weight:600;cursor:pointer;color:#475569;
+  }
+  .btn-ghost:hover{border-color:var(--brand);color:var(--brand)}
+
+  .btn-danger{
+    padding:8px 13px;border:1.5px solid #fecaca;border-radius:9px;
+    background:#fff;font:inherit;font-size:.82rem;font-weight:600;cursor:pointer;color:#991b1b;
+  }
+  .btn-danger:hover{background:#fee2e2}
+
+  .alerta{border-radius:11px;padding:13px 15px;font-size:.88rem;margin-bottom:16px;border-left:4px solid}
+  .alerta.ok{background:#f0fdf4;border-color:var(--ok);color:#14532d}
+  .alerta.err{background:#fef2f2;border-color:var(--danger);color:#7f1d1d}
+  .alerta.info{background:#eff6ff;border-color:#3b82f6;color:#1e3a8a}
+  .alerta.warn{background:#fffbeb;border-color:var(--warn);color:#78350f}
+
+  /* Admin */
+  .login-card{max-width:420px;margin:0 auto}
+  .admin-header{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:20px}
+  .admin-header h2{margin:0;font-size:1.15rem}
+  .admin-grid{display:grid;grid-template-columns:1fr;gap:20px}
+  @media (min-width:1000px){
+    .admin-grid{grid-template-columns:1fr 1fr}
+    .admin-grid .card-wide{grid-column:1 / -1}
+  }
+
+  .panel-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+  .panel-actions{display:flex;gap:8px;flex-wrap:wrap}
+
+  .grupo{border:1px solid var(--line);border-radius:12px;margin-bottom:12px;overflow:hidden}
+  .grupo-head{
+    display:flex;justify-content:space-between;align-items:center;gap:10px;
+    padding:11px 14px;background:#f8fafc;border-bottom:1px solid var(--line);font-size:.88rem;
+  }
+  .alumnos{list-style:none;margin:0;padding:0}
+  .alumnos li{
+    display:flex;justify-content:space-between;gap:10px;align-items:flex-start;
+    padding:10px 14px;border-bottom:1px solid #f1f5f9;font-size:.85rem;
+  }
+  .alumnos li:last-child{border-bottom:none}
+  .muted-sm{color:var(--muted);font-size:.79rem;word-break:break-word}
+  .btn-x{
+    border:none;background:#fee2e2;color:#991b1b;width:26px;height:26px;
+    border-radius:7px;cursor:pointer;font-weight:700;flex:0 0 auto;
+  }
+  .btn-x:hover{background:#fecaca}
+
+  /* Profesores */
+  .prof-item{
+    display:flex;justify-content:space-between;gap:12px;align-items:flex-start;
+    padding:12px 14px;border:1px solid var(--line);border-radius:12px;margin-bottom:10px;background:#fff;
+  }
+  .prof-item-info{flex:1;min-width:0}
+  .prof-item-name{font-weight:700;font-size:.92rem}
+  .prof-item-meta{font-size:.8rem;color:var(--muted);margin-top:2px;word-break:break-word}
+  .prof-item-actions{display:flex;gap:6px;flex-shrink:0}
+
+  .dia-row{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f1f5f9;align-items:flex-start}
+  .dia-row:last-child{border-bottom:none}
+  .dia-label{width:90px;flex-shrink:0;font-weight:700;font-size:.85rem;padding-top:8px;color:#334155}
+  .rangos{flex:1;display:flex;flex-direction:column;gap:6px}
+  .rango{display:flex;gap:6px;align-items:center}
+  .rango input[type="time"]{padding:6px 8px;font-size:.85rem;width:auto;flex:1;max-width:130px}
+  .btn-add-rango{
+    align-self:flex-start;background:#eef2ff;color:var(--brand);border:1px dashed #c7d2fe;
+    padding:6px 12px;border-radius:8px;font:inherit;font-size:.8rem;font-weight:600;cursor:pointer;
+  }
+  .btn-add-rango:hover{background:#e0e7ff}
+
+  #panelContenido{max-height:520px;overflow-y:auto;margin-top:8px}
+  #profesoresList{max-height:600px;overflow-y:auto}
+
+  .empty{color:var(--muted);font-size:.85rem;padding:14px 0;text-align:center}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-row">
+    <div>
+      <h1> Agenda de Tutorías</h1>
+      <p>Reserva tu espacio · máximo 5 estudiantes por tutoría</p>
+    </div>
+    <nav class="tabs">
+      <button class="tab active" data-tab="reservar">Reservar</button>
+      <button class="tab" data-tab="admin">Admin</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ TAB RESERVAR ============ -->
+  <section id="tab-reservar" class="tab-panel">
+    <div class="grid">
+      <div class="card">
+        <div id="mensaje"></div>
+        <form id="formReserva">
+          <h2>1. Tus datos</h2>
+
+          <div class="field">
+            <label for="nombre">Nombre completo *</label>
+            <input id="nombre" type="text" required placeholder="Ej: Ana María Gómez">
+          </div>
+
+          <div class="field">
+            <label for="correo">Correo institucional *</label>
+            <input id="correo" type="email" required placeholder="ana.gomez@institucion.edu.co">
+          </div>
+
+          <div class="field">
+            <label for="programa">Programa académico *</label>
+            <select id="programa" required>
+              <option value="">Selecciona tu programa…</option>
+              <option>Ingeniería de Sistemas</option>
+              <option>Ingeniería Industrial</option>
+              <option>Ingeniería Civil</option>
+              <option>Administración de Empresas</option>
+              <option>Contaduría Pública</option>
+              <option>Psicología</option>
+              <option>Derecho</option>
+              <option>Licenciatura en Matemáticas</option>
+              <option>Otra</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="tema">Tema(s) de la tutoría *</label>
+            <textarea id="tema" rows="3" required placeholder="Ej: Derivadas, regla de la cadena y límites."></textarea>
+          </div>
+
+          <h2>2. Fecha y horario</h2>
+
+          <div class="field">
+            <label for="fecha">Fecha *</label>
+            <input id="fecha" type="date" required>
+          </div>
+
+          <div id="slotsContainer">
+            <p class="hint">Selecciona una fecha para ver los horarios disponibles.</p>
+          </div>
+
+          <button type="submit" class="btn-primary" id="btnReservar" disabled>Confirmar reserva</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2>ℹ️ ¿Cómo funciona?</h2>
+        <ol style="font-size:.9rem;color:#334155;padding-left:18px;margin:0">
+          <li>Elige la <strong>fecha</strong> en la que quieres la tutoría.</li>
+          <li>Aparecerán las tutorías disponibles ese día, numeradas <strong>Tutoría 1, 2, 3…</strong></li>
+          <li>Cada tutoría tiene un profesor asignado y un horario (máximo <strong>5 cupos</strong>).</li>
+          <li>Llena tus datos, selecciona la tutoría y confirma.</li>
+          <li>El profesor recibirá un correo automático con tu solicitud.</li>
+        </ol>
+        <p class="hint" style="margin-top:18px">
+          Si no hay horarios para la fecha elegida, prueba con otro día.
+          Los profesores atienden de <strong>lunes a sábado</strong>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TAB ADMIN ============ -->
+  <section id="tab-admin" class="tab-panel" hidden>
+
+    <!-- LOGIN -->
+    <div id="adminLogin" class="card login-card">
+      <h2>🔒 Acceso administrador</h2>
+      <div class="field">
+        <label for="adminPass">Contraseña</label>
+        <input type="password" id="adminPass" placeholder="••••••••">
+      </div>
+      <button class="btn-primary" id="btnLogin">Entrar</button>
+      <p class="hint" id="loginMsg" style="text-align:center;margin-top:12px"></p>
+    </div>
+
+    <!-- PANEL -->
+    <div id="adminPanel" hidden>
+      <div class="admin-header">
+        <h2>Panel de administración</h2>
+        <button class="btn-ghost" id="btnLogout">Cerrar sesión</button>
+      </div>
+
+      <div class="admin-grid">
+
+        <!-- RESERVAS -->
+        <div class="card card-wide">
+          <div class="panel-head">
+            <h3>📋 Reservas registradas</h3>
+            <div class="panel-actions">
+              <button class="btn-ghost" id="btnCSV">Exportar CSV</button>
+              <button class="btn-danger" id="btnLimpiar">Vaciar todo</button>
+            </div>
+          </div>
+          <p class="hint" id="panelResumen"></p>
+          <div id="panelContenido"></div>
+        </div>
+
+        <!-- PROFESORES -->
+        <div class="card">
+          <div class="panel-head">
+            <h3>👨‍🏫 Profesores y horarios</h3>
+            <button class="btn-primary-sm" id="btnNuevoProf">+ Nuevo</button>
+          </div>
+          <div id="profesoresList"></div>
+          <div id="profesorEditor" hidden></div>
+        </div>
+
+        <!-- CONFIG -->
+        <div class="card">
+          <h3>⚙️ Configuración</h3>
+
+          <h4>Envío de correos (EmailJS)</h4>
+          <p class="hint">
+            Crea una cuenta gratis en <a href="https://www.emailjs.com" target="_blank">emailjs.com</a>
+            y pega aquí tus claves. Sin esto, los correos solo se simulan en la consola del navegador.
+          </p>
+
+          <div class="field">
+            <label for="cfgPublicKey">Public Key</label>
+            <input type="text" id="cfgPublicKey" placeholder="AbCd1234...">
+          </div>
+          <div class="field">
+            <label for="cfgServiceId">Service ID</label>
+            <input type="text" id="cfgServiceId" placeholder="service_xxxxxxx">
+          </div>
+          <div class="field">
+            <label for="cfgTemplateId">Template ID</label>
+            <input type="text" id="cfgTemplateId" placeholder="template_xxxxxxx">
+          </div>
+          <button class="btn-primary" id="btnGuardarConfig">Guardar configuración</button>
+          <p class="hint" id="cfgMsg" style="text-align:center"></p>
+
+          <h4>Cambiar contraseña de admin</h4>
+          <div class="field">
+            <label for="cfgNewPass">Nueva contraseña</label>
+            <input type="password" id="cfgNewPass" placeholder="Mínimo 4 caracteres">
+          </div>
+          <div class="field">
+            <label for="cfgNewPass2">Confirmar contraseña</label>
+            <input type="password" id="cfgNewPass2">
+          </div>
+          <button class="btn-ghost" id="btnCambiarPass">Cambiar contraseña</button>
+          <p class="hint" id="passMsg" style="text-align:center"></p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+/* =========================================================
+   CONSTANTES Y DATOS POR DEFECTO
+   ========================================================= */
+const CUPO_MAX = 5;
+const DIAS = {1:'Lunes', 2:'Martes', 3:'Miércoles', 4:'Jueves', 5:'Viernes', 6:'Sábado'};
+const DIAS_INV = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+
+const STORAGE = {
+  reservas  : 'tutorias_reservas_v2',
+  profesores: 'tutorias_profesores_v2',
+  config    : 'tutorias_config_v2',
+  session   : 'tutorias_admin_session'
+};
+
+const PASS_DEFAULT = 'admin123';
+
+const PROFESORES_DEFAULT = [
+  { id:'p1', nombre:'Profesor 1', area:'Matemáticas y Cálculo', correo:'profesor1@institucion.edu.co',
+    agenda:{ 1:[['07:00','09:00']], 2:[['15:00','17:00']], 3:[['07:00','09:00']], 4:[['15:00','17:00']], 5:[['07:00','09:00']] } },
+  { id:'p2', nombre:'Profesor 2', area:'Programación y Software', correo:'profesor2@institucion.edu.co',
+    agenda:{ 1:[['10:00','12:00']], 2:[['07:00','09:00']], 3:[['15:00','17:00']], 4:[['10:00','12:00']], 5:[['15:00','17:00']] } },
+  { id:'p3', nombre:'Profesor 3', area:'Física y Estadística', correo:'profesor3@institucion.edu.co',
+    agenda:{ 1:[['15:00','17:00']], 2:[['18:00','20:00']], 3:[['10:00','12:00']], 4:[['07:00','09:00']], 5:[['13:00','15:00']] } },
+  { id:'p4', nombre:'Profesor 4', area:'Bases de Datos y Redes', correo:'profesor4@institucion.edu.co',
+    agenda:{ 2:[['10:00','12:00']], 3:[['18:00','20:00']], 4:[['15:00','17:00']], 6:[['08:00','10:00']] } },
+  { id:'p5', nombre:'Profesor 5', area:'Inglés y Competencias Comunicativas', correo:'profesor5@institucion.edu.co',
+    agenda:{ 1:[['13:00','15:00']], 2:[['13:00','15:00']], 3:[['07:00','09:00']], 4:[['18:00','20:00']], 5:[['10:00','12:00']] } }
+];
+
+/* =========================================================
+   ALMACENAMIENTO
+   ========================================================= */
+function getProfesores(){
+  const raw = localStorage.getItem(STORAGE.profesores);
+  if(raw === null){
+    localStorage.setItem(STORAGE.profesores, JSON.stringify(PROFESORES_DEFAULT));
+    return JSON.parse(JSON.stringify(PROFESORES_DEFAULT));
+  }
+  try { return JSON.parse(raw) || []; } catch(e){ return []; }
+}
+function setProfesores(arr){ localStorage.setItem(STORAGE.profesores, JSON.stringify(arr)); }
+
+function getReservas(){
+  try { return JSON.parse(localStorage.getItem(STORAGE.reservas)) || []; }
+  catch(e){ return []; }
+}
+function setReservas(arr){ localStorage.setItem(STORAGE.reservas, JSON.stringify(arr)); }
+
+function getConfig(){
+  const def = { adminPassword: PASS_DEFAULT, emailjs:{ publicKey:'', serviceId:'', templateId:'' } };
+  try {
+    const c = JSON.parse(localStorage.getItem(STORAGE.config));
+    return c ? { ...def, ...c, emailjs:{ ...def.emailjs, ...(c.emailjs || {}) } } : def;
+  } catch(e){ return def; }
+}
+function setConfig(c){ localStorage.setItem(STORAGE.config, JSON.stringify(c)); }
+
+/* =========================================================
+   UTILIDADES
+   ========================================================= */
+const $ = (s, ctx=document) => ctx.querySelector(s);
+const $$ = (s, ctx=document) => [...ctx.querySelectorAll(s)];
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c =>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function fmtFecha(fecha){
+  const d = new Date(fecha + 'T00:00:00');
+  const s = d.toLocaleDateString('es-CO', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+/* =========================================================
+   GENERACIÓN DE SLOTS
+   ========================================================= */
+function generarSlots(fecha){
+  const dia = new Date(fecha + 'T00:00:00').getDay();
+  const reservas = getReservas();
+  const profes = getProfesores();
+  const slots = [];
+
+  profes.forEach(p => {
+    (p.agenda[dia] || []).forEach(([ini, fin]) => {
+      const id = `${fecha}|${p.id}|${ini}`;
+      const ocupados = reservas.filter(r => r.slotId === id).length;
+      slots.push({
+        id, fecha, dia,
+        profesorId: p.id, profesor: p.nombre, area: p.area, correo: p.correo,
+        inicio: ini, fin: fin,
+        ocupados, cupo: CUPO_MAX,
+        lleno: ocupados >= CUPO_MAX
+      });
+    });
+  });
+
+  slots.sort((a,b) => a.inicio.localeCompare(b.inicio) || a.profesor.localeCompare(b.profesor));
+  slots.forEach((s,i) => s.numero = i + 1);
+  return slots;
+}
+
+/* =========================================================
+   RENDER DE SLOTS (tutorías disponibles)
+   ========================================================= */
+const fechaInput  = $('#fecha');
+const slotsBox    = $('#slotsContainer');
+const btnReservar = $('#btnReservar');
+const form        = $('#formReserva');
+const mensajeBox  = $('#mensaje');
+let slotSeleccionado = null;
+
+function renderSlots(){
+  const fecha = fechaInput.value;
+  slotSeleccionado = null;
+  btnReservar.disabled = true;
+
+  if(!fecha){
+    slotsBox.innerHTML = '<p class="hint">Selecciona una fecha para ver los horarios disponibles.</p>';
+    return;
+  }
+
+  const slots = generarSlots(fecha);
+
+  if(slots.length === 0){
+    slotsBox.innerHTML = `<div class="alerta info">
+      No hay horarios de tutoría para <strong>${esc(fmtFecha(fecha))}</strong>.
+      Prueba con otro día.</div>`;
+    return;
+  }
+
+  let html = `<p class="hint">Horarios para <strong>${esc(fmtFecha(fecha))}</strong>
+              · elige una tutoría (máx. ${CUPO_MAX} estudiantes cada una).</p><div class="slots">`;
+
+  slots.forEach(s => {
+    const claseBadge = s.lleno ? 'badge-full' : (s.ocupados >= CUPO_MAX - 1 ? 'badge-warn' : 'badge-ok');
+    html += `
+      <label class="slot ${s.lleno ? 'full' : ''}" data-slot="${esc(s.id)}">
+        <input type="radio" name="slot" value="${esc(s.id)}" ${s.lleno ? 'disabled' : ''}>
+        <div class="slot-body">
+          <div class="slot-head">
+            <span class="slot-num">Tutoría ${s.numero}</span>
+            <span class="badge ${claseBadge}">${s.ocupados}/${s.cupo} cupos</span>
+          </div>
+          <div class="slot-prof">${esc(s.profesor)} · ${esc(s.area)}</div>
+          <div class="slot-hora">🕒 ${s.inicio} – ${s.fin}</div>
+        </div>
+      </label>`;
+  });
+  html += '</div>';
+  slotsBox.innerHTML = html;
+
+  $$('input[name="slot"]', slotsBox).forEach(inp => {
+    inp.addEventListener('change', () => {
+      $$('.slot', slotsBox).forEach(el => el.classList.remove('selected'));
+      const label = inp.closest('.slot');
+      if(label) label.classList.add('selected');
+      slotSeleccionado = slots.find(s => s.id === inp.value) || null;
+      btnReservar.disabled = !slotSeleccionado;
+    });
+  });
+}
+
+/* =========================================================
+   NOTIFICAR AL PROFESOR POR CORREO
+   ========================================================= */
+async function notificarProfesor(reserva){
+  const cfg = getConfig();
+  const destino = reserva.correoProfesor || 'sin-correo@institucion.edu.co';
+  const { publicKey, serviceId, templateId } = cfg.emailjs;
+
+  // Sin configuración -> simulación
+  if(!publicKey || !serviceId || !templateId || typeof emailjs === 'undefined'){
+    console.info('%c[SIMULACIÓN] Correo al profesor', 'color:#4f46e5;font-weight:bold', {
+      para: destino,
+      tutoria: `Tutoría ${reserva.numeroTutoria}`,
+      profesor: reserva.profesor,
+      fecha: reserva.fechaTexto,
+      hora: `${reserva.inicio} - ${reserva.fin}`,
+      estudiante: reserva.nombre,
+      correoEstudiante: reserva.correo,
+      programa: reserva.programa,
+      tema: reserva.tema
+    });
+    return { ok:false, simulado:true, destino };
+  }
+
+  try{
+    await emailjs.send(serviceId, templateId, {
+      to_email          : destino,
+      profesor          : reserva.profesor,
+      tutoria           : `Tutoría ${reserva.numeroTutoria}`,
+      fecha             : reserva.fechaTexto,
+      hora              : `${reserva.inicio} - ${reserva.fin}`,
+      estudiante        : reserva.nombre,
+      correo_estudiante : reserva.correo,
+      programa          : reserva.programa,
+      tema              : reserva.tema
+    }, { publicKey });
+    return { ok:true, destino };
+  }catch(err){
+    console.error('Error EmailJS:', err);
+    return { ok:false, error:err, destino };
+  }
+}
+
+/* =========================================================
+   SUBMIT DEL FORMULARIO
+   ========================================================= */
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  mensajeBox.innerHTML = '';
+
+  if(!form.checkValidity()){ form.reportValidity(); return; }
+  if(!slotSeleccionado){
+    mensajeBox.innerHTML = '<div class="alerta err">⚠️ Debes seleccionar una tutoría.</div>';
+    return;
+  }
+
+  const reservas = getReservas();
+  const ocupados = reservas.filter(r => r.slotId === slotSeleccionado.id).length;
+  if(ocupados >= CUPO_MAX){
+    mensajeBox.innerHTML = '<div class="alerta err">😔 Esa tutoría se acaba de llenar. Elige otra.</div>';
+    renderSlots(); return;
+  }
+
+  const correo = $('#correo').value.trim().toLowerCase();
+  if(reservas.some(r => r.slotId === slotSeleccionado.id && r.correo.toLowerCase() === correo)){
+    mensajeBox.innerHTML = '<div class="alerta err">Ya tienes una reserva en esa tutoría con este correo.</div>';
+    return;
+  }
+
+  const reserva = {
+    id            : 'r_' + Date.now() + '_' + Math.random().toString(36).slice(2,7),
+    slotId        : slotSeleccionado.id,
+    numeroTutoria : slotSeleccionado.numero,
+    fecha         : slotSeleccionado.fecha,
+    fechaTexto    : fmtFecha(slotSeleccionado.fecha),
+    inicio        : slotSeleccionado.inicio,
+    fin           : slotSeleccionado.fin,
+    profesorId    : slotSeleccionado.profesorId,
+    profesor      : slotSeleccionado.profesor,
+    area          : slotSeleccionado.area,
+    correoProfesor: slotSeleccionado.correo,
+    nombre        : $('#nombre').value.trim(),
+    correo        : correo,
+    programa      : $('#programa').value,
+    tema          : $('#tema').value.trim(),
+    creado        : new Date().toISOString()
+  };
+
+  reservas.push(reserva);
+  setReservas(reservas);
+
+  btnReservar.disabled = true;
+  btnReservar.textContent = 'Enviando notificación…';
+  const r = await notificarProfesor(reserva);
+  btnReservar.textContent = 'Confirmar reserva';
+
+  let notaCorreo = '';
+  if(r.ok)              notaCorreo = `📧 Se envió la notificación a <strong>${esc(r.destino)}</strong>.`;
+  else if(r.simulado)   notaCorreo = `📧 Modo demo: configurá EmailJS en el panel Admin para enviar el correo real a <strong>${esc(r.destino)}</strong>.`;
+  else                  notaCorreo = `⚠️ Reserva guardada, pero el correo falló. Revisa la consola.`;
+
+  mensajeBox.innerHTML = `
+    <div class="alerta ok">
+      <strong>✅ ¡Reserva confirmada!</strong><br>
+      <strong>Tutoría ${reserva.numeroTutoria}</strong> · ${esc(reserva.profesor)}<br>
+      ${esc(reserva.fechaTexto)} · ${reserva.inicio} – ${reserva.fin}<br>
+      <span style="font-size:.85rem">${notaCorreo}</span>
+    </div>`;
+
+  const fechaGuardada = fechaInput.value;
+  form.reset();
+  fechaInput.value = fechaGuardada;
+  renderSlots();
+  renderReservasAdmin();
+  mensajeBox.scrollIntoView({ behavior:'smooth', block:'nearest' });
+});
+
+/* =========================================================
+   TABS
+   ========================================================= */
+function switchTab(name){
+  $$('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+  $('#tab-reservar').hidden = name !== 'reservar';
+  $('#tab-admin').hidden    = name !== 'admin';
+}
+$$('.tab').forEach(t => t.addEventListener('click', () => switchTab(t.dataset.tab)));
+
+/* =========================================================
+   ADMIN: SESIÓN
+   ========================================================= */
+function isAdminLogged(){ return sessionStorage.getItem(STORAGE.session) === '1'; }
+function setAdminLogged(v){ v ? sessionStorage.setItem(STORAGE.session,'1') : sessionStorage.removeItem(STORAGE.session); }
+
+function renderAdmin(){
+  const logged = isAdminLogged();
+  $('#adminLogin').hidden = logged;
+  $('#adminPanel').hidden = !logged;
+  if(logged){
+    renderReservasAdmin();
+    renderProfesoresList();
+    renderConfig();
+  }
+}
+
+$('#btnLogin').addEventListener('click', () => {
+  const pass = $('#adminPass').value;
+  const cfg = getConfig();
+  const msg = $('#loginMsg');
+  if(pass === cfg.adminPassword){
+    setAdminLogged(true);
+    $('#adminPass').value = '';
+    msg.textContent = '';
+    renderAdmin();
+  } else {
+    msg.innerHTML = '<span style="color:#dc2626">Contraseña incorrecta.</span>';
+  }
+});
+
+$('#adminPass').addEventListener('keydown', (e) => {
+  if(e.key === 'Enter') $('#btnLogin').click();
+});
+
+$('#btnLogout').addEventListener('click', () => {
+  setAdminLogged(false);
+  renderAdmin();
+});
+
+/* =========================================================
+   ADMIN: RESERVAS
+   ========================================================= */
+function renderReservasAdmin(){
+  const cont = $('#panelContenido');
+  const resumen = $('#panelResumen');
+  if(!cont) return;
+  const reservas = getReservas();
+
+  if(reservas.length === 0){
+    resumen.textContent = '';
+    cont.innerHTML = '<p class="empty">Aún no hay reservas registradas.</p>';
+    return;
+  }
+
+  const grupos = new Map();
+  reservas.forEach(r => {
+    if(!grupos.has(r.slotId)) grupos.set(r.slotId, []);
+    grupos.get(r.slotId).push(r);
+  });
+  resumen.textContent = `${reservas.length} reserva(s) en ${grupos.size} tutoría(s).`;
+
+  const ordenados = [...grupos.entries()].sort((a,b) => {
+    const ra = a[1][0], rb = b[1][0];
+    return (ra.fecha + ra.inicio).localeCompare(rb.fecha + rb.inicio);
+  });
+
+  cont.innerHTML = ordenados.map(([slotId, lista]) => {
+    const r = lista[0];
+    const clase = lista.length >= CUPO_MAX ? 'badge-full' : 'badge-ok';
+    return `
+      <div class="grupo">
+        <div class="grupo-head">
+          <div>
+            <strong>Tutoría ${r.numeroTutoria}</strong> · ${esc(r.profesor)} · ${r.inicio}–${r.fin}
+            <div class="muted-sm">${esc(r.fechaTexto)}</div>
+          </div>
+          <span class="badge ${clase}">${lista.length}/${CUPO_MAX}</span>
+        </div>
+        <ul class="alumnos">
+          ${lista.map(a => `
+            <li>
+              <div>
+                <strong>${esc(a.nombre)}</strong>
+                <div class="muted-sm">${esc(a.correo)} · ${esc(a.programa)}</div>
+                <div class="muted-sm">📝 ${esc(a.tema)}</div>
+              </div>
+              <button class="btn-x" data-del="${esc(a.id)}" title="Eliminar reserva">✕</button>
+            </li>`).join('')}
+        </ul>
+      </div>`;
+  }).join('');
+}
+
+$('#panelContenido')?.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-del]');
+  if(!btn) return;
+  if(!confirm('¿Eliminar esta reserva?')) return;
+  setReservas(getReservas().filter(r => r.id !== btn.dataset.del));
+  renderReservasAdmin();
+  renderSlots();
+});
+
+$('#btnLimpiar')?.addEventListener('click', () => {
+  if(!getReservas().length) return;
+  if(!confirm('¿Borrar TODAS las reservas? Esta acción no se puede deshacer.')) return;
+  setReservas([]);
+  renderReservasAdmin();
+  renderSlots();
+});
+
+$('#btnCSV')?.addEventListener('click', () => {
+  const reservas = getReservas();
+  if(!reservas.length) return alert('No hay reservas para exportar.');
+  const head = ['Tutoria','Fecha','Inicio','Fin','Profesor','Area','Correo profesor','Estudiante','Correo','Programa','Tema'];
+  const rows = reservas.map(r => [
+    'Tutoría ' + r.numeroTutoria, r.fecha, r.inicio, r.fin,
+    r.profesor, r.area, r.correoProfesor || '',
+    r.nombre, r.correo, r.programa, r.tema
+  ]);
+  const csv = [head, ...rows]
+    .map(row => row.map(v => `"${String(v ?? '').replace(/"/g,'""')}"`).join(','))
+    .join('\r\n');
+  const blob = new Blob(['\ufeff' + csv], { type:'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `reservas_tutorias_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+/* =========================================================
+   ADMIN: PROFESORES (LISTA)
+   ========================================================= */
+function renderProfesoresList(){
+  const cont = $('#profesoresList');
+  if(!cont) return;
+  const profes = getProfesores();
+
+  if(profes.length === 0){
+    cont.innerHTML = '<p class="empty">No hay profesores. Agrega el primero.</p>';
+    return;
+  }
+
+  cont.innerHTML = profes.map(p => {
+    const totalRangos = Object.values(p.agenda || {}).reduce((a,r) => a + r.length, 0);
+    return `
+      <div class="prof-item">
+        <div class="prof-item-info">
+          <div class="prof-item-name">${esc(p.nombre)}</div>
+          <div class="prof-item-meta">${esc(p.area)}</div>
+          <div class="prof-item-meta">📧 ${esc(p.correo)}</div>
+          <div class="prof-item-meta">🗓️ ${totalRangos} horario(s) semanales</div>
+        </div>
+        <div class="prof-item-actions">
+          <button class="btn-ghost" data-edit="${esc(p.id)}">Editar</button>
+          <button class="btn-danger" data-del-prof="${esc(p.id)}">Borrar</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+$('#profesoresList')?.addEventListener('click', (e) => {
+  const ed = e.target.closest('[data-edit]');
+  const dl = e.target.closest('[data-del-prof]');
+  if(ed) abrirEditorProfesor(ed.dataset.edit);
+  if(dl) eliminarProfesor(dl.dataset.delProf);
+});
+
+$('#btnNuevoProf')?.addEventListener('click', () => abrirEditorProfesor(null));
+
+/* =========================================================
+   ADMIN: EDITOR DE PROFESOR
+   ========================================================= */
+function abrirEditorProfesor(profId){
+  const editor = $('#profesorEditor');
+  const lista  = $('#profesoresList');
+  const prof = profId ? getProfesores().find(p => p.id === profId) : null;
+  const isNew = !prof;
+  const p = prof || { id:'', nombre:'', area:'', correo:'', agenda:{} };
+
+  editor.innerHTML = `
+    <h3 style="margin-bottom:14px">${isNew ? '➕ Nuevo profesor' : '✏️ Editar profesor'}</h3>
+
+    <div class="field">
+      <label>Nombre *</label>
+      <input type="text" id="pe_nombre" value="${esc(p.nombre)}" placeholder="Ej: Profesor 6">
+    </div>
+    <div class="field">
+      <label>Área / Materia *</label>
+      <input type="text" id="pe_area" value="${esc(p.area)}" placeholder="Ej: Álgebra Lineal">
+    </div>
+    <div class="field">
+      <label>Correo del profesor *</label>
+      <input type="email" id="pe_correo" value="${esc(p.correo)}" placeholder="profesor6@institucion.edu.co">
+    </div>
+
+    <h4>🗓️ Horarios disponibles por día</h4>
+    <p class="hint">Agrega los rangos horarios en los que este profesor puede recibir tutorías.</p>
+    <div id="agendaEditor"></div>
+
+    <div style="display:flex;gap:8px;margin-top:18px">
+      <button class="btn-primary" id="btnGuardarProf">Guardar profesor</button>
+      <button class="btn-ghost" id="btnCancelarProf">Cancelar</button>
+    </div>
+  `;
+  editor.hidden = false;
+  lista.hidden = true;
+
+  renderAgendaEditor(p.agenda || {});
+  $('#btnGuardarProf').onclick = () => guardarProfesor(profId);
+  $('#btnCancelarProf').onclick = cerrarEditorProfesor;
+}
+
+function renderAgendaEditor(agenda){
+  const cont = $('#agendaEditor');
+  let html = '';
+  for(let dia = 1; dia <= 6; dia++){
+    const rangos = agenda[dia] || [];
+    html += `
+      <div class="dia-row">
+        <div class="dia-label">${DIAS[dia]}</div>
+        <div class="rangos" data-dia="${dia}">
+          ${rangos.map(r => rangoHTML(r[0], r[1])).join('')}
+          <button type="button" class="btn-add-rango" data-add="${dia}">+ Añadir horario</button>
+        </div>
+      </div>`;
+  }
+  cont.innerHTML = html;
+
+  cont.addEventListener('click', (e) => {
+    const add = e.target.closest('[data-add]');
+    const rm  = e.target.closest('.rango-x');
+    if(add){
+      const wrap = cont.querySelector(`.rangos[data-dia="${add.dataset.add}"]`);
+      const btn  = wrap.querySelector('.btn-add-rango');
+      const tmp  = document.createElement('div');
+      tmp.innerHTML = rangoHTML('08:00','10:00');
+      const div = tmp.firstElementChild;
+      wrap.insertBefore(div, btn);
+    }
+    if(rm){ rm.closest('.rango').remove(); }
+  });
+}
+
+function rangoHTML(ini, fin){
+  return `<div class="rango">
+    <input type="time" value="${esc(ini)}">
+    <span>–</span>
+    <input type="time" value="${esc(fin)}">
+    <button type="button" class="btn-x rango-x" title="Quitar">✕</button>
+  </div>`;
+}
+
+function guardarProfesor(profId){
+  const nombre = $('#pe_nombre').value.trim();
+  const area   = $('#pe_area').value.trim();
+  const correo = $('#pe_correo').value.trim();
+
+  if(!nombre || !area || !correo){
+    alert('Nombre, área y correo son obligatorios.');
+    return;
+  }
+
+  const agenda = {};
+  $$('#agendaEditor .rangos').forEach(wrap => {
+    const dia = wrap.dataset.dia;
+    const rangos = [];
+    $$('.rango', wrap).forEach(r => {
+      const inputs = r.querySelectorAll('input[type=time]');
+      const ini = inputs[0].value, fin = inputs[1].value;
+      if(ini && fin && ini < fin) rangos.push([ini, fin]);
+    });
+    if(rangos.length) agenda[dia] = rangos;
+  });
+
+  const profes = getProfesores();
+  if(profId){
+    const idx = profes.findIndex(p => p.id === profId);
+    if(idx >= 0) profes[idx] = { ...profes[idx], nombre, area, correo, agenda };
+  } else {
+    profes.push({ id: 'p_' + Date.now().toString(36), nombre, area, correo, agenda });
+  }
+
+  setProfesores(profes);
+  cerrarEditorProfesor();
+}
+
+function cerrarEditorProfesor(){
+  $('#profesorEditor').hidden = true;
+  $('#profesoresList').hidden = false;
+  renderProfesoresList();
+}
+
+function eliminarProfesor(id){
+  const prof = getProfesores().find(p => p.id === id);
+  if(!prof) return;
+  if(!confirm(`¿Eliminar a "${prof.nombre}"? Se borrarán sus horarios. Las reservas ya hechas se mantienen.`)) return;
+  setProfesores(getProfesores().filter(p => p.id !== id));
+  renderProfesoresList();
+}
+
+/* =========================================================
+   ADMIN: CONFIGURACIÓN
+   ========================================================= */
+function renderConfig(){
+  const cfg = getConfig();
+  $('#cfgPublicKey').value  = cfg.emailjs.publicKey  || '';
+  $('#cfgServiceId').value  = cfg.emailjs.serviceId  || '';
+  $('#cfgTemplateId').value = cfg.emailjs.templateId || '';
+}
+
+$('#btnGuardarConfig')?.addEventListener('click', () => {
+  const cfg = getConfig();
+  cfg.emailjs = {
+    publicKey : $('#cfgPublicKey').value.trim(),
+    serviceId : $('#cfgServiceId').value.trim(),
+    templateId: $('#cfgTemplateId').value.trim()
+  };
+  setConfig(cfg);
+  const msg = $('#cfgMsg');
+  msg.innerHTML = '<span style="color:#059669">✅ Configuración guardada.</span>';
+  setTimeout(() => { msg.textContent = ''; }, 3000);
+});
+
+$('#btnCambiarPass')?.addEventListener('click', () => {
+  const p1 = $('#cfgNewPass').value;
+  const p2 = $('#cfgNewPass2').value;
+  const msg = $('#passMsg');
+
+  if(p1.length < 4){
+    msg.innerHTML = '<span style="color:#dc2626">La contraseña debe tener al menos 4 caracteres.</span>';
+    return;
+  }
+  if(p1 !== p2){
+    msg.innerHTML = '<span style="color:#dc2626">Las contraseñas no coinciden.</span>';
+    return;
+  }
+  const cfg = getConfig();
+  cfg.adminPassword = p1;
+  setConfig(cfg);
+  $('#cfgNewPass').value = '';
+  $('#cfgNewPass2').value = '';
+  msg.innerHTML = '<span style="color:#059669">✅ Contraseña actualizada.</span>';
+  setTimeout(() => { msg.textContent = ''; }, 3000);
+});
+
+/* =========================================================
+   INICIALIZACIÓN
+   ========================================================= */
+(function init(){
+  const hoy = new Date();
+  const yyyy = hoy.getFullYear();
+  const mm = String(hoy.getMonth()+1).padStart(2,'0');
+  const dd = String(hoy.getDate()).padStart(2,'0');
+  fechaInput.min = `${yyyy}-${mm}-${dd}`;
+
+  fechaInput.addEventListener('change', renderSlots);
+  renderSlots();
+  renderAdmin();
+})();
+</script>
+</body>
+</html>
