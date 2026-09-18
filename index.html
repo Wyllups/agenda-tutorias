@@ -279,8 +279,8 @@
 
 <script>
 /* ============ CONFIG SUPABASE ============ */
-const SUPABASE_URL = 'https://nfnjorukeqjtcsjtmybu.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5mbmpvcnVrZXFqdGNzanRteWJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk3NTU1NjQsImV4cCI6MjEwNTMzMTU2NH0.GH-7ptJrebnRUsfJOID-DbKaEhuYfYRjujKUWmtb_Qs';
+const SUPABASE_URL = 'https://sfvvrcxrgbzdfkvdkrza.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNmdnZyY3hyZ2J6ZGZrdmRrcnphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk3NTU3NjMsImV4cCI6MjEwNTMzMTc2M30.PN3UHQ2T7q6ET1BToq576owDF8q8ToEz-UHwbKuNwqo';
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 /* ============ CONSTANTES ============ */
@@ -335,11 +335,9 @@ async function guardarProfesorSupabase(id, datos, agenda){
     if(error) throw error;
     finalId = data.id;
   }
-  // Borrar horarios viejos
   const {error: delErr} = await db.from('horarios').delete().eq('profesor_id', finalId);
   if(delErr) throw delErr;
 
-  // Insertar nuevos
   const nuevos = [];
   Object.keys(agenda).forEach(dia => {
     agenda[dia].forEach(([ini,fin]) => {
