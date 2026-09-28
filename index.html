@@ -3,203 +3,558 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agenda de Tutorías - Universidad Mayor</title>
+<title>Agenda de Tutorías · Universidad Colegio Mayor de Cundinamarca</title>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root{
-    --bg:#eef2f9; --card:#fff; --ink:#0f172a; --muted:#64748b;
-    --line:#e2e8f0; --brand:#4f46e5; --brand2:#7c3aed;
-    --ok:#059669; --warn:#d97706; --danger:#dc2626; --radius:14px;
+    --navy-900:#071a33;
+    --navy-800:#0b2545;
+    --navy-700:#0f2f5c;
+    --navy-600:#153e75;
+    --blue-500:#1e5fbf;
+    --blue-400:#2f7de1;
+    --blue-300:#5b9ef0;
+    --gold-500:#f2c14e;
+    --gold-400:#f7cd6d;
+    --gold-300:#fbe0a0;
+    --surface:#ffffff;
+    --surface-2:#f5f7fa;
+    --surface-3:#eef2f7;
+    --line:#dde4ed;
+    --line-strong:#c3cdda;
+    --ink:#0b2545;
+    --ink-soft:#4a5b73;
+    --ink-mute:#7a8ba3;
+    --ok:#0e8a5f;
+    --ok-bg:#e7f5ee;
+    --warn:#c47f00;
+    --warn-bg:#fdf3dd;
+    --danger:#b03a3a;
+    --danger-bg:#fbeaea;
+    --info:#1e5fbf;
+    --info-bg:#e8f0fb;
+    --radius:10px;
+    --radius-sm:6px;
+    --shadow-sm:0 1px 2px rgba(11,37,69,.06);
+    --shadow:0 4px 16px rgba(11,37,69,.08);
+    --shadow-lg:0 12px 40px rgba(11,37,69,.14);
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);
-    font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.5;}
-  .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
-  .topbar{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;padding:18px 0 24px}
-  .topbar-row{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
-  .topbar h1{margin:0 0 4px;font-size:1.4rem}
-  .topbar p{margin:0;opacity:.9;font-size:.85rem}
-  .tabs{display:flex;gap:4px;background:rgba(255,255,255,.15);padding:5px;border-radius:11px;flex-wrap:wrap}
-  .tab{border:none;background:transparent;color:#fff;font:inherit;font-size:.83rem;font-weight:600;
-    padding:8px 14px;border-radius:8px;cursor:pointer;transition:.15s;}
-  .tab:hover{background:rgba(255,255,255,.15)}
-  .tab.active{background:#fff;color:var(--brand)}
-  .tab-panel{padding:24px 0 60px}
-  .grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:22px}
-  @media (max-width:900px){.grid{grid-template-columns:1fr}}
-  .card{background:var(--card);border-radius:var(--radius);padding:22px;box-shadow:0 8px 24px rgba(15,23,42,.07);margin-bottom:18px}
-  .card h2{font-size:1.05rem;margin:0 0 14px;padding-bottom:10px;border-bottom:1px solid var(--line)}
-  .card h3{font-size:1rem;margin:0}
-  .card h4{font-size:.9rem;margin:20px 0 10px;color:#334155}
-  .card h2:not(:first-child){margin-top:26px}
-  .field{margin-bottom:14px;display:flex;flex-direction:column;gap:6px}
-  .field label{font-size:.85rem;font-weight:600;color:#334155}
-  input,select,textarea{width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;
-    font:inherit;font-size:.92rem;background:#fff;color:var(--ink);transition:border-color .15s, box-shadow .15s;}
-  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(79,70,229,.15)}
-  input[type="range"]{padding:0;height:8px;-webkit-appearance:none;background:linear-gradient(90deg,#dc2626,#f59e0b,#059669);border-radius:99px}
-  input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;background:#fff;
-    border:3px solid var(--brand);border-radius:50%;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.2)}
-  textarea{resize:vertical}
-  .hint{font-size:.85rem;color:var(--muted);margin:6px 0 12px}
-  .slots{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
-  .slot{display:flex;gap:12px;align-items:flex-start;cursor:pointer;border:2px solid var(--line);
-    border-radius:12px;padding:12px 14px;background:#fff;transition:.15s;}
-  .slot:hover:not(.full){border-color:#c7d2fe;background:#f8faff}
-  .slot input{accent-color:var(--brand);width:18px;height:18px;margin-top:3px;flex:0 0 auto}
-  .slot.selected{border-color:var(--brand);background:#eef2ff;box-shadow:0 0 0 3px rgba(79,70,229,.12)}
-  .slot.full{opacity:.55;cursor:not-allowed;background:#f8fafc}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--surface-2);
+    color:var(--ink);
+    font-family:"Inter","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,Helvetica,Arial,sans-serif;
+    font-size:14px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{font-weight:600;letter-spacing:-.01em;margin:0;color:var(--ink)}
+  h1{font-size:1.4rem}
+  h2{font-size:1.05rem}
+  h3{font-size:.95rem}
+  h4{font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-mute);font-weight:600;margin:20px 0 10px}
+  a{color:var(--blue-500);text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* ========== ICONOS ========== */
+  .icon{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;display:inline-block;vertical-align:-3px}
+  .icon-lg{width:20px;height:20px}
+
+  /* ========== HEADER ========== */
+  .app-header{
+    background:var(--navy-900);
+    color:#fff;
+    border-bottom:1px solid rgba(255,255,255,.06);
+    position:relative;
+    overflow:hidden;
+  }
+  .app-header::before{
+    content:"";
+    position:absolute;inset:0;
+    background:
+      radial-gradient(1200px 400px at 20% 0%, rgba(47,125,225,.18), transparent 60%),
+      radial-gradient(800px 300px at 90% 100%, rgba(242,193,78,.08), transparent 60%);
+    pointer-events:none;
+  }
+  .app-header-inner{
+    max-width:1280px;margin:0 auto;padding:14px 28px;
+    display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;
+    position:relative;z-index:1;
+  }
+  .brand{display:flex;align-items:center;gap:14px}
+  .brand-mark{
+    width:44px;height:44px;border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, var(--blue-400), var(--navy-700) 70%);
+    border:2px solid var(--gold-500);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:.65rem;color:var(--gold-500);letter-spacing:.02em;
+    flex-shrink:0;
+  }
+  .brand-text{display:flex;flex-direction:column;gap:2px;line-height:1.15}
+  .brand-inst{font-size:.68rem;letter-spacing:.14em;color:var(--gold-400);font-weight:600;text-transform:uppercase}
+  .brand-app{font-size:1rem;font-weight:600;letter-spacing:-.01em}
+  .brand-app span{color:var(--blue-300)}
+
+  .main-nav{display:flex;gap:2px;flex-wrap:wrap}
+  .main-nav button{
+    background:transparent;border:none;color:rgba(255,255,255,.75);
+    font:inherit;font-size:.86rem;font-weight:500;
+    padding:9px 16px;border-radius:8px;cursor:pointer;
+    transition:background .15s, color .15s;
+    display:inline-flex;align-items:center;gap:8px;
+  }
+  .main-nav button:hover{background:rgba(255,255,255,.06);color:#fff}
+  .main-nav button.active{background:rgba(255,255,255,.09);color:var(--gold-400);font-weight:600}
+
+  /* ========== LAYOUT ========== */
+  .container{max-width:1280px;margin:0 auto;padding:28px}
+  .page{padding:28px 0 60px}
+  .grid-2{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:20px}
+  @media (max-width:900px){.grid-2{grid-template-columns:1fr}}
+  .grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+
+  /* ========== CARD ========== */
+  .card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:22px;
+    box-shadow:var(--shadow-sm);
+    margin-bottom:16px;
+  }
+  .card-header{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+    padding-bottom:14px;margin-bottom:16px;
+    border-bottom:1px solid var(--line);
+  }
+  .card-header h2,.card-header h3{font-weight:600}
+  .card-title-icon{display:inline-flex;align-items:center;gap:10px}
+  .card-title-icon .icon{color:var(--blue-500);width:18px;height:18px}
+
+  /* ========== SECTION TITLE ========== */
+  .section-title{
+    display:flex;align-items:center;gap:10px;
+    font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+    color:var(--ink-mute);margin:0 0 12px;
+  }
+  .section-title::after{
+    content:"";flex:1;height:1px;background:var(--line);
+  }
+
+  /* ========== FIELDS ========== */
+  .field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+  .field label{font-size:.82rem;font-weight:500;color:var(--ink-soft)}
+  .field label .req{color:var(--danger);margin-left:2px}
+  input,select,textarea{
+    width:100%;
+    padding:10px 12px;
+    border:1px solid var(--line-strong);
+    border-radius:var(--radius-sm);
+    background:#fff;
+    color:var(--ink);
+    font:inherit;font-size:.9rem;
+    transition:border-color .15s, box-shadow .15s;
+  }
+  input:focus,select:focus,textarea:focus{
+    outline:none;
+    border-color:var(--blue-500);
+    box-shadow:0 0 0 3px rgba(30,95,191,.12);
+  }
+  textarea{resize:vertical;min-height:70px}
+  input[type="range"]{
+    -webkit-appearance:none;appearance:none;
+    height:6px;padding:0;border:none;border-radius:99px;
+    background:linear-gradient(90deg, #d9dee6 0%, var(--blue-400) 50%, var(--gold-500) 100%);
+    box-shadow:none;
+  }
+  input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    width:22px;height:22px;border-radius:50%;
+    background:#fff;border:2px solid var(--blue-500);
+    box-shadow:0 2px 6px rgba(11,37,69,.2);
+    cursor:pointer;
+  }
+  input[type="range"]:focus{box-shadow:0 0 0 3px rgba(30,95,191,.12)}
+
+  .hint{font-size:.82rem;color:var(--ink-mute);margin:6px 0 12px;line-height:1.5}
+
+  /* ========== BOTONES ========== */
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    padding:10px 18px;border:1px solid transparent;border-radius:var(--radius-sm);
+    font:inherit;font-size:.88rem;font-weight:600;
+    cursor:pointer;transition:background .15s, border-color .15s, color .15s, transform .05s;
+    white-space:nowrap;
+  }
+  .btn:active{transform:translateY(1px)}
+  .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+  .btn-block{width:100%}
+  .btn-primary{
+    background:linear-gradient(180deg, var(--blue-500), var(--navy-700));
+    color:#fff;
+    box-shadow:0 1px 2px rgba(11,37,69,.15), inset 0 1px 0 rgba(255,255,255,.1);
+  }
+  .btn-primary:hover:not(:disabled){background:linear-gradient(180deg, var(--blue-400), var(--navy-600))}
+  .btn-gold{
+    background:linear-gradient(180deg, var(--gold-500), #d9a72f);
+    color:var(--navy-900);
+  }
+  .btn-gold:hover:not(:disabled){background:linear-gradient(180deg, var(--gold-400), #c99a25)}
+  .btn-outline{
+    background:#fff;color:var(--ink-soft);border-color:var(--line-strong);
+  }
+  .btn-outline:hover:not(:disabled){border-color:var(--blue-500);color:var(--blue-500)}
+  .btn-ghost{
+    background:transparent;color:var(--ink-soft);border-color:transparent;
+  }
+  .btn-ghost:hover:not(:disabled){background:var(--surface-3);color:var(--ink)}
+  .btn-danger{
+    background:#fff;color:var(--danger);border-color:#eccdcd;
+  }
+  .btn-danger:hover:not(:disabled){background:var(--danger-bg);border-color:var(--danger)}
+  .btn-success{
+    background:#fff;color:var(--ok);border-color:#c1e2d1;
+  }
+  .btn-success:hover:not(:disabled){background:var(--ok-bg);border-color:var(--ok)}
+  .btn-sm{padding:6px 12px;font-size:.8rem}
+  .btn-xs{padding:5px 10px;font-size:.75rem;border-radius:5px}
+
+  /* ========== BADGES ========== */
+  .badge{
+    display:inline-flex;align-items:center;gap:4px;
+    padding:3px 9px;border-radius:99px;
+    font-size:.72rem;font-weight:600;letter-spacing:.01em;
+    border:1px solid transparent;
+    white-space:nowrap;
+  }
+  .badge-ok{background:var(--ok-bg);color:var(--ok);border-color:#c1e2d1}
+  .badge-warn{background:var(--warn-bg);color:var(--warn);border-color:#f0dcab}
+  .badge-full{background:var(--danger-bg);color:var(--danger);border-color:#eccdcd}
+  .badge-info{background:var(--info-bg);color:var(--info);border-color:#c8dcf5}
+  .badge-gray{background:var(--surface-3);color:var(--ink-soft);border-color:var(--line-strong)}
+  .badge-gold{background:#fdf5e0;color:#8b6914;border-color:#efdda5}
+
+  /* ========== ALERTAS ========== */
+  .alert{
+    display:flex;gap:12px;align-items:flex-start;
+    padding:12px 14px;border-radius:var(--radius-sm);
+    font-size:.86rem;line-height:1.5;
+    border:1px solid;margin-bottom:14px;
+  }
+  .alert .icon{margin-top:1px;flex-shrink:0}
+  .alert-ok{background:var(--ok-bg);border-color:#c1e2d1;color:#0a6647}
+  .alert-err{background:var(--danger-bg);border-color:#eccdcd;color:#8a2e2e}
+  .alert-info{background:var(--info-bg);border-color:#c8dcf5;color:#1a4d99}
+  .alert-warn{background:var(--warn-bg);border-color:#f0dcab;color:#8a6200}
+
+  /* ========== SLOTS ========== */
+  .slots-list{display:flex;flex-direction:column;gap:8px}
+  .slot{
+    display:flex;gap:14px;align-items:flex-start;
+    padding:14px 16px;
+    background:#fff;
+    border:1.5px solid var(--line);
+    border-radius:var(--radius);
+    cursor:pointer;
+    transition:border-color .15s, background .15s, box-shadow .15s;
+    position:relative;
+  }
+  .slot:hover:not(.full){border-color:var(--blue-300);background:#fafcff}
+  .slot.selected{
+    border-color:var(--blue-500);
+    background:#f4f8fd;
+    box-shadow:0 0 0 3px rgba(30,95,191,.1);
+  }
+  .slot.full{opacity:.55;cursor:not-allowed;background:var(--surface-3)}
+  .slot input{position:absolute;opacity:0;pointer-events:none}
+  .slot-marker{
+    width:18px;height:18px;border-radius:50%;
+    border:2px solid var(--line-strong);
+    background:#fff;flex-shrink:0;margin-top:3px;
+    position:relative;
+    transition:border-color .15s;
+  }
+  .slot.selected .slot-marker{border-color:var(--blue-500)}
+  .slot.selected .slot-marker::after{
+    content:"";position:absolute;inset:3px;
+    background:var(--blue-500);border-radius:50%;
+  }
   .slot-body{flex:1;min-width:0}
-  .slot-head{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
-  .slot-num{font-weight:700;font-size:.95rem;color:var(--brand)}
-  .slot-prof{font-size:.86rem;color:#334155;margin-top:2px}
-  .slot-hora{font-size:.86rem;color:var(--muted);margin-top:2px}
-  .badge{font-size:.74rem;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap;display:inline-block}
-  .badge-ok{background:#dcfce7;color:#166534}
-  .badge-warn{background:#fef3c7;color:#92400e}
-  .badge-full{background:#fee2e2;color:#991b1b}
-  .badge-info{background:#dbeafe;color:#1e40af}
-  .badge-gray{background:#e2e8f0;color:#475569}
-  .badge-danger{background:#fee2e2;color:#991b1b}
-  .badge-success{background:#d1fae5;color:#065f46}
-  .btn-primary{width:100%;padding:13px;border:none;border-radius:11px;
-    background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;
-    font:inherit;font-weight:700;font-size:.95rem;cursor:pointer;transition:.15s;}
-  .btn-primary:hover:not(:disabled){filter:brightness(1.08);transform:translateY(-1px)}
-  .btn-primary:disabled{background:#cbd5e1;cursor:not-allowed;transform:none}
-  .btn-primary-sm{padding:8px 14px;border:none;border-radius:9px;
-    background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;
-    font:inherit;font-size:.82rem;font-weight:700;cursor:pointer;}
-  .btn-primary-sm:hover{filter:brightness(1.08)}
-  .btn-ghost{padding:8px 13px;border:1.5px solid var(--line);border-radius:9px;background:#fff;
-    font:inherit;font-size:.82rem;font-weight:600;cursor:pointer;color:#475569;text-decoration:none;display:inline-block;}
-  .btn-ghost:hover{border-color:var(--brand);color:var(--brand)}
-  .btn-danger{padding:8px 13px;border:1.5px solid #fecaca;border-radius:9px;background:#fff;
-    font:inherit;font-size:.82rem;font-weight:600;cursor:pointer;color:#991b1b;}
-  .btn-danger:hover{background:#fee2e2}
-  .btn-success{padding:8px 13px;border:1.5px solid #86efac;border-radius:9px;background:#fff;
-    font:inherit;font-size:.82rem;font-weight:600;cursor:pointer;color:#166534;}
-  .btn-success:hover{background:#dcfce7}
-  .btn-mini{padding:6px 10px;font-size:.75rem;border-radius:7px;cursor:pointer;font-weight:600;border:1.5px solid}
-  .btn-mini-yes{background:#fff;border-color:#86efac;color:#166534;}
-  .btn-mini-yes:hover{background:#dcfce7}
-  .btn-mini-no{background:#fff;border-color:#fecaca;color:#991b1b;}
-  .btn-mini-no:hover{background:#fee2e2}
-  .alerta{border-radius:11px;padding:13px 15px;font-size:.88rem;margin-bottom:16px;border-left:4px solid}
-  .alerta.ok{background:#f0fdf4;border-color:var(--ok);color:#14532d}
-  .alerta.err{background:#fef2f2;border-color:var(--danger);color:#7f1d1d}
-  .alerta.info{background:#eff6ff;border-color:#3b82f6;color:#1e3a8a}
-  .alerta.warn{background:#fffbeb;border-color:var(--warn);color:#78350f}
-  .login-card{max-width:420px;margin:0 auto}
-  .admin-header{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:20px}
-  .admin-header h2{margin:0;font-size:1.15rem}
-  .panel-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
-  .panel-actions{display:flex;gap:8px;flex-wrap:wrap}
-  .grupo{border:1px solid var(--line);border-radius:12px;margin-bottom:12px;overflow:hidden}
-  .grupo-head{display:flex;justify-content:space-between;align-items:center;gap:10px;
-    padding:11px 14px;background:#f8fafc;border-bottom:1px solid var(--line);font-size:.88rem;}
-  .alumnos{list-style:none;margin:0;padding:0}
-  .alumnos li{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;
-    padding:10px 14px;border-bottom:1px solid #f1f5f9;font-size:.85rem;}
-  .alumnos li:last-child{border-bottom:none}
-  .muted-sm{color:var(--muted);font-size:.79rem;word-break:break-word}
-  .btn-x{border:none;background:#fee2e2;color:#991b1b;width:26px;height:26px;border-radius:7px;
-    cursor:pointer;font-weight:700;flex:0 0 auto;}
-  .btn-x:hover{background:#fecaca}
-  .prof-item{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;
-    padding:12px 14px;border:1px solid var(--line);border-radius:12px;margin-bottom:10px;background:#fff;}
-  .prof-item-info{flex:1;min-width:0}
-  .prof-item-name{font-weight:700;font-size:.92rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-  .prof-item-meta{font-size:.8rem;color:var(--muted);margin-top:2px;word-break:break-word}
-  .prof-item-actions{display:flex;gap:6px;flex-shrink:0}
-  .stars{color:#f59e0b;font-size:.9rem;letter-spacing:1px}
-  .stars-gray{color:#cbd5e1}
-  .dia-row{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f1f5f9;align-items:flex-start}
-  .dia-row:last-child{border-bottom:none}
-  .dia-label{width:90px;flex-shrink:0;font-weight:700;font-size:.85rem;padding-top:8px;color:#334155}
-  .rangos{flex:1;display:flex;flex-direction:column;gap:6px}
-  .rango{display:flex;gap:6px;align-items:center}
-  .rango input[type="time"]{padding:6px 8px;font-size:.85rem;width:auto;flex:1;max-width:130px}
-  .btn-add-rango{align-self:flex-start;background:#eef2ff;color:var(--brand);border:1px dashed #c7d2fe;
-    padding:6px 12px;border-radius:8px;font:inherit;font-size:.8rem;font-weight:600;cursor:pointer;}
-  .btn-add-rango:hover{background:#e0e7ff}
-  #panelContenido,#misReservas,#historialContenido,#profReservas{max-height:600px;overflow-y:auto;margin-top:8px}
-  #profesoresList{max-height:600px;overflow-y:auto}
-  .empty{color:var(--muted);font-size:.85rem;padding:14px 0;text-align:center}
-  .loading{color:var(--muted);font-size:.85rem;padding:14px 0;text-align:center}
-  .reserva-item{border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:10px;background:#fff}
-  .reserva-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:8px}
-  .reserva-titulo{font-weight:700;font-size:.95rem;color:var(--brand)}
-  .reserva-meta{font-size:.83rem;color:var(--muted)}
-  .reserva-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-  .slider-wrap{text-align:center;padding:8px 0}
-  .slider-value{font-size:1.8rem;font-weight:800;color:var(--brand);margin-bottom:8px}
-  .slider-labels{display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-top:4px}
-  .calif-form{background:#f8faff;border:1.5px dashed #c7d2fe;border-radius:12px;padding:14px;margin-top:10px}
-  .calif-form h5{font-size:.88rem;margin:0 0 10px;color:#334155}
-  .yes-no{display:flex;gap:8px;margin-top:8px}
-  .yes-no button{flex:1;padding:8px;border:1.5px solid var(--line);border-radius:9px;background:#fff;
-    font:inherit;font-size:.82rem;font-weight:600;cursor:pointer;color:#475569;transition:.15s}
-  .yes-no button.sel-yes{background:#dcfce7;border-color:#86efac;color:#166534}
-  .yes-no button.sel-no{background:#fee2e2;border-color:#fecaca;color:#991b1b}
-  .estado-espera{color:#1e40af;font-weight:600;font-size:.82rem;padding:8px;background:#dbeafe;border-radius:8px;text-align:center;margin-top:8px}
-  .estado-completo{color:#166534;font-weight:600;font-size:.82rem;padding:8px;background:#dcfce7;border-radius:8px;text-align:center;margin-top:8px}
-  .hist-item{border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:10px;background:#fff;font-size:.85rem}
-  .hist-item.sin-asistencia{border-left:4px solid var(--danger);background:#fef2f2}
-  .hist-item.completa{border-left:4px solid var(--ok);background:#f0fdf4}
-  .hist-item.pendiente{border-left:4px solid var(--warn);background:#fffbeb}
-  .hist-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:8px}
-  .hist-titulo{font-weight:700;color:var(--brand);font-size:.92rem}
-  .hist-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:4px 0;color:#475569}
-  .filtros{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
-  .filtros button{padding:6px 14px;border:1.5px solid var(--line);background:#fff;border-radius:99px;
-    font:inherit;font-size:.8rem;font-weight:600;cursor:pointer;color:#475569;transition:.15s}
-  .filtros button.active{background:var(--brand);color:#fff;border-color:var(--brand)}
-  .estudiante-row{padding:12px 14px;border-bottom:1px solid #f1f5f9}
+  .slot-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+  .slot-num{font-weight:600;font-size:.92rem;color:var(--navy-800);letter-spacing:.01em}
+  .slot-prof{font-size:.86rem;color:var(--ink-soft)}
+  .slot-prof strong{color:var(--ink);font-weight:600}
+  .slot-hora{font-size:.82rem;color:var(--ink-mute);display:flex;align-items:center;gap:6px;margin-top:2px}
+  .stars{color:var(--gold-500);font-size:.85rem;letter-spacing:1px}
+
+  /* ========== RESERVA ITEM ========== */
+  .reserva-item{
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:16px;
+    margin-bottom:10px;
+    background:#fff;
+    transition:box-shadow .15s, border-color .15s;
+  }
+  .reserva-item:hover{box-shadow:var(--shadow-sm);border-color:var(--line-strong)}
+  .reserva-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+  .reserva-titulo{font-weight:600;font-size:.95rem;color:var(--navy-800)}
+  .reserva-meta{font-size:.83rem;color:var(--ink-soft);display:flex;align-items:center;gap:6px;margin-top:3px}
+  .reserva-meta .icon{color:var(--ink-mute);width:14px;height:14px}
+  .reserva-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+
+  /* ========== CALIF FORM ========== */
+  .calif-form{
+    background:linear-gradient(180deg, #f7faff 0%, #f2f6fc 100%);
+    border:1px solid #d9e4f5;
+    border-radius:var(--radius);
+    padding:16px;margin-top:12px;
+  }
+  .calif-form-header{
+    display:flex;align-items:center;gap:8px;font-weight:600;font-size:.88rem;
+    color:var(--navy-800);margin-bottom:14px;
+  }
+  .calif-form-header .icon{color:var(--gold-500)}
+  .slider-wrap{text-align:center;padding:4px 0 12px}
+  .slider-value{
+    font-size:1.9rem;font-weight:700;color:var(--navy-800);
+    line-height:1;margin-bottom:12px;
+    font-variant-numeric:tabular-nums;
+  }
+  .slider-labels{display:flex;justify-content:space-between;font-size:.72rem;color:var(--ink-mute);margin-top:6px}
+  .yesno{display:flex;gap:8px;margin-top:6px}
+  .yesno button{
+    flex:1;padding:9px;border:1.5px solid var(--line-strong);border-radius:var(--radius-sm);
+    background:#fff;font:inherit;font-size:.83rem;font-weight:500;color:var(--ink-soft);
+    cursor:pointer;transition:.15s;
+  }
+  .yesno button:hover{border-color:var(--line-strong)}
+  .yesno button.sel-yes{background:var(--ok-bg);border-color:var(--ok);color:var(--ok);font-weight:600}
+  .yesno button.sel-no{background:var(--danger-bg);border-color:var(--danger);color:var(--danger);font-weight:600}
+
+  .estado-espera{
+    display:flex;align-items:center;gap:8px;
+    padding:10px 12px;background:var(--info-bg);border:1px solid #c8dcf5;
+    border-radius:var(--radius-sm);font-size:.83rem;color:#1a4d99;font-weight:500;margin-top:10px;
+  }
+  .estado-completo{
+    display:flex;align-items:center;gap:8px;
+    padding:10px 12px;background:var(--ok-bg);border:1px solid #c1e2d1;
+    border-radius:var(--radius-sm);font-size:.83rem;color:var(--ok);font-weight:500;margin-top:10px;
+  }
+
+  /* ========== ESTUDIANTE ROW (panel profesor) ========== */
+  .estudiante-row{
+    padding:14px 16px;
+    border-bottom:1px solid var(--line);
+  }
   .estudiante-row:last-child{border-bottom:none}
-  .estudiante-info{margin-bottom:8px}
-  .estudiante-nombre{font-weight:700;font-size:.9rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-  .estudiante-acciones{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+  .estudiante-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+  .estudiante-info{flex:1;min-width:0}
+  .estudiante-nombre{font-weight:600;font-size:.92rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .estudiante-detalle{font-size:.82rem;color:var(--ink-soft);display:flex;align-items:center;gap:6px;margin-top:3px}
+  .estudiante-detalle .icon{width:13px;height:13px;color:var(--ink-mute)}
+  .estudiante-acciones{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+
+  /* ========== HIST ITEM ========== */
+  .hist-item{
+    border:1px solid var(--line);
+    border-left:3px solid var(--line-strong);
+    border-radius:var(--radius);
+    padding:14px 16px;margin-bottom:10px;background:#fff;
+    font-size:.86rem;
+  }
+  .hist-item.completa{border-left-color:var(--ok)}
+  .hist-item.sin-asistencia{border-left-color:var(--danger);background:#fefafa}
+  .hist-item.pendiente{border-left-color:var(--warn);background:#fffcf5}
+  .hist-head{margin-bottom:10px}
+  .hist-titulo{font-weight:600;color:var(--navy-800);font-size:.92rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .hist-row{
+    display:flex;align-items:flex-start;gap:8px;margin:5px 0;
+    color:var(--ink-soft);font-size:.83rem;
+  }
+  .hist-row .icon{width:14px;height:14px;color:var(--ink-mute);margin-top:2px}
+  .hist-row strong{color:var(--ink);font-weight:600}
+  .hist-coment{
+    color:var(--ink-soft);font-style:italic;font-size:.8rem;
+    padding-left:22px;margin-top:2px;
+  }
+
+  /* ========== PROF ITEM ========== */
+  .prof-item{
+    display:flex;justify-content:space-between;gap:12px;align-items:flex-start;
+    padding:14px 16px;border:1px solid var(--line);border-radius:var(--radius);
+    margin-bottom:10px;background:#fff;transition:box-shadow .15s;
+  }
+  .prof-item:hover{box-shadow:var(--shadow-sm)}
+  .prof-item-info{flex:1;min-width:0}
+  .prof-item-name{font-weight:600;font-size:.92rem;color:var(--navy-800);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .prof-item-meta{
+    font-size:.81rem;color:var(--ink-soft);display:flex;align-items:center;gap:6px;margin-top:3px;
+  }
+  .prof-item-meta .icon{width:13px;height:13px;color:var(--ink-mute)}
+  .prof-item-actions{display:flex;gap:6px;flex-shrink:0}
+
+  /* ========== DÍA ROW (editor horarios) ========== */
+  .dia-row{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--line);align-items:flex-start}
+  .dia-row:last-child{border-bottom:none}
+  .dia-label{width:96px;flex-shrink:0;font-weight:600;font-size:.83rem;padding-top:8px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em}
+  .rangos{flex:1;display:flex;flex-direction:column;gap:8px}
+  .rango{display:flex;gap:8px;align-items:center}
+  .rango input[type="time"]{padding:6px 10px;font-size:.85rem;width:auto;flex:1;max-width:130px}
+  .btn-add-rango{
+    align-self:flex-start;background:#fff;color:var(--blue-500);
+    border:1px dashed var(--blue-300);
+    padding:6px 14px;border-radius:var(--radius-sm);
+    font:inherit;font-size:.8rem;font-weight:500;cursor:pointer;
+    transition:.15s;
+  }
+  .btn-add-rango:hover{background:#f4f8fd;border-color:var(--blue-500)}
+
+  /* ========== FILTROS ========== */
+  .filtros{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+  .filtros button{
+    padding:6px 14px;border:1px solid var(--line-strong);background:#fff;
+    border-radius:99px;font:inherit;font-size:.8rem;font-weight:500;
+    cursor:pointer;color:var(--ink-soft);transition:.15s;
+  }
+  .filtros button:hover{border-color:var(--blue-300)}
+  .filtros button.active{background:var(--navy-800);color:#fff;border-color:var(--navy-800)}
+
+  /* ========== TABLA RESUMEN ========== */
+  .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:16px}
+  .stat{
+    background:#fff;border:1px solid var(--line);border-radius:var(--radius);
+    padding:14px 16px;
+  }
+  .stat-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-mute);font-weight:600}
+  .stat-value{font-size:1.6rem;font-weight:700;color:var(--navy-800);margin-top:4px;font-variant-numeric:tabular-nums;line-height:1}
+
+  /* ========== EMPTY / LOADING ========== */
+  .empty,.loading{
+    text-align:center;padding:28px 16px;color:var(--ink-mute);font-size:.86rem;
+    display:flex;flex-direction:column;align-items:center;gap:10px;
+  }
+  .empty .icon,.loading .icon{width:28px;height:28px;color:var(--line-strong)}
+
+  /* ========== MODAL ========== */
+  .modal-bg{
+    position:fixed;inset:0;background:rgba(7,26,51,.55);
+    display:flex;align-items:center;justify-content:center;
+    z-index:1000;padding:20px;backdrop-filter:blur(4px);
+  }
+  .modal{
+    background:#fff;border-radius:12px;padding:26px;
+    max-width:480px;width:100%;max-height:90vh;overflow-y:auto;
+    box-shadow:var(--shadow-lg);
+    border:1px solid var(--line);
+  }
+  .modal h3{font-size:1.05rem;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+  .modal h3 .icon{color:var(--gold-500);width:20px;height:20px}
+  .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:20px}
+
+  /* ========== LOGIN CARD ========== */
+  .login-card{max-width:420px;margin:40px auto}
+  .login-card .card-header{justify-content:flex-start}
+  .login-tabs{
+    display:flex;gap:4px;background:var(--surface-2);padding:4px;border-radius:8px;
+    border:1px solid var(--line);margin-bottom:16px;
+  }
+  .login-tabs button{
+    flex:1;border:none;background:transparent;padding:8px 12px;
+    border-radius:6px;font:inherit;font-size:.83rem;font-weight:600;
+    color:var(--ink-soft);cursor:pointer;transition:.15s;
+  }
+  .login-tabs button.active{background:#fff;color:var(--blue-500);box-shadow:var(--shadow-sm)}
+
+  /* ========== ADMIN HEADER ========== */
+  .admin-header{
+    display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;
+    padding:16px 20px;background:linear-gradient(135deg, var(--navy-800) 0%, var(--navy-700) 100%);
+    border-radius:var(--radius);color:#fff;margin-bottom:20px;
+    box-shadow:var(--shadow);
+  }
+  .admin-header h2{color:#fff;font-size:1.05rem;display:flex;align-items:center;gap:10px}
+  .admin-header .icon{color:var(--gold-400)}
+  .admin-header .btn-outline{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.2)}
+  .admin-header .btn-outline:hover{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.3)}
+
+  /* ========== SCROLLBAR ========== */
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-track{background:var(--surface-2)}
+  ::-webkit-scrollbar-thumb{background:#c8d0da;border-radius:5px;border:2px solid var(--surface-2)}
+  ::-webkit-scrollbar-thumb:hover{background:#a8b4c2}
+
+  /* ========== UTILITIES ========== */
+  .scroll-y{max-height:600px;overflow-y:auto;padding-right:4px}
+  .muted{color:var(--ink-mute);font-size:.82rem}
+  .flex-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .mt-2{margin-top:8px}
+  .mt-3{margin-top:14px}
+  .mb-3{margin-bottom:14px}
 </style>
 </head>
 <body>
 
-<header class="topbar">
-  <div class="wrap topbar-row">
-    <div>
-      <h1>📚 Agenda de Tutorías</h1>
-      <p>Universidad Mayor · máximo 5 estudiantes por tutoría</p>
+<header class="app-header">
+  <div class="app-header-inner">
+    <div class="brand">
+      <div class="brand-mark">UCMC</div>
+      <div class="brand-text">
+        <div class="brand-inst">Universidad Colegio Mayor de Cundinamarca</div>
+        <div class="brand-app">Agenda de <span>Tutorías</span></div>
+      </div>
     </div>
-    <nav class="tabs">
-      <button class="tab active" data-tab="reservar">Reservar</button>
-      <button class="tab" data-tab="misreservas">Mis reservas</button>
-      <button class="tab" data-tab="profesor">Profesor</button>
-      <button class="tab" data-tab="admin">Admin</button>
+    <nav class="main-nav">
+      <button class="active" data-tab="reservar">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"/></svg>
+        Reservar
+      </button>
+      <button data-tab="misreservas">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+        Mis reservas
+      </button>
+      <button data-tab="profesor">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        Profesor
+      </button>
+      <button data-tab="admin">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        Administración
+      </button>
     </nav>
   </div>
 </header>
 
-<main class="wrap">
+<main class="container">
 
-  <section id="tab-reservar" class="tab-panel">
-    <div class="grid">
+  <!-- ============ RESERVAR ============ -->
+  <section id="tab-reservar" class="page">
+    <div class="grid-2">
       <div class="card">
         <div id="mensaje"></div>
+        <div class="card-header">
+          <h2 class="card-title-icon">
+            <svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+            Solicitud de tutoría
+          </h2>
+        </div>
         <form id="formReserva">
-          <h2>1. Tus datos</h2>
+          <div class="section-title">Datos del estudiante</div>
           <div class="field">
-            <label for="nombre">Nombre completo *</label>
-            <input id="nombre" type="text" required placeholder="Ej: Ana María Gómez">
+            <label for="nombre">Nombre completo <span class="req">*</span></label>
+            <input id="nombre" type="text" required placeholder="Nombre y apellidos">
           </div>
           <div class="field">
-            <label for="correo">Correo institucional * (@universidadmayor.edu.co)</label>
-            <input id="correo" type="email" required placeholder="ana.gomez@universidadmayor.edu.co">
+            <label for="correo">Correo institucional <span class="req">*</span></label>
+            <input id="correo" type="email" required placeholder="nombre.apellido@universidadmayor.edu.co">
           </div>
           <div class="field">
-            <label for="programa">Programa académico *</label>
+            <label for="programa">Programa académico <span class="req">*</span></label>
             <select id="programa" required>
-              <option value="">Selecciona tu programa…</option>
+              <option value="">Seleccione un programa</option>
               <option>ADMINISTRACION DE EMPRESAS</option>
               <option>CONTADURIA</option>
               <option>BACTERIOLOGIA</option>
@@ -211,207 +566,306 @@
               <option>DERECHO</option>
               <option>ARQUITECTURA</option>
               <option>DISEÑO DIGITAL Y MULTIMEDIA</option>
-              <option>OTRA</option>
+              <option>OTRO</option>
             </select>
           </div>
           <div class="field">
-            <label for="tema">Tema(s) de la tutoría *</label>
-            <textarea id="tema" rows="3" required placeholder="Ej: Derivadas, regla de la cadena y límites."></textarea>
+            <label for="tema">Tema o temas de la tutoría <span class="req">*</span></label>
+            <textarea id="tema" rows="3" required placeholder="Describa brevemente los temas que desea tratar"></textarea>
           </div>
 
-          <h2>2. Fecha y horario</h2>
+          <div class="section-title mt-3">Fecha y horario</div>
           <div class="field">
-            <label for="fecha">Fecha * (mínimo 24 horas de anticipación)</label>
+            <label for="fecha">Fecha de la tutoría <span class="req">*</span></label>
             <input id="fecha" type="date" required>
+            <span class="muted">Debe solicitarse con al menos 24 horas de anticipación.</span>
           </div>
           <div id="slotsContainer">
-            <p class="hint">Selecciona una fecha para ver los horarios disponibles.</p>
+            <p class="hint">Seleccione una fecha para consultar los horarios disponibles.</p>
           </div>
-          <button type="submit" class="btn-primary" id="btnReservar" disabled>Confirmar reserva</button>
+          <button type="submit" class="btn btn-primary btn-block mt-3" id="btnReservar" disabled>
+            <svg class="icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14M22 4L12 14.01l-3-3"/></svg>
+            Confirmar reserva
+          </button>
         </form>
       </div>
 
       <div class="card">
-        <h2>ℹ️ ¿Cómo funciona?</h2>
-        <ol style="font-size:.9rem;color:#334155;padding-left:18px;margin:0">
-          <li>Elige la <strong>fecha</strong> en la que quieres la tutoría.</li>
-          <li>Aparecerán las tutorías disponibles ese día, numeradas <strong>Tutoría 1, 2, 3…</strong></li>
-          <li>Cada tutoría tiene un profesor asignado y un horario (máximo <strong>5 cupos</strong>).</li>
-          <li>Llena tus datos, selecciona la tutoría y confirma.</li>
-          <li>El profesor recibirá un correo con tu solicitud y un link para agendarla en su calendario.</li>
-          <li>Las tutorías deben ser agendadas con <strong>24 horas de anticipación</strong>.</li>
-          <li>Si no puedes asistir, cancela tu reserva desde <strong>"Mis reservas"</strong>.</li>
-          <li>Al terminar, el profesor marcará si asististe y ambos podrán calificarse.</li>
-          <li>⚠️ Si no asistes a una tutoría agendada, tendrás <strong>15 días de penalización</strong>.</li>
+        <div class="card-header">
+          <h2 class="card-title-icon">
+            <svg class="icon icon-lg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            Información del servicio
+          </h2>
+        </div>
+        <ol style="font-size:.88rem;color:var(--ink-soft);padding-left:20px;margin:0;line-height:1.85">
+          <li>Seleccione la fecha en la que desea la tutoría.</li>
+          <li>El sistema mostrará los horarios disponibles, organizados por número de tutoría.</li>
+          <li>Cada tutoría cuenta con un docente asignado y un máximo de <strong>5 cupos</strong>.</li>
+          <li>Complete el formulario y confirme su reserva.</li>
+          <li>El docente recibirá una notificación por correo con el enlace para agendar la cita en su calendario.</li>
+          <li>Las tutorías deben solicitarse con <strong>24 horas de anticipación</strong>.</li>
+          <li>En caso de no poder asistir, cancele la reserva desde la sección <strong>Mis reservas</strong>.</li>
+          <li>Al finalizar, el docente registrará la asistencia y ambas partes podrán calificar.</li>
         </ol>
+        <div class="alert alert-warn mt-3">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4M12 17h.01"/></svg>
+          <div>La inasistencia a una tutoría agendada sin previa cancelación genera una suspensión de <strong>15 días</strong> para agendar nuevas tutorías.</div>
+        </div>
       </div>
     </div>
   </section>
 
-  <section id="tab-misreservas" class="tab-panel" hidden>
-    <div class="card" style="max-width:600px;margin:0 auto 20px">
-      <h2>🔍 Consulta tus reservas</h2>
-      <p class="hint">Ingresa tu correo institucional para ver tus tutorías agendadas.</p>
+  <!-- ============ MIS RESERVAS ============ -->
+  <section id="tab-misreservas" class="page" hidden>
+    <div class="card login-card">
+      <div class="card-header">
+        <h2 class="card-title-icon">
+          <svg class="icon icon-lg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          Consulta de reservas
+        </h2>
+      </div>
+      <p class="hint">Ingrese su correo institucional para consultar sus tutorías agendadas.</p>
       <div class="field">
         <label for="correoConsulta">Correo institucional</label>
-        <input id="correoConsulta" type="email" placeholder="tu.nombre@universidadmayor.edu.co">
+        <input id="correoConsulta" type="email" placeholder="nombre.apellido@universidadmayor.edu.co">
       </div>
-      <button class="btn-primary" id="btnBuscarReservas">Ver mis reservas</button>
+      <button class="btn btn-primary btn-block" id="btnBuscarReservas">
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        Consultar reservas
+      </button>
     </div>
     <div class="card">
-      <h2>📋 Tus tutorías</h2>
-      <div id="misReservas">
-        <p class="empty">Ingresa tu correo arriba para ver tus reservas.</p>
+      <div class="card-header">
+        <h2 class="card-title-icon">
+          <svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+          Tutorías registradas
+        </h2>
+      </div>
+      <div id="misReservas" class="scroll-y">
+        <div class="empty">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+          Ingrese su correo para consultar sus reservas.
+        </div>
       </div>
     </div>
   </section>
 
-  <section id="tab-profesor" class="tab-panel" hidden>
+  <!-- ============ PROFESOR ============ -->
+  <section id="tab-profesor" class="page" hidden>
     <div id="profLogin" class="card login-card">
-      <h2>👨‍🏫 Acceso profesores</h2>
+      <div class="card-header">
+        <h2 class="card-title-icon">
+          <svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8z"/></svg>
+          Acceso docentes
+        </h2>
+      </div>
       <div class="field">
         <label for="profCorreo">Correo institucional</label>
-        <input type="email" id="profCorreo" placeholder="profesor@universidadmayor.edu.co">
+        <input type="email" id="profCorreo" placeholder="docente@universidadmayor.edu.co">
       </div>
       <div class="field">
         <label for="profDocumento">Número de documento</label>
-        <input type="text" id="profDocumento" placeholder="Ej: 1234567890">
+        <input type="text" id="profDocumento" placeholder="Número de cédula">
       </div>
       <div class="field">
         <label for="profPassword">Contraseña</label>
-        <input type="password" id="profPassword" placeholder="••••••••">
+        <input type="password" id="profPassword" placeholder="Contraseña">
       </div>
-      <button class="btn-primary" id="btnLoginProf">Entrar</button>
-      <p class="hint" style="text-align:center;margin-top:12px" id="profLoginMsg"></p>
-      <p class="hint" style="text-align:center">
-        ¿Primera vez? Tu contraseña inicial es tu número de documento.
-      </p>
+      <button class="btn btn-primary btn-block" id="btnLoginProf">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
+        Ingresar
+      </button>
+      <p class="hint mt-2" style="text-align:center" id="profLoginMsg"></p>
+      <p class="hint" style="text-align:center">Primera vez: su contraseña inicial corresponde a su número de documento.</p>
     </div>
 
     <div id="profPanel" hidden>
       <div class="admin-header">
-        <h2>Panel del profesor</h2>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn-ghost" id="btnCambiarPassProf">🔑 Cambiar contraseña</button>
-          <button class="btn-ghost" id="btnLogoutProf">Cerrar sesión</button>
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8z"/></svg>
+          Panel docente
+        </h2>
+        <div class="flex-row">
+          <button class="btn btn-outline btn-sm" id="btnCambiarPassProf">
+            <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            Cambiar contraseña
+          </button>
+          <button class="btn btn-outline btn-sm" id="btnLogoutProf">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+            Cerrar sesión
+          </button>
         </div>
       </div>
       <div class="card">
-        <div class="panel-head">
-          <h3 id="profNombreTitulo">Mis tutorías agendadas</h3>
-          <button class="btn-ghost" id="btnRefrescarProf">🔄 Refrescar</button>
+        <div class="card-header">
+          <h3 id="profNombreTitulo" class="card-title-icon">
+            <svg class="icon icon-lg" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            Mis tutorías
+          </h3>
+          <button class="btn btn-outline btn-sm" id="btnRefrescarProf">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+            Actualizar
+          </button>
         </div>
-        <p class="hint">
-          Marca <strong>✅ Asistió</strong> o <strong>❌ No asistió</strong> a cada estudiante, y luego califícalo.
-          Si no asiste, el estudiante recibirá <strong>15 días de penalización</strong>.
-        </p>
-        <div id="profReservas"></div>
+        <p class="hint">Registre la asistencia de cada estudiante y, posteriormente, realice la calificación correspondiente.</p>
+        <div id="profReservas" class="scroll-y"></div>
       </div>
     </div>
   </section>
 
-  <section id="tab-admin" class="tab-panel" hidden>
+  <!-- ============ ADMIN ============ -->
+  <section id="tab-admin" class="page" hidden>
     <div id="adminLogin" class="card login-card">
-      <h2>🔒 Acceso administrador</h2>
+      <div class="card-header">
+        <h2 class="card-title-icon">
+          <svg class="icon icon-lg" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          Acceso administrativo
+        </h2>
+      </div>
       <div class="field">
         <label for="adminPass">Contraseña</label>
-        <input type="password" id="adminPass" placeholder="••••••••">
+        <input type="password" id="adminPass" placeholder="Contraseña de administrador">
       </div>
-      <button class="btn-primary" id="btnLogin">Entrar</button>
-      <p class="hint" id="loginMsg" style="text-align:center;margin-top:12px"></p>
+      <button class="btn btn-primary btn-block" id="btnLogin">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
+        Ingresar
+      </button>
+      <p class="hint mt-2" style="text-align:center" id="loginMsg"></p>
     </div>
 
     <div id="adminPanel" hidden>
       <div class="admin-header">
-        <h2>Panel de administración</h2>
-        <button class="btn-ghost" id="btnLogout">Cerrar sesión</button>
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          Panel de administración
+        </h2>
+        <button class="btn btn-outline btn-sm" id="btnLogout">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+          Cerrar sesión
+        </button>
       </div>
 
       <div class="card">
-        <div class="panel-head">
-          <h3>📋 Reservas activas</h3>
-          <div class="panel-actions">
-            <button class="btn-ghost" id="btnRefrescar">🔄 Refrescar</button>
-            <button class="btn-ghost" id="btnCSV">Exportar CSV</button>
-            <button class="btn-danger" id="btnLimpiar">Vaciar activas</button>
+        <div class="card-header">
+          <h3 class="card-title-icon">
+            <svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"/></svg>
+            Reservas activas
+          </h3>
+          <div class="flex-row">
+            <button class="btn btn-outline btn-sm" id="btnRefrescar">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+              Actualizar
+            </button>
+            <button class="btn btn-outline btn-sm" id="btnCSV">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+              Exportar CSV
+            </button>
+            <button class="btn btn-danger btn-sm" id="btnLimpiar">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
+              Vaciar
+            </button>
           </div>
         </div>
+        <div class="stat-grid" id="panelResumenStats"></div>
         <p class="hint" id="panelResumen"></p>
-        <div id="panelContenido"></div>
+        <div id="panelContenido" class="scroll-y"></div>
       </div>
 
       <div class="card">
-        <div class="panel-head">
-          <h3>📚 Historial de tutorías</h3>
-          <button class="btn-ghost" id="btnRefrescarHist">🔄 Refrescar</button>
+        <div class="card-header">
+          <h3 class="card-title-icon">
+            <svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M12 2v20M2 12h20"/></svg>
+            Historial de tutorías
+          </h3>
+          <button class="btn btn-outline btn-sm" id="btnRefrescarHist">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+            Actualizar
+          </button>
         </div>
-        <p class="hint">
-          Todas las tutorías realizadas con la información de asistencia y calificaciones.
-          Las marcadas en rojo indican que alguien no asistió.
-        </p>
+        <p class="hint">Registro completo de las tutorías realizadas, con calificaciones y estado de asistencia de ambas partes.</p>
         <div class="filtros" id="filtrosHist">
           <button class="active" data-filtro="todas">Todas</button>
-          <button data-filtro="completas">✅ Completas</button>
-          <button data-filtro="sin-estudiante">❌ Estudiante no asistió</button>
-          <button data-filtro="sin-profesor">⚠️ Profesor no dio tutoría</button>
-          <button data-filtro="espera">⏳ Esperando calificar</button>
+          <button data-filtro="completas">Completas</button>
+          <button data-filtro="sin-estudiante">Estudiante no asistió</button>
+          <button data-filtro="sin-profesor">Docente no dictó</button>
+          <button data-filtro="espera">Pendientes de calificar</button>
         </div>
-        <div id="historialContenido"></div>
+        <div id="historialContenido" class="scroll-y"></div>
       </div>
 
       <div class="card">
-        <div class="panel-head">
-          <h3>👨‍🏫 Profesores y horarios</h3>
-          <button class="btn-primary-sm" id="btnNuevoProf">+ Nuevo</button>
+        <div class="card-header">
+          <h3 class="card-title-icon">
+            <svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8z"/></svg>
+            Docentes y horarios
+          </h3>
+          <button class="btn btn-primary btn-sm" id="btnNuevoProf">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            Nuevo docente
+          </button>
         </div>
-        <div id="profesoresList"></div>
+        <div id="profesoresList" class="scroll-y"></div>
         <div id="profesorEditor" hidden></div>
       </div>
 
       <div class="card">
-        <h3>⚙️ Configuración</h3>
-        <h4>👁️ Visibilidad de calificaciones</h4>
-        <p class="hint">Si lo desactivas, las calificaciones no se muestran públicamente.</p>
-        <label style="display:flex;align-items:center;gap:10px;padding:10px;border:1.5px solid var(--line);border-radius:10px;cursor:pointer">
-          <input type="checkbox" id="cfgCalifVisibles" style="width:auto;accent-color:var(--brand)">
-          <span style="font-size:.9rem;font-weight:600">Mostrar calificaciones públicamente</span>
+        <div class="card-header">
+          <h3 class="card-title-icon">
+            <svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+            Configuración
+          </h3>
+        </div>
+
+        <div class="section-title">Visibilidad pública de calificaciones</div>
+        <label style="display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:var(--radius-sm);cursor:pointer;background:var(--surface-2)">
+          <input type="checkbox" id="cfgCalifVisibles" style="width:auto;accent-color:var(--blue-500)">
+          <span style="font-size:.88rem;font-weight:500">Mostrar las calificaciones de docentes en la vista pública</span>
         </label>
 
-        <h4>📧 Envío de correos (EmailJS)</h4>
+        <div class="section-title mt-3">Notificaciones por correo (EmailJS)</div>
+        <p class="hint">Las claves se almacenan en la nube y solo requieren configuración inicial.</p>
         <div class="field">
           <label for="cfgPublicKey">Public Key</label>
-          <input type="text" id="cfgPublicKey" placeholder="AbCd1234...">
+          <input type="text" id="cfgPublicKey" placeholder="Public Key de EmailJS">
         </div>
         <div class="field">
           <label for="cfgServiceId">Service ID</label>
           <input type="text" id="cfgServiceId" placeholder="service_xxxxxxx">
         </div>
         <div class="field">
-          <label for="cfgTemplateId">Template ID (nueva reserva)</label>
+          <label for="cfgTemplateId">Template ID · Nueva reserva</label>
           <input type="text" id="cfgTemplateId" placeholder="template_xxxxxxx">
         </div>
         <div class="field">
-          <label for="cfgTemplateCancelacion">Template ID (cancelación)</label>
+          <label for="cfgTemplateCancelacion">Template ID · Cancelación</label>
           <input type="text" id="cfgTemplateCancelacion" placeholder="template_cancelacion">
         </div>
-        <button class="btn-primary" id="btnGuardarConfig">Guardar configuración</button>
-        <p class="hint" id="cfgMsg" style="text-align:center"></p>
+        <button class="btn btn-primary" id="btnGuardarConfig">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
+          Guardar configuración
+        </button>
+        <p class="hint mt-2" id="cfgMsg" style="text-align:center"></p>
 
-        <h4>🔑 Cambiar contraseña de admin</h4>
+        <div class="section-title mt-3">Cambio de contraseña administrativa</div>
         <div class="field">
           <label for="cfgNewPass">Nueva contraseña</label>
           <input type="password" id="cfgNewPass" placeholder="Mínimo 4 caracteres">
         </div>
         <div class="field">
-          <label for="cfgNewPass2">Confirmar contraseña</label>
+          <label for="cfgNewPass2">Confirmar nueva contraseña</label>
           <input type="password" id="cfgNewPass2">
         </div>
-        <button class="btn-ghost" id="btnCambiarPass">Cambiar contraseña</button>
-        <p class="hint" id="passMsg" style="text-align:center"></p>
+        <button class="btn btn-outline" id="btnCambiarPass">
+          <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          Actualizar contraseña
+        </button>
+        <p class="hint mt-2" id="passMsg" style="text-align:center"></p>
       </div>
     </div>
   </section>
 </main>
+
+<div id="modalContainer"></div>
 
 <script>
 /* ============ CONFIG SUPABASE ============ */
@@ -427,6 +881,26 @@ const STORAGE_SESSION = 'tutorias_admin_session';
 const STORAGE_PROF_SESSION = 'tutorias_prof_session';
 const PASS_DEFAULT = 'admin123';
 
+/* ============ ICONOS SVG (reusables) ============ */
+const ICON = {
+  clock: '<svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>',
+  user: '<svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+  mail: '<svg class="icon" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg>',
+  book: '<svg class="icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>',
+  check: '<svg class="icon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>',
+  x: '<svg class="icon" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>',
+  star: '<svg class="icon" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>',
+  calendar: '<svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>',
+  id: '<svg class="icon" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M8 12h.01M12 12h4"/></svg>',
+  trash: '<svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>',
+  edit: '<svg class="icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
+  eye: '<svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>',
+  award: '<svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="7"/><path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.12"/></svg>',
+  alert: '<svg class="icon" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4M12 17h.01"/></svg>',
+  info: '<svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>',
+  graduation: '<svg class="icon" viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>'
+};
+
 /* ============ UTILIDADES ============ */
 const $ = (s,ctx=document) => ctx.querySelector(s);
 const $$ = (s,ctx=document) => [...ctx.querySelectorAll(s)];
@@ -439,9 +913,9 @@ function fmtFecha(fecha){
 }
 
 function estrellasHTML(promedio){
-  if(promedio === null || promedio === undefined) return '<span class="stars stars-gray">☆☆☆☆☆</span>';
+  if(promedio === null || promedio === undefined) return `<span class="stars" style="color:var(--line-strong)">★★★★★</span>`;
   const llenas = Math.round(promedio);
-  return `<span class="stars">${'★'.repeat(llenas)}${'☆'.repeat(5-llenas)}</span> <span style="color:#64748b;font-size:.8rem">${promedio.toFixed(1)}</span>`;
+  return `<span class="stars">${'★'.repeat(llenas)}${'☆'.repeat(5-llenas)}</span> <span style="color:var(--ink-mute);font-size:.78rem;font-weight:600">${promedio.toFixed(1)}</span>`;
 }
 
 function validarCorreo(correo){
@@ -460,7 +934,7 @@ function linkGoogleCalendar(r){
   return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${titulo}&dates=${start}/${end}&details=${detalles}`;
 }
 
-/* ============ CONFIGURACIÓN GLOBAL ============ */
+/* ============ CONFIG GLOBAL ============ */
 let CONFIG = {
   calificaciones_visibles: true,
   emailjs_public_key: '',
@@ -480,7 +954,6 @@ async function cargarConfig(){
     }
   });
 }
-
 async function guardarConfigDB(clave, valor){
   const {error} = await db.from('configuracion').upsert({clave, valor: String(valor)});
   if(error) throw error;
@@ -648,7 +1121,7 @@ async function promediosProfesores(){
   return out;
 }
 
-/* ============ ARCHIVAR RESERVA COMPLETADA ============ */
+/* ============ ARCHIVAR RESERVA ============ */
 async function intentarArchivar(reservaId){
   const {data,error} = await db.from('reservas').select('*, profesores(*)').eq('id', reservaId).single();
   if(error || !data) return false;
@@ -691,7 +1164,7 @@ async function intentarArchivar(reservaId){
   return true;
 }
 
-/* ============ GENERACIÓN DE SLOTS ============ */
+/* ============ SLOTS ============ */
 async function generarSlots(fecha){
   const dia = new Date(fecha+'T00:00:00').getDay();
   const [profes, reservas] = await Promise.all([cargarProfesores(), cargarReservasPorFecha(fecha)]);
@@ -738,23 +1211,25 @@ async function renderSlots(){
   btnReservar.disabled = true;
 
   if(!fecha){
-    slotsBox.innerHTML = '<p class="hint">Selecciona una fecha para ver los horarios disponibles.</p>';
+    slotsBox.innerHTML = '<p class="hint">Seleccione una fecha para consultar los horarios disponibles.</p>';
     return;
   }
 
-  slotsBox.innerHTML = '<p class="loading">⏳ Cargando horarios…</p>';
+  slotsBox.innerHTML = `<div class="loading">${ICON.clock}<span>Consultando horarios disponibles…</span></div>`;
   promediosCache = await promediosProfesores();
 
   let slots;
   try { slots = await generarSlots(fecha); }
-  catch(e){ console.error(e); slotsBox.innerHTML = '<div class="alerta err">Error al cargar.</div>'; return; }
+  catch(e){ console.error(e); slotsBox.innerHTML = `<div class="alert alert-err">${ICON.alert}<div>No fue posible cargar los horarios.</div></div>`; return; }
 
   if(!slots.length){
-    slotsBox.innerHTML = `<div class="alerta info">No hay horarios para <strong>${esc(fmtFecha(fecha))}</strong>. Prueba con otro día.</div>`;
+    slotsBox.innerHTML = `<div class="alert alert-info">${ICON.info}<div>No hay horarios de tutoría programados para el <strong>${esc(fmtFecha(fecha))}</strong>. Intente con otra fecha.</div></div>`;
     return;
   }
 
-  let html = `<p class="hint">Horarios para <strong>${esc(fmtFecha(fecha))}</strong> · elige una tutoría (máx. ${CUPO_MAX} estudiantes cada una).</p><div class="slots">`;
+  let html = `<div class="section-title mt-3">Horarios disponibles · ${esc(fmtFecha(fecha))}</div>
+              <p class="hint">Máximo ${CUPO_MAX} estudiantes por tutoría.</p>
+              <div class="slots-list">`;
   slots.forEach(s => {
     const cb = s.lleno ? 'badge-full' : (s.ocupados >= CUPO_MAX-1 ? 'badge-warn' : 'badge-ok');
     const stars = CONFIG.calificaciones_visibles && promediosCache[s.profesorId]
@@ -762,13 +1237,14 @@ async function renderSlots(){
     html += `
       <label class="slot ${s.lleno?'full':''}" data-slot="${esc(s.id)}">
         <input type="radio" name="slot" value="${esc(s.id)}" ${s.lleno?'disabled':''}>
+        <span class="slot-marker"></span>
         <div class="slot-body">
           <div class="slot-head">
             <span class="slot-num">Tutoría ${s.numero}</span>
-            <span class="badge ${cb}">${s.ocupados}/${CUPO_MAX} cupos</span>
+            <span class="badge ${cb}">${s.ocupados} / ${CUPO_MAX} cupos</span>
           </div>
-          <div class="slot-prof">${esc(s.profesor)} · ${esc(s.area)}${stars}</div>
-          <div class="slot-hora">🕒 ${s.inicio} – ${s.fin}</div>
+          <div class="slot-prof"><strong>${esc(s.profesor)}</strong> · ${esc(s.area)}${stars}</div>
+          <div class="slot-hora">${ICON.clock} ${s.inicio} – ${s.fin}</div>
         </div>
       </label>`;
   });
@@ -828,33 +1304,32 @@ form.addEventListener('submit', async (e) => {
   mensajeBox.innerHTML = '';
   if(!form.checkValidity()){ form.reportValidity(); return; }
   if(!slotSeleccionado){
-    mensajeBox.innerHTML = '<div class="alerta err">⚠️ Debes seleccionar una tutoría.</div>';
+    mensajeBox.innerHTML = `<div class="alert alert-err">${ICON.alert}<div>Debe seleccionar una tutoría.</div></div>`;
     return;
   }
 
   const correo = $('#correo').value.trim().toLowerCase();
   if(!validarCorreo(correo)){
-    mensajeBox.innerHTML = `<div class="alerta err">❌ El correo debe terminar en <strong>${DOMINIO}</strong>.</div>`;
+    mensajeBox.innerHTML = `<div class="alert alert-err">${ICON.alert}<div>El correo debe pertenecer al dominio <strong>${DOMINIO}</strong>.</div></div>`;
     return;
   }
 
   const penalty = await verificarPenalizacion(correo);
   if(penalty){
     const f = new Date(penalty.fecha_fin + 'T00:00:00').toLocaleDateString('es-CO');
-    mensajeBox.innerHTML = `<div class="alerta err">⛔ Tienes una <strong>penalización activa</strong> hasta el <strong>${f}</strong> por no asistir a una tutoría. No puedes agendar hasta esa fecha.</div>`;
+    mensajeBox.innerHTML = `<div class="alert alert-err">${ICON.alert}<div>Registra una suspensión activa hasta el <strong>${f}</strong> por inasistencia a una tutoría previa. No es posible agendar nuevas tutorías hasta esa fecha.</div></div>`;
     return;
   }
 
   const fechaSel = new Date(slotSeleccionado.fecha + 'T' + slotSeleccionado.inicio);
-  const ahora = new Date();
-  const diffHoras = (fechaSel - ahora) / 3600000;
+  const diffHoras = (fechaSel - new Date()) / 3600000;
   if(diffHoras < 24){
-    mensajeBox.innerHTML = '<div class="alerta err">⏰ Debes agendar con al menos 24 horas de anticipación.</div>';
+    mensajeBox.innerHTML = `<div class="alert alert-err">${ICON.alert}<div>La tutoría debe solicitarse con al menos 24 horas de anticipación.</div></div>`;
     return;
   }
 
   btnReservar.disabled = true;
-  btnReservar.textContent = 'Guardando…';
+  btnReservar.innerHTML = 'Guardando…';
 
   try{
     const reservasFecha = await cargarReservasPorFecha(slotSeleccionado.fecha);
@@ -864,7 +1339,7 @@ form.addEventListener('submit', async (e) => {
       r.hora_inicio.slice(0,5) === slotSeleccionado.inicio
     ).length;
     if(ocupados >= CUPO_MAX){
-      mensajeBox.innerHTML = '<div class="alerta err">😔 Se acaba de llenar. Elige otra.</div>';
+      mensajeBox.innerHTML = `<div class="alert alert-err">${ICON.alert}<div>La tutoría seleccionada alcanzó su cupo máximo. Elija otra opción.</div></div>`;
       await renderSlots();
       return;
     }
@@ -886,21 +1361,24 @@ form.addEventListener('submit', async (e) => {
     };
 
     await crearReservaDB(reserva);
-    btnReservar.textContent = 'Enviando notificación…';
+    btnReservar.innerHTML = 'Enviando notificación…';
     const r = await notificarNuevaReserva(reserva);
-    btnReservar.textContent = 'Confirmar reserva';
+    btnReservar.innerHTML = `${ICON.check} Confirmar reserva`;
 
     let nota = '';
-    if(r.ok) nota = `📧 Se envió la notificación a <strong>${esc(r.destino)}</strong>.`;
-    else if(r.simulado) nota = `📧 Modo demo: configura EmailJS en el panel Admin.`;
-    else nota = '⚠️ Reserva guardada, pero el correo falló.';
+    if(r.ok) nota = `Se envió notificación al docente <strong>${esc(r.destino)}</strong>.`;
+    else if(r.simulado) nota = `Modo demostración: configure EmailJS en el panel de administración.`;
+    else nota = 'Reserva guardada, pero no se pudo enviar el correo.';
 
     mensajeBox.innerHTML = `
-      <div class="alerta ok">
-        <strong>✅ ¡Reserva confirmada!</strong><br>
-        <strong>Tutoría ${reserva.numeroTutoria}</strong> · ${esc(reserva.profesor)}<br>
-        ${esc(reserva.fechaTexto)} · ${reserva.inicio} – ${reserva.fin}<br>
-        <span style="font-size:.85rem">${nota}</span>
+      <div class="alert alert-ok">
+        ${ICON.check}
+        <div>
+          <strong>Reserva registrada correctamente</strong><br>
+          <strong>Tutoría ${reserva.numeroTutoria}</strong> · ${esc(reserva.profesor)}<br>
+          ${esc(reserva.fechaTexto)} · ${reserva.inicio} – ${reserva.fin}<br>
+          <span style="font-size:.82rem">${nota}</span>
+        </div>
       </div>`;
 
     const fg = fechaInput.value;
@@ -912,42 +1390,42 @@ form.addEventListener('submit', async (e) => {
 
   }catch(err){
     console.error(err);
-    mensajeBox.innerHTML = '<div class="alerta err">❌ Error al guardar la reserva: ' + err.message + '</div>';
+    mensajeBox.innerHTML = `<div class="alert alert-err">${ICON.alert}<div>Error al guardar la reserva: ${err.message}</div></div>`;
     btnReservar.disabled = false;
-    btnReservar.textContent = 'Confirmar reserva';
+    btnReservar.innerHTML = `${ICON.check} Confirmar reserva`;
   }
 });
 
 /* ============ TABS ============ */
 function switchTab(name){
-  $$('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+  $$('.main-nav button').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
   $('#tab-reservar').hidden = name !== 'reservar';
   $('#tab-misreservas').hidden = name !== 'misreservas';
   $('#tab-profesor').hidden = name !== 'profesor';
   $('#tab-admin').hidden = name !== 'admin';
 }
-$$('.tab').forEach(t => t.addEventListener('click', () => switchTab(t.dataset.tab)));
+$$('.main-nav button').forEach(t => t.addEventListener('click', () => switchTab(t.dataset.tab)));
 
-/* ============ MIS RESERVAS (ESTUDIANTE) ============ */
+/* ============ MIS RESERVAS ============ */
 $('#btnBuscarReservas')?.addEventListener('click', async () => {
   const correo = $('#correoConsulta').value.trim().toLowerCase();
   const cont = $('#misReservas');
   if(!validarCorreo(correo)){
-    cont.innerHTML = `<div class="alerta err">El correo debe terminar en ${DOMINIO}</div>`;
+    cont.innerHTML = `<div class="alert alert-err">${ICON.alert}<div>El correo debe pertenecer al dominio ${DOMINIO}</div></div>`;
     return;
   }
-  cont.innerHTML = '<p class="loading">⏳ Cargando…</p>';
+  cont.innerHTML = `<div class="loading">${ICON.clock}<span>Consultando reservas…</span></div>`;
   const reservas = await cargarReservasPorCorreo(correo);
 
   const penalty = await verificarPenalizacion(correo);
   let penaltyHTML = '';
   if(penalty){
     const f = new Date(penalty.fecha_fin + 'T00:00:00').toLocaleDateString('es-CO');
-    penaltyHTML = `<div class="alerta err" style="margin-bottom:14px">⛔ Tienes una penalización activa hasta el <strong>${f}</strong> por no asistir a una tutoría.</div>`;
+    penaltyHTML = `<div class="alert alert-err">${ICON.alert}<div>Suspensión activa hasta el <strong>${f}</strong> por inasistencia a una tutoría.</div></div>`;
   }
 
   if(!reservas.length){
-    cont.innerHTML = penaltyHTML + '<p class="empty">No tienes reservas activas con ese correo.</p>';
+    cont.innerHTML = penaltyHTML + `<div class="empty">${ICON.calendar}<span>No hay reservas registradas con este correo.</span></div>`;
     return;
   }
 
@@ -956,9 +1434,7 @@ $('#btnBuscarReservas')?.addEventListener('click', async () => {
   $$('[data-cancelar]', cont).forEach(btn => {
     btn.addEventListener('click', () => cancelarReservaEstudiante(btn.dataset.cancelar, reservas));
   });
-  $$('[data-form-calif]', cont).forEach(form => {
-    setupCalifForm(form, 'estudiante');
-  });
+  $$('[data-form-calif]', cont).forEach(form => setupCalifForm(form, 'estudiante'));
 });
 
 function renderReservaEstudiante(r){
@@ -976,28 +1452,28 @@ function renderReservaEstudiante(r){
   if(r.estado === 'realizada' && r.calificacionProfesor == null){
     extraHTML = `
       <form class="calif-form" data-form-calif data-id="${esc(r.id)}">
-        <h5>⭐ Califica a tu profesor</h5>
+        <div class="calif-form-header">${ICON.star} Calificación del docente</div>
         <div class="slider-wrap">
           <div class="slider-value" data-slider-val>5</div>
           <input type="range" min="1" max="5" value="5" name="slider" style="width:100%">
-          <div class="slider-labels"><span>1 - Muy mala</span><span>5 - Excelente</span></div>
+          <div class="slider-labels"><span>1 · Deficiente</span><span>5 · Excelente</span></div>
         </div>
         <div class="field">
-          <label>Comentario o recomendación (opcional)</label>
-          <textarea name="comentario" rows="2" placeholder="Ej: Excelente explicación, muy clara."></textarea>
+          <label>Comentario u observación (opcional)</label>
+          <textarea name="comentario" rows="2" placeholder="Su opinión es anónima y ayuda a mejorar el servicio."></textarea>
         </div>
         <div class="field">
-          <label>¿El profesor dio la tutoría?</label>
-          <div class="yes-no" data-yesno>
-            <button type="button" data-val="true">✅ Sí</button>
-            <button type="button" data-val="false">❌ No</button>
+          <label>¿El docente dictó la tutoría?</label>
+          <div class="yesno" data-yesno>
+            <button type="button" data-val="true">Sí, dictó la tutoría</button>
+            <button type="button" data-val="false">No dictó la tutoría</button>
           </div>
           <input type="hidden" name="asistencia" value="">
         </div>
-        <button type="submit" class="btn-primary-sm">Enviar calificación</button>
+        <button type="submit" class="btn btn-primary btn-block">Enviar calificación</button>
       </form>`;
   } else if(r.estado === 'realizada' && r.calificacionProfesor != null){
-    extraHTML = `<div class="estado-espera">✅ Ya calificaste. Esperando al profesor…</div>`;
+    extraHTML = `<div class="estado-espera">${ICON.clock} Calificación registrada. En espera de la calificación del docente.</div>`;
   }
 
   return `
@@ -1005,39 +1481,38 @@ function renderReservaEstudiante(r){
       <div class="reserva-head">
         <div>
           <div class="reserva-titulo">${esc(r.profesor)} · ${esc(r.area)}</div>
-          <div class="reserva-meta">📅 ${esc(r.fechaTexto)} · 🕒 ${r.inicio}–${r.fin}</div>
-          <div class="reserva-meta">📝 ${esc(r.tema)}</div>
+          <div class="reserva-meta">${ICON.calendar} ${esc(r.fechaTexto)} · ${r.inicio}–${r.fin}</div>
+          <div class="reserva-meta">${ICON.book} ${esc(r.tema)}</div>
         </div>
         ${estadoBadge}
       </div>
       <div class="reserva-actions">
-        ${linkCal ? `<a href="${linkCal}" target="_blank" class="btn-ghost">📅 Añadir a calendario</a>` : ''}
-        ${puedeCancelar ? `<button class="btn-danger" data-cancelar="${esc(r.id)}">❌ Cancelar</button>` : ''}
+        ${linkCal ? `<a href="${linkCal}" target="_blank" class="btn btn-outline btn-sm">${ICON.calendar} Añadir a calendario</a>` : ''}
+        ${puedeCancelar ? `<button class="btn btn-danger btn-sm" data-cancelar="${esc(r.id)}">${ICON.x} Cancelar reserva</button>` : ''}
       </div>
       ${extraHTML}
     </div>`;
 }
 
 async function cancelarReservaEstudiante(id, reservas){
-  if(!confirm('¿Cancelar esta reserva? Se notificará al profesor.')) return;
+  if(!confirm('¿Confirma la cancelación de esta reserva? Se notificará al docente.')) return;
   const r = reservas.find(x => x.id === id);
   if(!r) return;
   try{
     await actualizarReservaDB(id, {estado: 'cancelada'});
     await notificarCancelacion(r);
-    alert('✅ Reserva cancelada. Se notificó al profesor.');
+    alert('Reserva cancelada correctamente. Se notificó al docente.');
     $('#btnBuscarReservas').click();
   }catch(err){ alert('Error: ' + err.message); }
 }
 
-/* ============ FORM CALIFICACIÓN (COMPARTIDO) ============ */
+/* ============ FORM CALIFICACIÓN ============ */
 function setupCalifForm(formEl, tipo){
   const slider = formEl.querySelector('[name="slider"]');
   const val = formEl.querySelector('[data-slider-val]');
-  const emojis = ['😞','😐','🙂','😊','🤩'];
 
   slider.addEventListener('input', () => {
-    val.textContent = `${slider.value} ${emojis[slider.value-1]}`;
+    val.textContent = slider.value;
   });
 
   const yesno = formEl.querySelector('[data-yesno]');
@@ -1061,7 +1536,7 @@ function setupCalifForm(formEl, tipo){
     const asistencia = hidden ? hidden.value : null;
 
     if(asistencia === ''){
-      alert('Debes indicar la asistencia (Sí/No).');
+      alert('Debe indicar si el docente dictó la tutoría.');
       return;
     }
 
@@ -1088,9 +1563,9 @@ function setupCalifForm(formEl, tipo){
 
       const archived = await intentarArchivar(id);
       if(archived){
-        alert('✅ ¡Gracias! La tutoría quedó completada y archivada en el historial.');
+        alert('Registro completado. La tutoría fue archivada en el historial.');
       } else {
-        alert('✅ Calificación guardada. Esperando a la otra parte para completar.');
+        alert('Calificación guardada. Se completará cuando la otra parte califique.');
       }
 
       if(tipo === 'estudiante') $('#btnBuscarReservas').click();
@@ -1121,22 +1596,22 @@ $('#btnLoginProf')?.addEventListener('click', async () => {
   const msg = $('#profLoginMsg');
 
   if(!correo || !doc || !pass){
-    msg.innerHTML = '<span style="color:#dc2626">Completa todos los campos.</span>';
+    msg.innerHTML = '<span style="color:var(--danger)">Complete todos los campos.</span>';
     return;
   }
 
   msg.textContent = 'Verificando…';
   const {data,error} = await db.from('profesores').select('*').eq('correo', correo).maybeSingle();
   if(error || !data){
-    msg.innerHTML = '<span style="color:#dc2626">Correo no registrado.</span>';
+    msg.innerHTML = '<span style="color:var(--danger)">Correo no registrado.</span>';
     return;
   }
   if(data.documento !== doc){
-    msg.innerHTML = '<span style="color:#dc2626">Documento incorrecto.</span>';
+    msg.innerHTML = '<span style="color:var(--danger)">Número de documento incorrecto.</span>';
     return;
   }
   if(data.password !== pass){
-    msg.innerHTML = '<span style="color:#dc2626">Contraseña incorrecta.</span>';
+    msg.innerHTML = '<span style="color:var(--danger)">Contraseña incorrecta.</span>';
     return;
   }
 
@@ -1156,7 +1631,7 @@ async function renderProfesorPanel(){
   $('#profLogin').hidden = !!prof;
   $('#profPanel').hidden = !prof;
   if(prof){
-    $('#profNombreTitulo').textContent = `Tutorías de ${prof.nombre}`;
+    $('#profNombreTitulo').textContent = `Tutorías · ${prof.nombre}`;
     await renderProfReservas();
   }
 }
@@ -1165,15 +1640,14 @@ async function renderProfReservas(){
   const prof = isProfLogged();
   if(!prof) return;
   const cont = $('#profReservas');
-  cont.innerHTML = '<p class="loading">⏳ Cargando…</p>';
+  cont.innerHTML = `<div class="loading">${ICON.clock}<span>Cargando tutorías…</span></div>`;
   const reservas = await cargarReservasPorProfesor(prof.id);
 
   if(!reservas.length){
-    cont.innerHTML = '<p class="empty">Aún no tienes tutorías agendadas.</p>';
+    cont.innerHTML = `<div class="empty">${ICON.calendar}<span>No hay tutorías agendadas.</span></div>`;
     return;
   }
 
-  // Agrupar por fecha + hora
   const grupos = {};
   reservas.forEach(r => {
     if(r.estado === 'cancelada') return;
@@ -1184,7 +1658,7 @@ async function renderProfReservas(){
 
   const keys = Object.keys(grupos).sort();
   if(!keys.length){
-    cont.innerHTML = '<p class="empty">No tienes tutorías activas.</p>';
+    cont.innerHTML = `<div class="empty">${ICON.calendar}<span>No hay tutorías activas.</span></div>`;
     return;
   }
 
@@ -1192,12 +1666,13 @@ async function renderProfReservas(){
     const items = grupos[k];
     const first = items[0];
     return `
-      <div style="margin-bottom:22px">
-        <div style="background:#f8fafc;padding:10px 14px;border-radius:10px 10px 0 0;border:1px solid var(--line);border-bottom:none">
-          <strong>📅 ${esc(fmtFecha(first.fecha))} · 🕒 ${first.inicio}–${first.fin}</strong>
-          <div class="muted-sm">${items.length} estudiante(s) agendado(s)</div>
+      <div style="margin-bottom:18px">
+        <div style="background:var(--surface-3);padding:12px 16px;border:1px solid var(--line);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0">
+          <strong style="color:var(--navy-800);font-size:.88rem">${ICON.calendar} ${esc(fmtFecha(first.fecha))}</strong>
+          <span style="color:var(--ink-soft);font-size:.85rem;margin-left:12px">${first.inicio} – ${first.fin}</span>
+          <div class="muted" style="margin-top:2px">${items.length} estudiante(s)</div>
         </div>
-        <div style="border:1px solid var(--line);border-radius:0 0 10px 10px;background:#fff">
+        <div style="border:1px solid var(--line);border-top:none;border-radius:0 0 var(--radius) var(--radius);background:#fff">
           ${items.map(r => renderFilaEstudianteProf(r)).join('')}
         </div>
       </div>`;
@@ -1207,7 +1682,7 @@ async function renderProfReservas(){
     btn.addEventListener('click', async () => {
       const id = btn.dataset.marcarAsistio;
       const valor = btn.dataset.valor === 'true';
-      const mensaje = valor ? '¿Confirmar que el estudiante SÍ asistió?' : '¿Confirmar que el estudiante NO asistió? Se le aplicarán 15 días de penalización.';
+      const mensaje = valor ? '¿Confirmar que el estudiante asistió?' : '¿Confirmar que el estudiante no asistió? Se aplicará una suspensión de 15 días.';
       if(!confirm(mensaje)) return;
       try{
         await actualizarReservaDB(id, {
@@ -1229,11 +1704,11 @@ function renderFilaEstudianteProf(r){
   if(r.estado === 'pendiente'){
     estadoHTML = '<span class="badge badge-ok">Pendiente</span>';
     acciones = `
-      <button class="btn-mini btn-mini-yes" data-marcar-asistio="${esc(r.id)}" data-valor="true">✅ Asistió</button>
-      <button class="btn-mini btn-mini-no" data-marcar-asistio="${esc(r.id)}" data-valor="false">❌ No asistió</button>`;
+      <button class="btn btn-success btn-xs" data-marcar-asistio="${esc(r.id)}" data-valor="true">${ICON.check} Asistió</button>
+      <button class="btn btn-danger btn-xs" data-marcar-asistio="${esc(r.id)}" data-valor="false">${ICON.x} No asistió</button>`;
   } else if(r.estado === 'realizada'){
     if(r.calificacionEstudiante != null){
-      estadoHTML = '<span class="badge badge-success">Calificado</span>';
+      estadoHTML = '<span class="badge badge-info">Calificado</span>';
     } else {
       estadoHTML = '<span class="badge badge-info">Realizada</span>';
     }
@@ -1243,40 +1718,43 @@ function renderFilaEstudianteProf(r){
   if(r.estado === 'realizada' && r.calificacionEstudiante == null){
     formHTML = `
       <form class="calif-form" data-form-calif data-id="${esc(r.id)}">
-        <h5>⭐ Calificar al estudiante</h5>
+        <div class="calif-form-header">${ICON.star} Calificación del estudiante</div>
         <div class="slider-wrap">
           <div class="slider-value" data-slider-val>5</div>
           <input type="range" min="1" max="5" value="5" name="slider" style="width:100%">
-          <div class="slider-labels"><span>1 - Muy mala</span><span>5 - Excelente</span></div>
+          <div class="slider-labels"><span>1 · Deficiente</span><span>5 · Excelente</span></div>
         </div>
         <div class="field">
           <label>Recomendación u observación (opcional)</label>
-          <textarea name="comentario" rows="2" placeholder="Ej: Excelente participación."></textarea>
+          <textarea name="comentario" rows="2" placeholder="Su opinión es anónima."></textarea>
         </div>
         <div class="field">
           <label>¿El estudiante asistió?</label>
-          <div class="yes-no" data-yesno>
-            <button type="button" data-val="true" class="${r.estudianteAsistio === true ? 'sel-yes':''}">✅ Sí</button>
-            <button type="button" data-val="false" class="${r.estudianteAsistio === false ? 'sel-no':''}">❌ No</button>
+          <div class="yesno" data-yesno>
+            <button type="button" data-val="true" class="${r.estudianteAsistio === true ? 'sel-yes':''}">Asistió</button>
+            <button type="button" data-val="false" class="${r.estudianteAsistio === false ? 'sel-no':''}">No asistió</button>
           </div>
           <input type="hidden" name="asistencia" value="${r.estudianteAsistio === true ? 'true' : r.estudianteAsistio === false ? 'false' : ''}">
         </div>
-        <button type="submit" class="btn-primary-sm">Enviar calificación</button>
+        <button type="submit" class="btn btn-primary btn-block">Enviar calificación</button>
       </form>`;
   } else if(r.estado === 'realizada' && r.calificacionEstudiante != null && r.calificacionProfesor == null){
-    formHTML = `<div class="estado-espera">✅ Ya calificaste. Esperando al estudiante…</div>`;
+    formHTML = `<div class="estado-espera">${ICON.clock} Calificación registrada. En espera de la calificación del estudiante.</div>`;
   } else if(r.calificacionProfesor != null && r.calificacionEstudiante != null){
-    formHTML = `<div class="estado-completo">✅ Tutoría completada y archivada</div>`;
+    formHTML = `<div class="estado-completo">${ICON.check} Tutoría completada y archivada.</div>`;
   }
 
   return `
     <div class="estudiante-row">
-      <div class="estudiante-info">
-        <div class="estudiante-nombre">${esc(r.nombre)} ${estadoHTML}</div>
-        <div class="muted-sm">${esc(r.correo)} · ${esc(r.programa)}</div>
-        <div class="muted-sm">📝 ${esc(r.tema)}</div>
-        <div class="estudiante-acciones">${acciones}</div>
+      <div class="estudiante-head">
+        <div class="estudiante-info">
+          <div class="estudiante-nombre">${esc(r.nombre)} ${estadoHTML}</div>
+          <div class="estudiante-detalle">${ICON.mail} ${esc(r.correo)}</div>
+          <div class="estudiante-detalle">${ICON.graduation} ${esc(r.programa)}</div>
+          <div class="estudiante-detalle">${ICON.book} ${esc(r.tema)}</div>
+        </div>
       </div>
+      ${acciones ? `<div class="estudiante-acciones">${acciones}</div>` : ''}
       ${formHTML}
     </div>`;
 }
@@ -1286,38 +1764,40 @@ $('#btnRefrescarProf')?.addEventListener('click', renderProfReservas);
 $('#btnCambiarPassProf')?.addEventListener('click', () => {
   const prof = isProfLogged();
   if(!prof) return;
-  const html = `
-    <div class="modal-bg" style="position:fixed;inset:0;background:rgba(15,23,42,.6);display:flex;align-items:center;justify-content:center;z-index:999;padding:20px">
-      <div class="card" style="max-width:420px;width:100%">
-        <h3>🔑 Cambiar contraseña</h3>
-        <div class="field"><label>Contraseña actual</label><input type="password" id="cpActual"></div>
-        <div class="field"><label>Nueva contraseña</label><input type="password" id="cpNueva" placeholder="Mínimo 4 caracteres"></div>
-        <div class="field"><label>Confirmar nueva contraseña</label><input type="password" id="cpNueva2"></div>
-        <p class="hint" id="cpMsg"></p>
-        <div style="display:flex;gap:8px;justify-content:flex-end">
-          <button class="btn-ghost" id="cpCancelar">Cancelar</button>
-          <button class="btn-primary-sm" id="cpGuardar">Cambiar</button>
-        </div>
-      </div>
-    </div>`;
-  document.body.insertAdjacentHTML('beforeend', html);
-  const modal = document.querySelector('.modal-bg');
-  const cerrar = () => modal.remove();
-  $('#cpCancelar').onclick = cerrar;
+  mostrarModal(`
+    <h3>${ICON.award} Cambiar contraseña</h3>
+    <div class="field"><label>Contraseña actual</label><input type="password" id="cpActual"></div>
+    <div class="field"><label>Nueva contraseña</label><input type="password" id="cpNueva" placeholder="Mínimo 4 caracteres"></div>
+    <div class="field"><label>Confirmar nueva contraseña</label><input type="password" id="cpNueva2"></div>
+    <p class="hint" id="cpMsg" style="text-align:center"></p>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn btn-primary" id="cpGuardar">Actualizar</button>
+    </div>
+  `);
   $('#cpGuardar').onclick = async () => {
     const msg = $('#cpMsg');
     const actual = $('#cpActual').value;
     const nueva = $('#cpNueva').value;
     const nueva2 = $('#cpNueva2').value;
     const {data} = await db.from('profesores').select('password').eq('id', prof.id).single();
-    if(data.password !== actual){ msg.innerHTML = '<span style="color:#dc2626">Contraseña actual incorrecta.</span>'; return; }
-    if(nueva.length < 4){ msg.innerHTML = '<span style="color:#dc2626">Mínimo 4 caracteres.</span>'; return; }
-    if(nueva !== nueva2){ msg.innerHTML = '<span style="color:#dc2626">No coinciden.</span>'; return; }
+    if(data.password !== actual){ msg.innerHTML = '<span style="color:var(--danger)">Contraseña actual incorrecta.</span>'; return; }
+    if(nueva.length < 4){ msg.innerHTML = '<span style="color:var(--danger)">Mínimo 4 caracteres.</span>'; return; }
+    if(nueva !== nueva2){ msg.innerHTML = '<span style="color:var(--danger)">Las contraseñas no coinciden.</span>'; return; }
     await db.from('profesores').update({password: nueva}).eq('id', prof.id);
-    cerrar();
-    alert('✅ Contraseña actualizada.');
+    cerrarModal();
+    alert('Contraseña actualizada correctamente.');
   };
 });
+
+/* ============ MODAL ============ */
+function mostrarModal(html){
+  const cont = $('#modalContainer');
+  cont.innerHTML = `<div class="modal-bg"><div class="modal">${html}</div></div>`;
+  const bg = cont.querySelector('.modal-bg');
+  bg.addEventListener('click', (e) => { if(e.target === bg) cerrarModal(); });
+}
+function cerrarModal(){ $('#modalContainer').innerHTML = ''; }
 
 /* ============ ADMIN ============ */
 function isAdminLogged(){ return sessionStorage.getItem(STORAGE_SESSION) === '1'; }
@@ -1344,7 +1824,7 @@ $('#btnLogin').addEventListener('click', () => {
     msg.textContent = '';
     renderAdmin();
   } else {
-    msg.innerHTML = '<span style="color:#dc2626">Contraseña incorrecta.</span>';
+    msg.innerHTML = '<span style="color:var(--danger)">Contraseña incorrecta.</span>';
   }
 });
 $('#adminPass').addEventListener('keydown', e => { if(e.key === 'Enter') $('#btnLogin').click(); });
@@ -1353,18 +1833,27 @@ $('#btnLogout').addEventListener('click', () => { setAdminLogged(false); renderA
 async function renderReservasAdmin(){
   const cont = $('#panelContenido');
   const resumen = $('#panelResumen');
+  const statsBox = $('#panelResumenStats');
   if(!cont) return;
-  cont.innerHTML = '<p class="loading">⏳ Cargando…</p>';
+  cont.innerHTML = `<div class="loading">${ICON.clock}<span>Cargando reservas…</span></div>`;
 
   let reservas;
   try { reservas = await cargarTodasReservas(); }
-  catch(e){ cont.innerHTML = '<div class="alerta err">Error al cargar.</div>'; return; }
+  catch(e){ cont.innerHTML = `<div class="alert alert-err">${ICON.alert}<div>Error al cargar.</div></div>`; return; }
 
   const activas = reservas.filter(r => r.estado !== 'cancelada' && r.estado !== 'realizada');
+  const totalEstudiantes = reservas.length;
+  const totalDocentes = new Set(reservas.map(r => r.profesorId)).size;
+
+  statsBox.innerHTML = `
+    <div class="stat"><div class="stat-label">Reservas activas</div><div class="stat-value">${activas.length}</div></div>
+    <div class="stat"><div class="stat-label">Total reservas</div><div class="stat-value">${totalEstudiantes}</div></div>
+    <div class="stat"><div class="stat-label">Docentes</div><div class="stat-value">${totalDocentes}</div></div>
+  `;
 
   if(!activas.length){
     resumen.textContent = '';
-    cont.innerHTML = '<p class="empty">Aún no hay reservas activas.</p>';
+    cont.innerHTML = `<div class="empty">${ICON.calendar}<span>No hay reservas activas en este momento.</span></div>`;
     return;
   }
 
@@ -1374,7 +1863,7 @@ async function renderReservasAdmin(){
     if(!grupos.has(k)) grupos.set(k, {meta:r, lista:[]});
     grupos.get(k).lista.push(r);
   });
-  resumen.textContent = `${activas.length} reserva(s) activa(s) en ${grupos.size} tutoría(s).`;
+  resumen.textContent = `${activas.length} reserva(s) activa(s) distribuidas en ${grupos.size} tutoría(s).`;
 
   const ord = [...grupos.entries()].sort((a,b)=>{
     const ra=a[1].meta, rb=b[1].meta;
@@ -1387,36 +1876,36 @@ async function renderReservasAdmin(){
     const r = g.meta;
     const clase = g.lista.length >= CUPO_MAX ? 'badge-full' : 'badge-ok';
     return `
-      <div class="grupo">
-        <div class="grupo-head">
+      <div style="border:1px solid var(--line);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;background:#fff">
+        <div style="background:var(--surface-3);padding:10px 14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
           <div>
-            <strong>Tutoría ${numero}</strong> · ${esc(r.profesor)} · ${r.inicio}–${r.fin}
-            <div class="muted-sm">${esc(r.fechaTexto)}</div>
+            <strong style="color:var(--navy-800);font-size:.88rem">Tutoría ${numero}</strong>
+            <span style="color:var(--ink-soft);font-size:.85rem"> · ${esc(r.profesor)} · ${r.inicio}–${r.fin}</span>
+            <div class="muted" style="margin-top:1px">${esc(r.fechaTexto)}</div>
           </div>
-          <span class="badge ${clase}">${g.lista.length}/${CUPO_MAX}</span>
+          <span class="badge ${clase}">${g.lista.length} / ${CUPO_MAX}</span>
         </div>
-        <ul class="alumnos">
+        <ul style="list-style:none;margin:0;padding:0">
           ${g.lista.map(a => `
-            <li>
-              <div style="flex:1">
-                <strong>${esc(a.nombre)}</strong>
-                <div class="muted-sm">${esc(a.correo)} · ${esc(a.programa)}</div>
-                <div class="muted-sm">📝 ${esc(a.tema)}</div>
+            <li style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;padding:12px 14px;border-bottom:1px solid var(--line);font-size:.85rem">
+              <div style="flex:1;min-width:0">
+                <strong style="color:var(--ink)">${esc(a.nombre)}</strong>
+                <div class="muted" style="font-size:.79rem">${esc(a.correo)} · ${esc(a.programa)}</div>
+                <div class="muted" style="font-size:.79rem">${ICON.book} ${esc(a.tema)}</div>
               </div>
-              <button class="btn-x" data-del="${esc(a.id)}" title="Eliminar">✕</button>
+              <button class="btn btn-ghost btn-xs" data-del="${esc(a.id)}" title="Eliminar">${ICON.trash}</button>
             </li>`).join('')}
         </ul>
       </div>`;
   }).join('');
 }
 
-/* ---- HISTORIAL COMPLETO ---- */
 let filtroHistActual = 'todas';
 
 async function renderHistorialAdmin(){
   const cont = $('#historialContenido');
   if(!cont) return;
-  cont.innerHTML = '<p class="loading">⏳ Cargando…</p>';
+  cont.innerHTML = `<div class="loading">${ICON.clock}<span>Cargando historial…</span></div>`;
 
   const [archivadas, activas] = await Promise.all([
     cargarCalificaciones(),
@@ -1476,18 +1965,13 @@ async function renderHistorialAdmin(){
   historial.sort((a,b) => (b.fecha + b.inicio).localeCompare(a.fecha + a.inicio));
 
   let filtrado = historial;
-  if(filtroHistActual === 'completas'){
-    filtrado = historial.filter(h => h.tipo === 'archivada');
-  } else if(filtroHistActual === 'sin-estudiante'){
-    filtrado = historial.filter(h => h.estudianteAsistio === false);
-  } else if(filtroHistActual === 'sin-profesor'){
-    filtrado = historial.filter(h => h.profesorDio === false);
-  } else if(filtroHistActual === 'espera'){
-    filtrado = historial.filter(h => h.tipo === 'pendiente-calif');
-  }
+  if(filtroHistActual === 'completas') filtrado = historial.filter(h => h.tipo === 'archivada');
+  else if(filtroHistActual === 'sin-estudiante') filtrado = historial.filter(h => h.estudianteAsistio === false);
+  else if(filtroHistActual === 'sin-profesor') filtrado = historial.filter(h => h.profesorDio === false);
+  else if(filtroHistActual === 'espera') filtrado = historial.filter(h => h.tipo === 'pendiente-calif');
 
   if(!filtrado.length){
-    cont.innerHTML = '<p class="empty">No hay registros con este filtro.</p>';
+    cont.innerHTML = `<div class="empty">${ICON.award}<span>No hay registros con este filtro.</span></div>`;
     return;
   }
 
@@ -1501,28 +1985,36 @@ function renderHistItem(h){
   const clase = noAsistio ? 'sin-asistencia' : (completa ? 'completa' : 'pendiente');
 
   let badges = '';
-  if(h.estudianteAsistio === true) badges += '<span class="badge badge-success">✅ Estudiante asistió</span> ';
-  if(noAsistio) badges += '<span class="badge badge-danger">❌ Estudiante no asistió</span> ';
-  if(h.profesorDio === true) badges += '<span class="badge badge-success">✅ Profesor dio tutoría</span> ';
-  if(profFalto) badges += '<span class="badge badge-danger">⚠️ Profesor no dio tutoría</span> ';
-  if(h.tipo === 'pendiente-calif') badges += '<span class="badge badge-warn">⏳ Esperando calificar</span> ';
+  if(h.estudianteAsistio === true) badges += '<span class="badge badge-ok">Estudiante asistió</span> ';
+  if(noAsistio) badges += '<span class="badge badge-full">Estudiante no asistió</span> ';
+  if(h.profesorDio === true) badges += '<span class="badge badge-ok">Docente dictó</span> ';
+  if(profFalto) badges += '<span class="badge badge-full">Docente no dictó</span> ';
+  if(h.tipo === 'pendiente-calif') badges += '<span class="badge badge-warn">Pendiente de calificar</span> ';
 
   return `
     <div class="hist-item ${clase}">
       <div class="hist-head">
-        <div>
-          <div class="hist-titulo">${esc(h.profesor)} · ${esc(h.fecha)} · ${h.inicio}–${h.fin}</div>
-          <div class="muted-sm">👤 ${esc(h.estudiante)} · ${esc(h.correo)}</div>
-          <div class="muted-sm">🎓 ${esc(h.programa)} · 📝 ${esc(h.tema)}</div>
+        <div class="hist-titulo">
+          ${esc(h.profesor)}
+          <span style="font-weight:400;color:var(--ink-mute)">·</span>
+          ${esc(h.fecha)}
+          <span style="font-weight:400;color:var(--ink-mute)">·</span>
+          ${h.inicio}–${h.fin}
         </div>
+        <div class="muted">${ICON.user} ${esc(h.estudiante)} · ${esc(h.correo)}</div>
+        <div class="muted">${ICON.graduation} ${esc(h.programa)} · ${ICON.book} ${esc(h.tema)}</div>
       </div>
       <div class="hist-row">${badges}</div>
-      <div class="hist-row">⭐ <strong>Estudiante → Profesor:</strong> ${h.califProf ? estrellasHTML(h.califProf) : '<span style="color:#94a3b8">sin calificar</span>'}
-        ${h.comentProf ? `<div style="font-style:italic;color:#475569;font-size:.8rem;width:100%">"${esc(h.comentProf)}"</div>` : ''}
+      <div class="hist-row">
+        ${ICON.star}
+        <div><strong>Estudiante evalúa al docente:</strong> ${h.califProf ? estrellasHTML(h.califProf) : '<span style="color:var(--ink-mute)">sin calificar</span>'}</div>
       </div>
-      <div class="hist-row">⭐ <strong>Profesor → Estudiante:</strong> ${h.califEst ? estrellasHTML(h.califEst) : '<span style="color:#94a3b8">sin calificar</span>'}
-        ${h.comentEst ? `<div style="font-style:italic;color:#475569;font-size:.8rem;width:100%">"${esc(h.comentEst)}"</div>` : ''}
+      ${h.comentProf ? `<div class="hist-coment">"${esc(h.comentProf)}"</div>` : ''}
+      <div class="hist-row">
+        ${ICON.star}
+        <div><strong>Docente evalúa al estudiante:</strong> ${h.califEst ? estrellasHTML(h.califEst) : '<span style="color:var(--ink-mute)">sin calificar</span>'}</div>
       </div>
+      ${h.comentEst ? `<div class="hist-coment">"${esc(h.comentEst)}"</div>` : ''}
     </div>`;
 }
 
@@ -1555,7 +2047,7 @@ $('#btnRefrescar')?.addEventListener('click', async () => {
 });
 
 $('#btnLimpiar')?.addEventListener('click', async () => {
-  if(!confirm('¿Borrar TODAS las reservas activas?')) return;
+  if(!confirm('¿Borrar TODAS las reservas activas? Esta acción no se puede deshacer.')) return;
   try{
     await eliminarTodasReservasDB();
     await renderReservasAdmin();
@@ -1583,13 +2075,13 @@ $('#btnCSV')?.addEventListener('click', async () => {
 async function renderProfesoresList(){
   const cont = $('#profesoresList');
   if(!cont) return;
-  cont.innerHTML = '<p class="loading">⏳ Cargando…</p>';
+  cont.innerHTML = `<div class="loading">${ICON.clock}<span>Cargando docentes…</span></div>`;
   let profes;
   try { profes = await cargarProfesores(); }
-  catch(e){ cont.innerHTML = '<div class="alerta err">Error.</div>'; return; }
+  catch(e){ cont.innerHTML = `<div class="alert alert-err">${ICON.alert}<div>Error al cargar.</div></div>`; return; }
 
   if(!profes.length){
-    cont.innerHTML = '<p class="empty">No hay profesores. Agrega el primero.</p>';
+    cont.innerHTML = `<div class="empty">${ICON.user}<span>No hay docentes registrados.</span></div>`;
     return;
   }
   const promedios = await promediosProfesores();
@@ -1597,21 +2089,21 @@ async function renderProfesoresList(){
   cont.innerHTML = profes.map(p => {
     const total = Object.values(p.agenda||{}).reduce((a,r)=>a+r.length,0);
     const califHTML = CONFIG.calificaciones_visibles && promedios[p.id]
-      ? `<div class="prof-item-meta">${estrellasHTML(promedios[p.id].promedio)} <span style="font-size:.75rem">(${promedios[p.id].total} calif.)</span></div>`
+      ? `<div class="prof-item-meta">${ICON.star} ${estrellasHTML(promedios[p.id].promedio)} <span style="font-size:.75rem;color:var(--ink-mute)">(${promedios[p.id].total} evaluaciones)</span></div>`
       : '';
     return `
       <div class="prof-item">
         <div class="prof-item-info">
           <div class="prof-item-name">${esc(p.nombre)}</div>
-          <div class="prof-item-meta">${esc(p.area)}</div>
-          <div class="prof-item-meta">📧 ${esc(p.correo)}</div>
-          ${p.documento ? `<div class="prof-item-meta">🆔 ${esc(p.documento)}</div>` : '<div class="prof-item-meta" style="color:#dc2626">⚠️ Sin documento/contraseña</div>'}
-          <div class="prof-item-meta">🗓️ ${total} horario(s) semanales</div>
+          <div class="prof-item-meta">${ICON.book} ${esc(p.area)}</div>
+          <div class="prof-item-meta">${ICON.mail} ${esc(p.correo)}</div>
+          ${p.documento ? `<div class="prof-item-meta">${ICON.id} ${esc(p.documento)}</div>` : '<div class="prof-item-meta" style="color:var(--danger)">Sin documento asignado</div>'}
+          <div class="prof-item-meta">${ICON.calendar} ${total} horario(s) semanales</div>
           ${califHTML}
         </div>
         <div class="prof-item-actions">
-          <button class="btn-ghost" data-edit="${esc(p.id)}">Editar</button>
-          <button class="btn-danger" data-del-prof="${esc(p.id)}">Borrar</button>
+          <button class="btn btn-outline btn-xs" data-edit="${esc(p.id)}">${ICON.edit} Editar</button>
+          <button class="btn btn-danger btn-xs" data-del-prof="${esc(p.id)}">${ICON.trash}</button>
         </div>
       </div>`;
   }).join('');
@@ -1638,23 +2130,24 @@ async function abrirEditorProfesor(profId){
   const isNew = !profId;
 
   editor.innerHTML = `
-    <h3 style="margin-bottom:14px">${isNew?'➕ Nuevo profesor':'✏️ Editar profesor'}</h3>
-    <div class="field"><label>Nombre *</label>
-      <input type="text" id="pe_nombre" value="${esc(p.nombre)}" placeholder="Ej: Profesor 6"></div>
-    <div class="field"><label>Área / Materia *</label>
-      <input type="text" id="pe_area" value="${esc(p.area)}" placeholder="Ej: Álgebra Lineal"></div>
-    <div class="field"><label>Correo institucional *</label>
-      <input type="email" id="pe_correo" value="${esc(p.correo)}" placeholder="profesor6@universidadmayor.edu.co"></div>
-    <div class="field"><label>Número de documento *</label>
-      <input type="text" id="pe_documento" value="${esc(p.documento||'')}" placeholder="Ej: 1234567890"></div>
-    <div class="field"><label>Contraseña (dejar vacío = usar el documento)</label>
-      <input type="text" id="pe_password" value="${esc(p.password||'')}" placeholder="Se usará el documento si está vacío"></div>
-    <h4>🗓️ Horarios por día</h4>
-    <p class="hint">Agrega los rangos horarios en los que este profesor puede recibir tutorías.</p>
+    <h3 style="margin-bottom:16px;color:var(--navy-800);font-size:1rem">${isNew ? 'Nuevo docente' : 'Editar docente'}</h3>
+    <div class="field"><label>Nombre completo <span class="req">*</span></label>
+      <input type="text" id="pe_nombre" value="${esc(p.nombre)}" placeholder="Nombre y apellidos"></div>
+    <div class="field"><label>Área o materia <span class="req">*</span></label>
+      <input type="text" id="pe_area" value="${esc(p.area)}" placeholder="Ej: Cálculo Vectorial"></div>
+    <div class="field"><label>Correo institucional <span class="req">*</span></label>
+      <input type="email" id="pe_correo" value="${esc(p.correo)}" placeholder="docente@universidadmayor.edu.co"></div>
+    <div class="field"><label>Número de documento <span class="req">*</span></label>
+      <input type="text" id="pe_documento" value="${esc(p.documento||'')}" placeholder="Número de cédula"></div>
+    <div class="field"><label>Contraseña de acceso</label>
+      <input type="text" id="pe_password" value="${esc(p.password||'')}" placeholder="Si se deja vacío, se usará el número de documento"></div>
+
+    <div class="section-title mt-3">Horarios semanales</div>
+    <p class="hint">Defina los rangos horarios en los que el docente puede recibir tutorías.</p>
     <div id="agendaEditor"></div>
-    <div style="display:flex;gap:8px;margin-top:18px">
-      <button class="btn-primary" id="btnGuardarProf">Guardar profesor</button>
-      <button class="btn-ghost" id="btnCancelarProf">Cancelar</button>
+    <div style="display:flex;gap:8px;margin-top:20px">
+      <button class="btn btn-primary" id="btnGuardarProf">${ICON.check} Guardar docente</button>
+      <button class="btn btn-outline" id="btnCancelarProf">Cancelar</button>
     </div>`;
   editor.hidden = false;
   lista.hidden = true;
@@ -1696,9 +2189,9 @@ function renderAgendaEditor(agenda){
 function rangoHTML(ini, fin){
   return `<div class="rango">
     <input type="time" value="${esc(ini)}">
-    <span>–</span>
+    <span style="color:var(--ink-mute)">a</span>
     <input type="time" value="${esc(fin)}">
-    <button type="button" class="btn-x rango-x" title="Quitar">✕</button>
+    <button type="button" class="btn btn-ghost btn-xs rango-x" title="Eliminar">${ICON.trash}</button>
   </div>`;
 }
 
@@ -1714,7 +2207,7 @@ async function guardarProfesorDesdeFormulario(profId){
     return;
   }
   if(!validarCorreo(correo)){
-    alert(`El correo debe terminar en ${DOMINIO}`);
+    alert(`El correo debe pertenecer al dominio ${DOMINIO}`);
     return;
   }
   if(!password) password = documento;
@@ -1743,7 +2236,7 @@ async function guardarProfesorDesdeFormulario(profId){
   }catch(err){
     alert('Error: '+err.message);
     btn.disabled = false;
-    btn.textContent = 'Guardar profesor';
+    btn.innerHTML = `${ICON.check} Guardar docente`;
   }
 }
 
@@ -1753,7 +2246,7 @@ function cerrarEditorProfesor(){
 }
 
 async function eliminarProfesorConConfirmacion(id){
-  if(!confirm('¿Eliminar este profesor?')) return;
+  if(!confirm('¿Eliminar este docente? Esta acción también eliminará sus horarios asignados.')) return;
   try{
     await eliminarProfesorSupabase(id);
     await renderProfesoresList();
@@ -1792,21 +2285,21 @@ $('#btnGuardarConfig')?.addEventListener('click', async () => {
     await guardarConfigDB('emailjs_template_id', $('#cfgTemplateId').value.trim());
     await guardarConfigDB('emailjs_template_cancelacion', $('#cfgTemplateCancelacion').value.trim());
     await cargarConfig();
-    m.innerHTML = '<span style="color:#059669">✅ Guardado en la nube.</span>';
+    m.innerHTML = '<span style="color:var(--ok)">Configuración guardada en la nube.</span>';
     setTimeout(()=>{ m.textContent=''; }, 3000);
   }catch(err){
-    m.innerHTML = '<span style="color:#dc2626">Error: ' + err.message + '</span>';
+    m.innerHTML = '<span style="color:var(--danger)">Error: ' + err.message + '</span>';
   }
 });
 
 $('#btnCambiarPass')?.addEventListener('click', () => {
   const p1 = $('#cfgNewPass').value, p2 = $('#cfgNewPass2').value;
   const m = $('#passMsg');
-  if(p1.length < 4){ m.innerHTML = '<span style="color:#dc2626">Mínimo 4 caracteres.</span>'; return; }
-  if(p1 !== p2){ m.innerHTML = '<span style="color:#dc2626">No coinciden.</span>'; return; }
+  if(p1.length < 4){ m.innerHTML = '<span style="color:var(--danger)">Mínimo 4 caracteres.</span>'; return; }
+  if(p1 !== p2){ m.innerHTML = '<span style="color:var(--danger)">Las contraseñas no coinciden.</span>'; return; }
   localStorage.setItem('tutorias_admin_pass', p1);
   $('#cfgNewPass').value = ''; $('#cfgNewPass2').value = '';
-  m.innerHTML = '<span style="color:#059669">✅ Actualizada.</span>';
+  m.innerHTML = '<span style="color:var(--ok)">Contraseña actualizada.</span>';
   setTimeout(()=>{ m.textContent=''; }, 3000);
 });
 
