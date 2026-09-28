@@ -55,12 +55,14 @@
   .slot-num{font-weight:700;font-size:.95rem;color:var(--brand)}
   .slot-prof{font-size:.86rem;color:#334155;margin-top:2px}
   .slot-hora{font-size:.86rem;color:var(--muted);margin-top:2px}
-  .badge{font-size:.74rem;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
+  .badge{font-size:.74rem;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap;display:inline-block}
   .badge-ok{background:#dcfce7;color:#166534}
   .badge-warn{background:#fef3c7;color:#92400e}
   .badge-full{background:#fee2e2;color:#991b1b}
   .badge-info{background:#dbeafe;color:#1e40af}
   .badge-gray{background:#e2e8f0;color:#475569}
+  .badge-danger{background:#fee2e2;color:#991b1b}
+  .badge-success{background:#d1fae5;color:#065f46}
   .btn-primary{width:100%;padding:13px;border:none;border-radius:11px;
     background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;
     font:inherit;font-weight:700;font-size:.95rem;cursor:pointer;transition:.15s;}
@@ -71,7 +73,7 @@
     font:inherit;font-size:.82rem;font-weight:700;cursor:pointer;}
   .btn-primary-sm:hover{filter:brightness(1.08)}
   .btn-ghost{padding:8px 13px;border:1.5px solid var(--line);border-radius:9px;background:#fff;
-    font:inherit;font-size:.82rem;font-weight:600;cursor:pointer;color:#475569;}
+    font:inherit;font-size:.82rem;font-weight:600;cursor:pointer;color:#475569;text-decoration:none;display:inline-block;}
   .btn-ghost:hover{border-color:var(--brand);color:var(--brand)}
   .btn-danger{padding:8px 13px;border:1.5px solid #fecaca;border-radius:9px;background:#fff;
     font:inherit;font-size:.82rem;font-weight:600;cursor:pointer;color:#991b1b;}
@@ -79,6 +81,11 @@
   .btn-success{padding:8px 13px;border:1.5px solid #86efac;border-radius:9px;background:#fff;
     font:inherit;font-size:.82rem;font-weight:600;cursor:pointer;color:#166534;}
   .btn-success:hover{background:#dcfce7}
+  .btn-mini{padding:6px 10px;font-size:.75rem;border-radius:7px;cursor:pointer;font-weight:600;border:1.5px solid}
+  .btn-mini-yes{background:#fff;border-color:#86efac;color:#166534;}
+  .btn-mini-yes:hover{background:#dcfce7}
+  .btn-mini-no{background:#fff;border-color:#fecaca;color:#991b1b;}
+  .btn-mini-no:hover{background:#fee2e2}
   .alerta{border-radius:11px;padding:13px 15px;font-size:.88rem;margin-bottom:16px;border-left:4px solid}
   .alerta.ok{background:#f0fdf4;border-color:var(--ok);color:#14532d}
   .alerta.err{background:#fef2f2;border-color:var(--danger);color:#7f1d1d}
@@ -87,11 +94,6 @@
   .login-card{max-width:420px;margin:0 auto}
   .admin-header{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:20px}
   .admin-header h2{margin:0;font-size:1.15rem}
-  .admin-grid{display:grid;grid-template-columns:1fr;gap:20px}
-  @media (min-width:1000px){
-    .admin-grid{grid-template-columns:1fr 1fr}
-    .admin-grid .card-wide{grid-column:1 / -1}
-  }
   .panel-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
   .panel-actions{display:flex;gap:8px;flex-wrap:wrap}
   .grupo{border:1px solid var(--line);border-radius:12px;margin-bottom:12px;overflow:hidden}
@@ -112,7 +114,6 @@
   .prof-item-meta{font-size:.8rem;color:var(--muted);margin-top:2px;word-break:break-word}
   .prof-item-actions{display:flex;gap:6px;flex-shrink:0}
   .stars{color:#f59e0b;font-size:.9rem;letter-spacing:1px}
-  .stars-lg{font-size:1.4rem}
   .stars-gray{color:#cbd5e1}
   .dia-row{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f1f5f9;align-items:flex-start}
   .dia-row:last-child{border-bottom:none}
@@ -123,9 +124,8 @@
   .btn-add-rango{align-self:flex-start;background:#eef2ff;color:var(--brand);border:1px dashed #c7d2fe;
     padding:6px 12px;border-radius:8px;font:inherit;font-size:.8rem;font-weight:600;cursor:pointer;}
   .btn-add-rango:hover{background:#e0e7ff}
-  #panelContenido{max-height:520px;overflow-y:auto;margin-top:8px}
+  #panelContenido,#misReservas,#historialContenido,#profReservas{max-height:600px;overflow-y:auto;margin-top:8px}
   #profesoresList{max-height:600px;overflow-y:auto}
-  #misReservas{max-height:600px;overflow-y:auto}
   .empty{color:var(--muted);font-size:.85rem;padding:14px 0;text-align:center}
   .loading{color:var(--muted);font-size:.85rem;padding:14px 0;text-align:center}
   .reserva-item{border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:10px;background:#fff}
@@ -133,15 +133,34 @@
   .reserva-titulo{font-weight:700;font-size:.95rem;color:var(--brand)}
   .reserva-meta{font-size:.83rem;color:var(--muted)}
   .reserva-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-  .modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.6);display:flex;align-items:center;justify-content:center;
-    z-index:999;padding:20px;backdrop-filter:blur(4px)}
-  .modal{background:#fff;border-radius:16px;padding:24px;max-width:480px;width:100%;max-height:90vh;overflow-y:auto;
-    box-shadow:0 20px 60px rgba(15,23,42,.3)}
-  .modal h3{margin:0 0 14px;font-size:1.1rem}
-  .modal-actions{display:flex;gap:8px;margin-top:16px;justify-content:flex-end}
-  .slider-wrap{text-align:center;padding:10px 0}
-  .slider-value{font-size:2rem;font-weight:800;color:var(--brand);margin-bottom:10px}
-  .slider-labels{display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted);margin-top:6px}
+  .slider-wrap{text-align:center;padding:8px 0}
+  .slider-value{font-size:1.8rem;font-weight:800;color:var(--brand);margin-bottom:8px}
+  .slider-labels{display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-top:4px}
+  .calif-form{background:#f8faff;border:1.5px dashed #c7d2fe;border-radius:12px;padding:14px;margin-top:10px}
+  .calif-form h5{font-size:.88rem;margin:0 0 10px;color:#334155}
+  .yes-no{display:flex;gap:8px;margin-top:8px}
+  .yes-no button{flex:1;padding:8px;border:1.5px solid var(--line);border-radius:9px;background:#fff;
+    font:inherit;font-size:.82rem;font-weight:600;cursor:pointer;color:#475569;transition:.15s}
+  .yes-no button.sel-yes{background:#dcfce7;border-color:#86efac;color:#166534}
+  .yes-no button.sel-no{background:#fee2e2;border-color:#fecaca;color:#991b1b}
+  .estado-espera{color:#1e40af;font-weight:600;font-size:.82rem;padding:8px;background:#dbeafe;border-radius:8px;text-align:center;margin-top:8px}
+  .estado-completo{color:#166534;font-weight:600;font-size:.82rem;padding:8px;background:#dcfce7;border-radius:8px;text-align:center;margin-top:8px}
+  .hist-item{border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:10px;background:#fff;font-size:.85rem}
+  .hist-item.sin-asistencia{border-left:4px solid var(--danger);background:#fef2f2}
+  .hist-item.completa{border-left:4px solid var(--ok);background:#f0fdf4}
+  .hist-item.pendiente{border-left:4px solid var(--warn);background:#fffbeb}
+  .hist-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+  .hist-titulo{font-weight:700;color:var(--brand);font-size:.92rem}
+  .hist-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:4px 0;color:#475569}
+  .filtros{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+  .filtros button{padding:6px 14px;border:1.5px solid var(--line);background:#fff;border-radius:99px;
+    font:inherit;font-size:.8rem;font-weight:600;cursor:pointer;color:#475569;transition:.15s}
+  .filtros button.active{background:var(--brand);color:#fff;border-color:var(--brand)}
+  .estudiante-row{padding:12px 14px;border-bottom:1px solid #f1f5f9}
+  .estudiante-row:last-child{border-bottom:none}
+  .estudiante-info{margin-bottom:8px}
+  .estudiante-nombre{font-weight:700;font-size:.9rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .estudiante-acciones{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
 </style>
 </head>
 <body>
@@ -163,7 +182,6 @@
 
 <main class="wrap">
 
-  <!-- ============ RESERVAR ============ -->
   <section id="tab-reservar" class="tab-panel">
     <div class="grid">
       <div class="card">
@@ -223,13 +241,13 @@
           <li>El profesor recibirá un correo con tu solicitud y un link para agendarla en su calendario.</li>
           <li>Las tutorías deben ser agendadas con <strong>24 horas de anticipación</strong>.</li>
           <li>Si no puedes asistir, cancela tu reserva desde <strong>"Mis reservas"</strong>.</li>
-          <li>Después de asistir, podrás <strong>calificar al profesor</strong>.</li>
+          <li>Al terminar, el profesor marcará si asististe y ambos podrán calificarse.</li>
+          <li>⚠️ Si no asistes a una tutoría agendada, tendrás <strong>15 días de penalización</strong>.</li>
         </ol>
       </div>
     </div>
   </section>
 
-  <!-- ============ MIS RESERVAS (ESTUDIANTE) ============ -->
   <section id="tab-misreservas" class="tab-panel" hidden>
     <div class="card" style="max-width:600px;margin:0 auto 20px">
       <h2>🔍 Consulta tus reservas</h2>
@@ -248,7 +266,6 @@
     </div>
   </section>
 
-  <!-- ============ PROFESOR ============ -->
   <section id="tab-profesor" class="tab-panel" hidden>
     <div id="profLogin" class="card login-card">
       <h2>👨‍🏫 Acceso profesores</h2>
@@ -267,8 +284,7 @@
       <button class="btn-primary" id="btnLoginProf">Entrar</button>
       <p class="hint" style="text-align:center;margin-top:12px" id="profLoginMsg"></p>
       <p class="hint" style="text-align:center">
-        ¿Primera vez? Tu contraseña inicial es tu número de documento.<br>
-        Cámbiala después de entrar.
+        ¿Primera vez? Tu contraseña inicial es tu número de documento.
       </p>
     </div>
 
@@ -280,18 +296,20 @@
           <button class="btn-ghost" id="btnLogoutProf">Cerrar sesión</button>
         </div>
       </div>
-
       <div class="card">
         <div class="panel-head">
           <h3 id="profNombreTitulo">Mis tutorías agendadas</h3>
           <button class="btn-ghost" id="btnRefrescarProf">🔄 Refrescar</button>
         </div>
+        <p class="hint">
+          Marca <strong>✅ Asistió</strong> o <strong>❌ No asistió</strong> a cada estudiante, y luego califícalo.
+          Si no asiste, el estudiante recibirá <strong>15 días de penalización</strong>.
+        </p>
         <div id="profReservas"></div>
       </div>
     </div>
   </section>
 
-  <!-- ============ ADMIN ============ -->
   <section id="tab-admin" class="tab-panel" hidden>
     <div id="adminLogin" class="card login-card">
       <h2>🔒 Acceso administrador</h2>
@@ -309,80 +327,91 @@
         <button class="btn-ghost" id="btnLogout">Cerrar sesión</button>
       </div>
 
-      <div class="admin-grid">
-        <div class="card card-wide">
-          <div class="panel-head">
-            <h3>📋 Reservas registradas</h3>
-            <div class="panel-actions">
-              <button class="btn-ghost" id="btnRefrescar">🔄 Refrescar</button>
-              <button class="btn-ghost" id="btnCSV">Exportar CSV</button>
-              <button class="btn-danger" id="btnLimpiar">Vaciar todo</button>
-            </div>
+      <div class="card">
+        <div class="panel-head">
+          <h3>📋 Reservas activas</h3>
+          <div class="panel-actions">
+            <button class="btn-ghost" id="btnRefrescar">🔄 Refrescar</button>
+            <button class="btn-ghost" id="btnCSV">Exportar CSV</button>
+            <button class="btn-danger" id="btnLimpiar">Vaciar activas</button>
           </div>
-          <p class="hint" id="panelResumen"></p>
-          <div id="panelContenido"></div>
         </div>
+        <p class="hint" id="panelResumen"></p>
+        <div id="panelContenido"></div>
+      </div>
 
-        <div class="card">
-          <div class="panel-head">
-            <h3>👨‍🏫 Profesores y horarios</h3>
-            <button class="btn-primary-sm" id="btnNuevoProf">+ Nuevo</button>
-          </div>
-          <div id="profesoresList"></div>
-          <div id="profesorEditor" hidden></div>
+      <div class="card">
+        <div class="panel-head">
+          <h3>📚 Historial de tutorías</h3>
+          <button class="btn-ghost" id="btnRefrescarHist">🔄 Refrescar</button>
         </div>
-
-        <div class="card">
-          <h3>⚙️ Configuración</h3>
-
-          <h4>👁️ Visibilidad de calificaciones</h4>
-          <p class="hint">Si lo desactivas, las calificaciones y comentarios no se mostrarán públicamente.</p>
-          <label style="display:flex;align-items:center;gap:10px;padding:10px;border:1.5px solid var(--line);border-radius:10px;cursor:pointer">
-            <input type="checkbox" id="cfgCalifVisibles" style="width:auto;accent-color:var(--brand)">
-            <span style="font-size:.9rem;font-weight:600">Mostrar calificaciones públicamente</span>
-          </label>
-
-          <h4>📧 Envío de correos (EmailJS)</h4>
-          <p class="hint">
-            Estas claves se guardan en la nube. Solo se configuran una vez.
-          </p>
-          <div class="field">
-            <label for="cfgPublicKey">Public Key</label>
-            <input type="text" id="cfgPublicKey" placeholder="AbCd1234...">
-          </div>
-          <div class="field">
-            <label for="cfgServiceId">Service ID</label>
-            <input type="text" id="cfgServiceId" placeholder="service_xxxxxxx">
-          </div>
-          <div class="field">
-            <label for="cfgTemplateId">Template ID (nueva reserva)</label>
-            <input type="text" id="cfgTemplateId" placeholder="template_xxxxxxx">
-          </div>
-          <div class="field">
-            <label for="cfgTemplateCancelacion">Template ID (cancelación)</label>
-            <input type="text" id="cfgTemplateCancelacion" placeholder="template_cancelacion">
-          </div>
-          <button class="btn-primary" id="btnGuardarConfig">Guardar configuración</button>
-          <p class="hint" id="cfgMsg" style="text-align:center"></p>
-
-          <h4>🔑 Cambiar contraseña de admin</h4>
-          <div class="field">
-            <label for="cfgNewPass">Nueva contraseña</label>
-            <input type="password" id="cfgNewPass" placeholder="Mínimo 4 caracteres">
-          </div>
-          <div class="field">
-            <label for="cfgNewPass2">Confirmar contraseña</label>
-            <input type="password" id="cfgNewPass2">
-          </div>
-          <button class="btn-ghost" id="btnCambiarPass">Cambiar contraseña</button>
-          <p class="hint" id="passMsg" style="text-align:center"></p>
+        <p class="hint">
+          Todas las tutorías realizadas con la información de asistencia y calificaciones.
+          Las marcadas en rojo indican que alguien no asistió.
+        </p>
+        <div class="filtros" id="filtrosHist">
+          <button class="active" data-filtro="todas">Todas</button>
+          <button data-filtro="completas">✅ Completas</button>
+          <button data-filtro="sin-estudiante">❌ Estudiante no asistió</button>
+          <button data-filtro="sin-profesor">⚠️ Profesor no dio tutoría</button>
+          <button data-filtro="espera">⏳ Esperando calificar</button>
         </div>
+        <div id="historialContenido"></div>
+      </div>
+
+      <div class="card">
+        <div class="panel-head">
+          <h3>👨‍🏫 Profesores y horarios</h3>
+          <button class="btn-primary-sm" id="btnNuevoProf">+ Nuevo</button>
+        </div>
+        <div id="profesoresList"></div>
+        <div id="profesorEditor" hidden></div>
+      </div>
+
+      <div class="card">
+        <h3>⚙️ Configuración</h3>
+        <h4>👁️ Visibilidad de calificaciones</h4>
+        <p class="hint">Si lo desactivas, las calificaciones no se muestran públicamente.</p>
+        <label style="display:flex;align-items:center;gap:10px;padding:10px;border:1.5px solid var(--line);border-radius:10px;cursor:pointer">
+          <input type="checkbox" id="cfgCalifVisibles" style="width:auto;accent-color:var(--brand)">
+          <span style="font-size:.9rem;font-weight:600">Mostrar calificaciones públicamente</span>
+        </label>
+
+        <h4>📧 Envío de correos (EmailJS)</h4>
+        <div class="field">
+          <label for="cfgPublicKey">Public Key</label>
+          <input type="text" id="cfgPublicKey" placeholder="AbCd1234...">
+        </div>
+        <div class="field">
+          <label for="cfgServiceId">Service ID</label>
+          <input type="text" id="cfgServiceId" placeholder="service_xxxxxxx">
+        </div>
+        <div class="field">
+          <label for="cfgTemplateId">Template ID (nueva reserva)</label>
+          <input type="text" id="cfgTemplateId" placeholder="template_xxxxxxx">
+        </div>
+        <div class="field">
+          <label for="cfgTemplateCancelacion">Template ID (cancelación)</label>
+          <input type="text" id="cfgTemplateCancelacion" placeholder="template_cancelacion">
+        </div>
+        <button class="btn-primary" id="btnGuardarConfig">Guardar configuración</button>
+        <p class="hint" id="cfgMsg" style="text-align:center"></p>
+
+        <h4>🔑 Cambiar contraseña de admin</h4>
+        <div class="field">
+          <label for="cfgNewPass">Nueva contraseña</label>
+          <input type="password" id="cfgNewPass" placeholder="Mínimo 4 caracteres">
+        </div>
+        <div class="field">
+          <label for="cfgNewPass2">Confirmar contraseña</label>
+          <input type="password" id="cfgNewPass2">
+        </div>
+        <button class="btn-ghost" id="btnCambiarPass">Cambiar contraseña</button>
+        <p class="hint" id="passMsg" style="text-align:center"></p>
       </div>
     </div>
   </section>
 </main>
-
-<div id="modalContainer"></div>
 
 <script>
 /* ============ CONFIG SUPABASE ============ */
@@ -483,9 +512,7 @@ async function guardarProfesorSupabase(id, datos, agenda){
     if(error) throw error;
     finalId = data.id;
   }
-  const {error: delErr} = await db.from('horarios').delete().eq('profesor_id', finalId);
-  if(delErr) throw delErr;
-
+  await db.from('horarios').delete().eq('profesor_id', finalId);
   const nuevos = [];
   Object.keys(agenda).forEach(dia => {
     agenda[dia].forEach(([ini,fin]) => {
@@ -510,12 +537,6 @@ async function cargarReservasPorFecha(fecha){
   return data||[];
 }
 
-async function cargarTodasReservas(){
-  const {data,error} = await db.from('reservas').select('*, profesores(*)').order('fecha');
-  if(error){ console.error(error); return []; }
-  return (data||[]).map(r => mapReserva(r));
-}
-
 function mapReserva(r){
   return {
     id:r.id,
@@ -536,8 +557,16 @@ function mapReserva(r){
     comentarioProfesor:r.comentario_profesor,
     calificacionEstudiante:r.calificacion_estudiante,
     comentarioEstudiante:r.comentario_estudiante,
+    estudianteAsistio:r.estudiante_asistio,
+    profesorDioTutoria:r.profesor_dio_tutoria,
     creado:r.creado_en
   };
+}
+
+async function cargarTodasReservas(){
+  const {data,error} = await db.from('reservas').select('*, profesores(*)').order('fecha');
+  if(error){ console.error(error); return []; }
+  return (data||[]).map(r => mapReserva(r));
 }
 
 async function cargarReservasPorCorreo(correo){
@@ -587,8 +616,24 @@ async function eliminarTodasReservasDB(){
   if(error) throw error;
 }
 
+async function cargarCalificaciones(){
+  const {data,error} = await db.from('calificaciones').select('*').order('creado_en', {ascending:false});
+  if(error){ console.error(error); return []; }
+  return data||[];
+}
+
+async function verificarPenalizacion(correo){
+  const hoy = new Date().toISOString().slice(0,10);
+  const {data,error} = await db.from('penalizaciones').select('*')
+    .eq('correo_estudiante', correo.toLowerCase())
+    .gte('fecha_fin', hoy)
+    .order('fecha_fin', {ascending:false});
+  if(error){ console.error(error); return null; }
+  return (data && data.length) ? data[0] : null;
+}
+
 async function promediosProfesores(){
-  const {data,error} = await db.from('reservas').select('profesor_id, calificacion_profesor').not('calificacion_profesor','is',null);
+  const {data,error} = await db.from('calificaciones').select('profesor_id, calificacion_profesor').not('calificacion_profesor','is',null);
   if(error){ console.error(error); return {}; }
   const acc = {};
   (data||[]).forEach(r => {
@@ -601,6 +646,49 @@ async function promediosProfesores(){
     out[id] = {promedio: acc[id].suma / acc[id].n, total: acc[id].n};
   });
   return out;
+}
+
+/* ============ ARCHIVAR RESERVA COMPLETADA ============ */
+async function intentarArchivar(reservaId){
+  const {data,error} = await db.from('reservas').select('*, profesores(*)').eq('id', reservaId).single();
+  if(error || !data) return false;
+
+  if(data.calificacion_profesor == null) return false;
+  if(data.calificacion_estudiante == null) return false;
+  if(data.estudiante_asistio == null) return false;
+  if(data.profesor_dio_tutoria == null) return false;
+
+  const {error: errIns} = await db.from('calificaciones').insert({
+    profesor_id: data.profesor_id,
+    profesor_nombre: (data.profesores||{}).nombre || '',
+    correo_estudiante: data.correo_estudiante,
+    nombre_estudiante: data.nombre_estudiante,
+    programa: data.programa,
+    tema: data.tema,
+    fecha: data.fecha,
+    hora_inicio: data.hora_inicio,
+    hora_fin: data.hora_fin,
+    calificacion_profesor: data.calificacion_profesor,
+    comentario_profesor: data.comentario_profesor,
+    calificacion_estudiante: data.calificacion_estudiante,
+    comentario_estudiante: data.comentario_estudiante,
+    estudiante_asistio: data.estudiante_asistio,
+    profesor_dio_tutoria: data.profesor_dio_tutoria
+  });
+  if(errIns){ console.error(errIns); return false; }
+
+  if(data.estudiante_asistio === false){
+    const fin = new Date();
+    fin.setDate(fin.getDate() + 15);
+    await db.from('penalizaciones').insert({
+      correo_estudiante: data.correo_estudiante,
+      fecha_fin: fin.toISOString().slice(0,10),
+      motivo: 'No asistió a una tutoría agendada'
+    });
+  }
+
+  await db.from('reservas').delete().eq('id', reservaId);
+  return true;
 }
 
 /* ============ GENERACIÓN DE SLOTS ============ */
@@ -701,7 +789,6 @@ async function renderSlots(){
 async function notificarNuevaReserva(reserva){
   const destino = reserva.correoProfesor;
   const linkCal = linkGoogleCalendar(reserva);
-
   if(!CONFIG.emailjs_public_key || !CONFIG.emailjs_service_id || !CONFIG.emailjs_template_id || typeof emailjs === 'undefined'){
     console.info('[SIMULACIÓN] Correo nueva reserva', {para:destino, linkCal, ...reserva});
     return {ok:false, simulado:true, destino};
@@ -751,7 +838,13 @@ form.addEventListener('submit', async (e) => {
     return;
   }
 
-  // Validar 24 horas
+  const penalty = await verificarPenalizacion(correo);
+  if(penalty){
+    const f = new Date(penalty.fecha_fin + 'T00:00:00').toLocaleDateString('es-CO');
+    mensajeBox.innerHTML = `<div class="alerta err">⛔ Tienes una <strong>penalización activa</strong> hasta el <strong>${f}</strong> por no asistir a una tutoría. No puedes agendar hasta esa fecha.</div>`;
+    return;
+  }
+
   const fechaSel = new Date(slotSeleccionado.fecha + 'T' + slotSeleccionado.inicio);
   const ahora = new Date();
   const diffHoras = (fechaSel - ahora) / 3600000;
@@ -807,15 +900,14 @@ form.addEventListener('submit', async (e) => {
         <strong>✅ ¡Reserva confirmada!</strong><br>
         <strong>Tutoría ${reserva.numeroTutoria}</strong> · ${esc(reserva.profesor)}<br>
         ${esc(reserva.fechaTexto)} · ${reserva.inicio} – ${reserva.fin}<br>
-        <span style="font-size:.85rem">${nota}</span><br>
-        <span style="font-size:.85rem">Puedes gestionarla desde <strong>"Mis reservas"</strong>.</span>
+        <span style="font-size:.85rem">${nota}</span>
       </div>`;
 
     const fg = fechaInput.value;
     form.reset();
     fechaInput.value = fg;
     await renderSlots();
-    if(isAdminLogged()) await renderReservasAdmin();
+    if(isAdminLogged()) { await renderReservasAdmin(); await renderHistorialAdmin(); }
     mensajeBox.scrollIntoView({behavior:'smooth', block:'nearest'});
 
   }catch(err){
@@ -836,18 +928,6 @@ function switchTab(name){
 }
 $$('.tab').forEach(t => t.addEventListener('click', () => switchTab(t.dataset.tab)));
 
-/* ============ MODAL GENÉRICO ============ */
-function mostrarModal(html, onClose){
-  const cont = $('#modalContainer');
-  cont.innerHTML = `<div class="modal-bg"><div class="modal">${html}</div></div>`;
-  const bg = cont.querySelector('.modal-bg');
-  bg.addEventListener('click', (e) => {
-    if(e.target === bg){ cerrarModal(); if(onClose) onClose(); }
-  });
-  return cont;
-}
-function cerrarModal(){ $('#modalContainer').innerHTML = ''; }
-
 /* ============ MIS RESERVAS (ESTUDIANTE) ============ */
 $('#btnBuscarReservas')?.addEventListener('click', async () => {
   const correo = $('#correoConsulta').value.trim().toLowerCase();
@@ -858,62 +938,85 @@ $('#btnBuscarReservas')?.addEventListener('click', async () => {
   }
   cont.innerHTML = '<p class="loading">⏳ Cargando…</p>';
   const reservas = await cargarReservasPorCorreo(correo);
+
+  const penalty = await verificarPenalizacion(correo);
+  let penaltyHTML = '';
+  if(penalty){
+    const f = new Date(penalty.fecha_fin + 'T00:00:00').toLocaleDateString('es-CO');
+    penaltyHTML = `<div class="alerta err" style="margin-bottom:14px">⛔ Tienes una penalización activa hasta el <strong>${f}</strong> por no asistir a una tutoría.</div>`;
+  }
+
   if(!reservas.length){
-    cont.innerHTML = '<p class="empty">No tienes reservas registradas con ese correo.</p>';
+    cont.innerHTML = penaltyHTML + '<p class="empty">No tienes reservas activas con ese correo.</p>';
     return;
   }
-  cont.innerHTML = reservas.map(r => {
-    let estadoBadge = '';
-    if(r.estado === 'realizada') estadoBadge = '<span class="badge badge-info">Realizada</span>';
-    else if(r.estado === 'cancelada') estadoBadge = '<span class="badge badge-gray">Cancelada</span>';
-    else estadoBadge = '<span class="badge badge-ok">Pendiente</span>';
 
-    // Calendario solo si está pendiente
-    const linkCal = r.estado === 'pendiente' ? linkGoogleCalendar(r) : '';
+  cont.innerHTML = penaltyHTML + reservas.map(r => renderReservaEstudiante(r)).join('');
 
-    // ¿Puede cancelar? Solo si está pendiente y faltan más de 24h
-    const fechaRes = new Date(r.fecha + 'T' + r.inicio);
-    const puedeCancelar = r.estado === 'pendiente' && ((fechaRes - new Date())/3600000) > 24;
-
-    // ¿Puede calificar? Solo si está realizada y aún no calificó
-    const puedeCalificar = r.estado === 'realizada' && !r.calificacionProfesor;
-
-    // Mostrar calificación si existe
-    let califHTML = '';
-    if(r.calificacionProfesor){
-      califHTML = `<div style="margin-top:8px;padding:8px;background:#fffbeb;border-radius:8px;font-size:.83rem">
-        <strong>Tu calificación:</strong> ${estrellasHTML(r.calificacionProfesor)}
-        ${r.comentarioProfesor ? `<div style="margin-top:4px;color:#475569;font-style:italic">"${esc(r.comentarioProfesor)}"</div>` : ''}
-      </div>`;
-    }
-
-    return `
-      <div class="reserva-item">
-        <div class="reserva-head">
-          <div>
-            <div class="reserva-titulo">${esc(r.profesor)} · ${esc(r.area)}</div>
-            <div class="reserva-meta">📅 ${esc(r.fechaTexto)} · 🕒 ${r.inicio}–${r.fin}</div>
-            <div class="reserva-meta">📝 ${esc(r.tema)}</div>
-          </div>
-          ${estadoBadge}
-        </div>
-        <div class="reserva-actions">
-          ${linkCal ? `<a href="${linkCal}" target="_blank" class="btn-ghost" style="text-decoration:none">📅 Añadir a calendario</a>` : ''}
-          ${puedeCancelar ? `<button class="btn-danger" data-cancelar="${esc(r.id)}">❌ Cancelar</button>` : ''}
-          ${puedeCalificar ? `<button class="btn-success" data-calificar="${esc(r.id)}" data-prof="${esc(r.profesor)}">⭐ Calificar profesor</button>` : ''}
-        </div>
-        ${califHTML}
-      </div>`;
-  }).join('');
-
-  // Eventos
   $$('[data-cancelar]', cont).forEach(btn => {
     btn.addEventListener('click', () => cancelarReservaEstudiante(btn.dataset.cancelar, reservas));
   });
-  $$('[data-calificar]', cont).forEach(btn => {
-    btn.addEventListener('click', () => abrirCalificarProfesor(btn.dataset.calificar, btn.dataset.prof));
+  $$('[data-form-calif]', cont).forEach(form => {
+    setupCalifForm(form, 'estudiante');
   });
 });
+
+function renderReservaEstudiante(r){
+  let estadoBadge = '';
+  if(r.estado === 'realizada') estadoBadge = '<span class="badge badge-info">Realizada</span>';
+  else if(r.estado === 'cancelada') estadoBadge = '<span class="badge badge-gray">Cancelada</span>';
+  else estadoBadge = '<span class="badge badge-ok">Pendiente</span>';
+
+  const linkCal = r.estado === 'pendiente' ? linkGoogleCalendar(r) : '';
+  const fechaRes = new Date(r.fecha + 'T' + r.inicio);
+  const puedeCancelar = r.estado === 'pendiente' && ((fechaRes - new Date())/3600000) > 24;
+
+  let extraHTML = '';
+
+  if(r.estado === 'realizada' && r.calificacionProfesor == null){
+    extraHTML = `
+      <form class="calif-form" data-form-calif data-id="${esc(r.id)}">
+        <h5>⭐ Califica a tu profesor</h5>
+        <div class="slider-wrap">
+          <div class="slider-value" data-slider-val>5</div>
+          <input type="range" min="1" max="5" value="5" name="slider" style="width:100%">
+          <div class="slider-labels"><span>1 - Muy mala</span><span>5 - Excelente</span></div>
+        </div>
+        <div class="field">
+          <label>Comentario o recomendación (opcional)</label>
+          <textarea name="comentario" rows="2" placeholder="Ej: Excelente explicación, muy clara."></textarea>
+        </div>
+        <div class="field">
+          <label>¿El profesor dio la tutoría?</label>
+          <div class="yes-no" data-yesno>
+            <button type="button" data-val="true">✅ Sí</button>
+            <button type="button" data-val="false">❌ No</button>
+          </div>
+          <input type="hidden" name="asistencia" value="">
+        </div>
+        <button type="submit" class="btn-primary-sm">Enviar calificación</button>
+      </form>`;
+  } else if(r.estado === 'realizada' && r.calificacionProfesor != null){
+    extraHTML = `<div class="estado-espera">✅ Ya calificaste. Esperando al profesor…</div>`;
+  }
+
+  return `
+    <div class="reserva-item">
+      <div class="reserva-head">
+        <div>
+          <div class="reserva-titulo">${esc(r.profesor)} · ${esc(r.area)}</div>
+          <div class="reserva-meta">📅 ${esc(r.fechaTexto)} · 🕒 ${r.inicio}–${r.fin}</div>
+          <div class="reserva-meta">📝 ${esc(r.tema)}</div>
+        </div>
+        ${estadoBadge}
+      </div>
+      <div class="reserva-actions">
+        ${linkCal ? `<a href="${linkCal}" target="_blank" class="btn-ghost">📅 Añadir a calendario</a>` : ''}
+        ${puedeCancelar ? `<button class="btn-danger" data-cancelar="${esc(r.id)}">❌ Cancelar</button>` : ''}
+      </div>
+      ${extraHTML}
+    </div>`;
+}
 
 async function cancelarReservaEstudiante(id, reservas){
   if(!confirm('¿Cancelar esta reserva? Se notificará al profesor.')) return;
@@ -927,45 +1030,77 @@ async function cancelarReservaEstudiante(id, reservas){
   }catch(err){ alert('Error: ' + err.message); }
 }
 
-function abrirCalificarProfesor(reservaId, nombreProfesor){
-  mostrarModal(`
-    <h3>⭐ Calificar a ${esc(nombreProfesor)}</h3>
-    <p class="hint">Desliza para dar tu calificación y déjale un comentario (opcional).</p>
-    <div class="slider-wrap">
-      <div class="slider-value" id="sliderVal">5</div>
-      <input type="range" min="1" max="5" value="5" id="sliderCalif" style="width:100%">
-      <div class="slider-labels"><span>1 - Muy mala</span><span>5 - Excelente</span></div>
-    </div>
-    <div class="field">
-      <label>Comentario o recomendación (opcional)</label>
-      <textarea id="comentarioCalif" rows="3" placeholder="Ej: Excelente explicación, muy clara. ¡Gracias!"></textarea>
-    </div>
-    <div class="modal-actions">
-      <button class="btn-ghost" onclick="cerrarModal()">Cancelar</button>
-      <button class="btn-primary" id="btnEnviarCalif" style="width:auto;padding:10px 24px">Enviar calificación</button>
-    </div>
-  `);
-
-  const slider = $('#sliderCalif');
-  const val = $('#sliderVal');
+/* ============ FORM CALIFICACIÓN (COMPARTIDO) ============ */
+function setupCalifForm(formEl, tipo){
+  const slider = formEl.querySelector('[name="slider"]');
+  const val = formEl.querySelector('[data-slider-val]');
   const emojis = ['😞','😐','🙂','😊','🤩'];
+
   slider.addEventListener('input', () => {
     val.textContent = `${slider.value} ${emojis[slider.value-1]}`;
   });
 
-  $('#btnEnviarCalif').addEventListener('click', async () => {
-    const calificacion = parseInt(slider.value);
-    const comentario = $('#comentarioCalif').value.trim();
-    try{
-      await actualizarReservaDB(reservaId, {
-        calificacion_profesor: calificacion,
-        comentario_profesor: comentario || null,
-        fecha_calificacion_profesor: new Date().toISOString()
+  const yesno = formEl.querySelector('[data-yesno]');
+  const hidden = formEl.querySelector('[name="asistencia"]');
+  if(yesno){
+    yesno.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        yesno.querySelectorAll('button').forEach(b => b.classList.remove('sel-yes','sel-no'));
+        const v = btn.dataset.val === 'true';
+        btn.classList.add(v ? 'sel-yes' : 'sel-no');
+        hidden.value = btn.dataset.val;
       });
-      cerrarModal();
-      alert('✅ ¡Gracias por tu calificación!');
-      $('#btnBuscarReservas').click();
-    }catch(err){ alert('Error: ' + err.message); }
+    });
+  }
+
+  formEl.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = formEl.dataset.id;
+    const calificacion = parseInt(slider.value);
+    const comentario = formEl.querySelector('[name="comentario"]').value.trim();
+    const asistencia = hidden ? hidden.value : null;
+
+    if(asistencia === ''){
+      alert('Debes indicar la asistencia (Sí/No).');
+      return;
+    }
+
+    const btn = formEl.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.textContent = 'Enviando…';
+
+    try{
+      if(tipo === 'estudiante'){
+        await actualizarReservaDB(id, {
+          calificacion_profesor: calificacion,
+          comentario_profesor: comentario || null,
+          profesor_dio_tutoria: asistencia === 'true',
+          fecha_calificacion_profesor: new Date().toISOString()
+        });
+      } else {
+        await actualizarReservaDB(id, {
+          calificacion_estudiante: calificacion,
+          comentario_estudiante: comentario || null,
+          estudiante_asistio: asistencia === 'true',
+          fecha_calificacion_estudiante: new Date().toISOString()
+        });
+      }
+
+      const archived = await intentarArchivar(id);
+      if(archived){
+        alert('✅ ¡Gracias! La tutoría quedó completada y archivada en el historial.');
+      } else {
+        alert('✅ Calificación guardada. Esperando a la otra parte para completar.');
+      }
+
+      if(tipo === 'estudiante') $('#btnBuscarReservas').click();
+      else await renderProfReservas();
+
+    }catch(err){
+      alert('Error: ' + err.message);
+      btn.disabled = false;
+      btn.textContent = 'Enviar calificación';
+    }
   });
 }
 
@@ -997,7 +1132,7 @@ $('#btnLoginProf')?.addEventListener('click', async () => {
     return;
   }
   if(data.documento !== doc){
-    msg.innerHTML = '<span style="color:#dc2626">Número de documento incorrecto.</span>';
+    msg.innerHTML = '<span style="color:#dc2626">Documento incorrecto.</span>';
     return;
   }
   if(data.password !== pass){
@@ -1038,174 +1173,150 @@ async function renderProfReservas(){
     return;
   }
 
-  // Agrupar por fecha
-  const porFecha = {};
+  // Agrupar por fecha + hora
+  const grupos = {};
   reservas.forEach(r => {
-    if(!porFecha[r.fecha]) porFecha[r.fecha] = [];
-    porFecha[r.fecha].push(r);
+    if(r.estado === 'cancelada') return;
+    const k = `${r.fecha}|${r.inicio}`;
+    if(!grupos[k]) grupos[k] = [];
+    grupos[k].push(r);
   });
 
-  cont.innerHTML = Object.keys(porFecha).sort().map(fecha => {
-    const items = porFecha[fecha];
+  const keys = Object.keys(grupos).sort();
+  if(!keys.length){
+    cont.innerHTML = '<p class="empty">No tienes tutorías activas.</p>';
+    return;
+  }
+
+  cont.innerHTML = keys.map(k => {
+    const items = grupos[k];
+    const first = items[0];
     return `
-      <div style="margin-bottom:20px">
-        <h4 style="font-size:.95rem;color:#334155;margin-bottom:10px">📅 ${esc(fmtFecha(fecha))}</h4>
-        ${items.map(r => {
-          let estadoBadge = '';
-          if(r.estado === 'realizada') estadoBadge = '<span class="badge badge-info">Realizada</span>';
-          else if(r.estado === 'cancelada') estadoBadge = '<span class="badge badge-gray">Cancelada</span>';
-          else estadoBadge = '<span class="badge badge-ok">Pendiente</span>';
-
-          const linkCal = r.estado !== 'cancelada' ? linkGoogleCalendar(r) : '';
-
-          let califEstHTML = '';
-          if(r.calificacionEstudiante){
-            califEstHTML = `<div style="margin-top:6px;padding:6px;background:#eff6ff;border-radius:8px;font-size:.82rem">
-              <strong>Tu calificación del estudiante:</strong> ${estrellasHTML(r.calificacionEstudiante)}
-              ${r.comentarioEstudiante ? `<div style="font-style:italic;color:#475569">"${esc(r.comentarioEstudiante)}"</div>` : ''}
-            </div>`;
-          }
-
-          let califProfHTML = '';
-          if(r.calificacionProfesor){
-            califProfHTML = `<div style="margin-top:6px;padding:6px;background:#fffbeb;border-radius:8px;font-size:.82rem">
-              <strong>El estudiante te calificó:</strong> ${estrellasHTML(r.calificacionProfesor)}
-              ${r.comentarioProfesor ? `<div style="font-style:italic;color:#475569">"${esc(r.comentarioProfesor)}"</div>` : ''}
-            </div>`;
-          }
-
-          return `
-            <div class="reserva-item" style="margin-left:16px">
-              <div class="reserva-head">
-                <div>
-                  <div class="reserva-titulo">${r.inicio} – ${r.fin}</div>
-                  <div class="reserva-meta"><strong>${esc(r.nombre)}</strong> · ${esc(r.correo)}</div>
-                  <div class="reserva-meta">🎓 ${esc(r.programa)}</div>
-                  <div class="reserva-meta">📝 ${esc(r.tema)}</div>
-                </div>
-                ${estadoBadge}
-              </div>
-              <div class="reserva-actions">
-                ${linkCal ? `<a href="${linkCal}" target="_blank" class="btn-ghost" style="text-decoration:none;font-size:.78rem">📅 Añadir a mi calendario</a>` : ''}
-                ${r.estado === 'pendiente' ? `<button class="btn-success" data-realizada="${esc(r.id)}">✅ Marcar como realizada</button>` : ''}
-                ${r.estado === 'realizada' && !r.calificacionEstudiante ? `<button class="btn-primary-sm" data-calif-est="${esc(r.id)}" data-est="${esc(r.nombre)}">⭐ Calificar estudiante</button>` : ''}
-              </div>
-              ${califProfHTML}
-              ${califEstHTML}
-            </div>`;
-        }).join('')}
+      <div style="margin-bottom:22px">
+        <div style="background:#f8fafc;padding:10px 14px;border-radius:10px 10px 0 0;border:1px solid var(--line);border-bottom:none">
+          <strong>📅 ${esc(fmtFecha(first.fecha))} · 🕒 ${first.inicio}–${first.fin}</strong>
+          <div class="muted-sm">${items.length} estudiante(s) agendado(s)</div>
+        </div>
+        <div style="border:1px solid var(--line);border-radius:0 0 10px 10px;background:#fff">
+          ${items.map(r => renderFilaEstudianteProf(r)).join('')}
+        </div>
       </div>`;
   }).join('');
 
-  // Eventos
-  $$('[data-realizada]', cont).forEach(btn => {
+  $$('[data-marcar-asistio]', cont).forEach(btn => {
     btn.addEventListener('click', async () => {
-      if(!confirm('¿Marcar esta tutoría como realizada?')) return;
+      const id = btn.dataset.marcarAsistio;
+      const valor = btn.dataset.valor === 'true';
+      const mensaje = valor ? '¿Confirmar que el estudiante SÍ asistió?' : '¿Confirmar que el estudiante NO asistió? Se le aplicarán 15 días de penalización.';
+      if(!confirm(mensaje)) return;
       try{
-        await actualizarReservaDB(btn.dataset.realizada, {estado: 'realizada'});
+        await actualizarReservaDB(id, {
+          estado: 'realizada',
+          estudiante_asistio: valor
+        });
         await renderProfReservas();
       }catch(err){ alert('Error: ' + err.message); }
     });
   });
-  $$('[data-calif-est]', cont).forEach(btn => {
-    btn.addEventListener('click', () => abrirCalificarEstudiante(btn.dataset.califEst, btn.dataset.est));
-  });
+
+  $$('[data-form-calif]', cont).forEach(form => setupCalifForm(form, 'profesor'));
+}
+
+function renderFilaEstudianteProf(r){
+  let estadoHTML = '';
+  let acciones = '';
+
+  if(r.estado === 'pendiente'){
+    estadoHTML = '<span class="badge badge-ok">Pendiente</span>';
+    acciones = `
+      <button class="btn-mini btn-mini-yes" data-marcar-asistio="${esc(r.id)}" data-valor="true">✅ Asistió</button>
+      <button class="btn-mini btn-mini-no" data-marcar-asistio="${esc(r.id)}" data-valor="false">❌ No asistió</button>`;
+  } else if(r.estado === 'realizada'){
+    if(r.calificacionEstudiante != null){
+      estadoHTML = '<span class="badge badge-success">Calificado</span>';
+    } else {
+      estadoHTML = '<span class="badge badge-info">Realizada</span>';
+    }
+  }
+
+  let formHTML = '';
+  if(r.estado === 'realizada' && r.calificacionEstudiante == null){
+    formHTML = `
+      <form class="calif-form" data-form-calif data-id="${esc(r.id)}">
+        <h5>⭐ Calificar al estudiante</h5>
+        <div class="slider-wrap">
+          <div class="slider-value" data-slider-val>5</div>
+          <input type="range" min="1" max="5" value="5" name="slider" style="width:100%">
+          <div class="slider-labels"><span>1 - Muy mala</span><span>5 - Excelente</span></div>
+        </div>
+        <div class="field">
+          <label>Recomendación u observación (opcional)</label>
+          <textarea name="comentario" rows="2" placeholder="Ej: Excelente participación."></textarea>
+        </div>
+        <div class="field">
+          <label>¿El estudiante asistió?</label>
+          <div class="yes-no" data-yesno>
+            <button type="button" data-val="true" class="${r.estudianteAsistio === true ? 'sel-yes':''}">✅ Sí</button>
+            <button type="button" data-val="false" class="${r.estudianteAsistio === false ? 'sel-no':''}">❌ No</button>
+          </div>
+          <input type="hidden" name="asistencia" value="${r.estudianteAsistio === true ? 'true' : r.estudianteAsistio === false ? 'false' : ''}">
+        </div>
+        <button type="submit" class="btn-primary-sm">Enviar calificación</button>
+      </form>`;
+  } else if(r.estado === 'realizada' && r.calificacionEstudiante != null && r.calificacionProfesor == null){
+    formHTML = `<div class="estado-espera">✅ Ya calificaste. Esperando al estudiante…</div>`;
+  } else if(r.calificacionProfesor != null && r.calificacionEstudiante != null){
+    formHTML = `<div class="estado-completo">✅ Tutoría completada y archivada</div>`;
+  }
+
+  return `
+    <div class="estudiante-row">
+      <div class="estudiante-info">
+        <div class="estudiante-nombre">${esc(r.nombre)} ${estadoHTML}</div>
+        <div class="muted-sm">${esc(r.correo)} · ${esc(r.programa)}</div>
+        <div class="muted-sm">📝 ${esc(r.tema)}</div>
+        <div class="estudiante-acciones">${acciones}</div>
+      </div>
+      ${formHTML}
+    </div>`;
 }
 
 $('#btnRefrescarProf')?.addEventListener('click', renderProfReservas);
 
-function abrirCalificarEstudiante(reservaId, nombreEst){
-  mostrarModal(`
-    <h3>⭐ Calificar a ${esc(nombreEst)}</h3>
-    <p class="hint">Desliza para dar tu calificación y déjale un comentario (opcional).</p>
-    <div class="slider-wrap">
-      <div class="slider-value" id="sliderValE">5</div>
-      <input type="range" min="1" max="5" value="5" id="sliderCalifE" style="width:100%">
-      <div class="slider-labels"><span>1 - Muy mala</span><span>5 - Excelente</span></div>
-    </div>
-    <div class="field">
-      <label>Recomendación u observación (opcional)</label>
-      <textarea id="comentarioCalifE" rows="3" placeholder="Ej: Excelente participación, sigue así."></textarea>
-    </div>
-    <div class="modal-actions">
-      <button class="btn-ghost" onclick="cerrarModal()">Cancelar</button>
-      <button class="btn-primary" id="btnEnviarCalifE" style="width:auto;padding:10px 24px">Enviar calificación</button>
-    </div>
-  `);
-
-  const slider = $('#sliderCalifE');
-  const val = $('#sliderValE');
-  const emojis = ['😞','😐','🙂','😊','🤩'];
-  slider.addEventListener('input', () => {
-    val.textContent = `${slider.value} ${emojis[slider.value-1]}`;
-  });
-
-  $('#btnEnviarCalifE').addEventListener('click', async () => {
-    const calificacion = parseInt(slider.value);
-    const comentario = $('#comentarioCalifE').value.trim();
-    try{
-      await actualizarReservaDB(reservaId, {
-        calificacion_estudiante: calificacion,
-        comentario_estudiante: comentario || null,
-        fecha_calificacion_estudiante: new Date().toISOString()
-      });
-      cerrarModal();
-      alert('✅ Calificación enviada.');
-      await renderProfReservas();
-    }catch(err){ alert('Error: ' + err.message); }
-  });
-}
-
 $('#btnCambiarPassProf')?.addEventListener('click', () => {
   const prof = isProfLogged();
   if(!prof) return;
-  mostrarModal(`
-    <h3>🔑 Cambiar contraseña</h3>
-    <div class="field">
-      <label>Contraseña actual</label>
-      <input type="password" id="cpActual">
-    </div>
-    <div class="field">
-      <label>Nueva contraseña</label>
-      <input type="password" id="cpNueva" placeholder="Mínimo 4 caracteres">
-    </div>
-    <div class="field">
-      <label>Confirmar nueva contraseña</label>
-      <input type="password" id="cpNueva2">
-    </div>
-    <div class="modal-actions">
-      <button class="btn-ghost" onclick="cerrarModal()">Cancelar</button>
-      <button class="btn-primary" id="btnGuardarPassProf" style="width:auto;padding:10px 24px">Cambiar</button>
-    </div>
-    <p class="hint" id="cpMsg" style="text-align:center"></p>
-  `);
-
-  $('#btnGuardarPassProf').addEventListener('click', async () => {
+  const html = `
+    <div class="modal-bg" style="position:fixed;inset:0;background:rgba(15,23,42,.6);display:flex;align-items:center;justify-content:center;z-index:999;padding:20px">
+      <div class="card" style="max-width:420px;width:100%">
+        <h3>🔑 Cambiar contraseña</h3>
+        <div class="field"><label>Contraseña actual</label><input type="password" id="cpActual"></div>
+        <div class="field"><label>Nueva contraseña</label><input type="password" id="cpNueva" placeholder="Mínimo 4 caracteres"></div>
+        <div class="field"><label>Confirmar nueva contraseña</label><input type="password" id="cpNueva2"></div>
+        <p class="hint" id="cpMsg"></p>
+        <div style="display:flex;gap:8px;justify-content:flex-end">
+          <button class="btn-ghost" id="cpCancelar">Cancelar</button>
+          <button class="btn-primary-sm" id="cpGuardar">Cambiar</button>
+        </div>
+      </div>
+    </div>`;
+  document.body.insertAdjacentHTML('beforeend', html);
+  const modal = document.querySelector('.modal-bg');
+  const cerrar = () => modal.remove();
+  $('#cpCancelar').onclick = cerrar;
+  $('#cpGuardar').onclick = async () => {
     const msg = $('#cpMsg');
     const actual = $('#cpActual').value;
     const nueva = $('#cpNueva').value;
     const nueva2 = $('#cpNueva2').value;
-
     const {data} = await db.from('profesores').select('password').eq('id', prof.id).single();
-    if(data.password !== actual){
-      msg.innerHTML = '<span style="color:#dc2626">Contraseña actual incorrecta.</span>';
-      return;
-    }
-    if(nueva.length < 4){
-      msg.innerHTML = '<span style="color:#dc2626">La nueva debe tener al menos 4 caracteres.</span>';
-      return;
-    }
-    if(nueva !== nueva2){
-      msg.innerHTML = '<span style="color:#dc2626">No coinciden.</span>';
-      return;
-    }
-    try{
-      const {error} = await db.from('profesores').update({password: nueva}).eq('id', prof.id);
-      if(error) throw error;
-      cerrarModal();
-      alert('✅ Contraseña actualizada.');
-    }catch(err){ msg.innerHTML = '<span style="color:#dc2626">Error: ' + err.message + '</span>'; }
-  });
+    if(data.password !== actual){ msg.innerHTML = '<span style="color:#dc2626">Contraseña actual incorrecta.</span>'; return; }
+    if(nueva.length < 4){ msg.innerHTML = '<span style="color:#dc2626">Mínimo 4 caracteres.</span>'; return; }
+    if(nueva !== nueva2){ msg.innerHTML = '<span style="color:#dc2626">No coinciden.</span>'; return; }
+    await db.from('profesores').update({password: nueva}).eq('id', prof.id);
+    cerrar();
+    alert('✅ Contraseña actualizada.');
+  };
 });
 
 /* ============ ADMIN ============ */
@@ -1218,6 +1329,7 @@ async function renderAdmin(){
   $('#adminPanel').hidden = !l;
   if(l){
     await renderReservasAdmin();
+    await renderHistorialAdmin();
     await renderProfesoresList();
     renderConfigForm();
   }
@@ -1248,19 +1360,21 @@ async function renderReservasAdmin(){
   try { reservas = await cargarTodasReservas(); }
   catch(e){ cont.innerHTML = '<div class="alerta err">Error al cargar.</div>'; return; }
 
-  if(!reservas.length){
+  const activas = reservas.filter(r => r.estado !== 'cancelada' && r.estado !== 'realizada');
+
+  if(!activas.length){
     resumen.textContent = '';
-    cont.innerHTML = '<p class="empty">Aún no hay reservas.</p>';
+    cont.innerHTML = '<p class="empty">Aún no hay reservas activas.</p>';
     return;
   }
 
   const grupos = new Map();
-  reservas.forEach(r => {
+  activas.forEach(r => {
     const k = `${r.fecha}|${r.profesorId}|${r.inicio}`;
     if(!grupos.has(k)) grupos.set(k, {meta:r, lista:[]});
     grupos.get(k).lista.push(r);
   });
-  resumen.textContent = `${reservas.length} reserva(s) en ${grupos.size} tutoría(s).`;
+  resumen.textContent = `${activas.length} reserva(s) activa(s) en ${grupos.size} tutoría(s).`;
 
   const ord = [...grupos.entries()].sort((a,b)=>{
     const ra=a[1].meta, rb=b[1].meta;
@@ -1271,8 +1385,7 @@ async function renderReservasAdmin(){
   cont.innerHTML = ord.map(([k,g])=>{
     numero++;
     const r = g.meta;
-    const activas = g.lista.filter(x => x.estado !== 'cancelada').length;
-    const clase = activas >= CUPO_MAX ? 'badge-full' : 'badge-ok';
+    const clase = g.lista.length >= CUPO_MAX ? 'badge-full' : 'badge-ok';
     return `
       <div class="grupo">
         <div class="grupo-head">
@@ -1280,27 +1393,149 @@ async function renderReservasAdmin(){
             <strong>Tutoría ${numero}</strong> · ${esc(r.profesor)} · ${r.inicio}–${r.fin}
             <div class="muted-sm">${esc(r.fechaTexto)}</div>
           </div>
-          <span class="badge ${clase}">${activas}/${CUPO_MAX}</span>
+          <span class="badge ${clase}">${g.lista.length}/${CUPO_MAX}</span>
         </div>
         <ul class="alumnos">
-          ${g.lista.map(a => {
-            let badge = '';
-            if(a.estado === 'realizada') badge = '<span class="badge badge-info" style="font-size:.65rem">Realizada</span>';
-            else if(a.estado === 'cancelada') badge = '<span class="badge badge-gray" style="font-size:.65rem">Cancelada</span>';
-            return `
+          ${g.lista.map(a => `
             <li>
               <div style="flex:1">
-                <strong>${esc(a.nombre)}</strong> ${badge}
+                <strong>${esc(a.nombre)}</strong>
                 <div class="muted-sm">${esc(a.correo)} · ${esc(a.programa)}</div>
                 <div class="muted-sm">📝 ${esc(a.tema)}</div>
               </div>
               <button class="btn-x" data-del="${esc(a.id)}" title="Eliminar">✕</button>
-            </li>`;
-          }).join('')}
+            </li>`).join('')}
         </ul>
       </div>`;
   }).join('');
 }
+
+/* ---- HISTORIAL COMPLETO ---- */
+let filtroHistActual = 'todas';
+
+async function renderHistorialAdmin(){
+  const cont = $('#historialContenido');
+  if(!cont) return;
+  cont.innerHTML = '<p class="loading">⏳ Cargando…</p>';
+
+  const [archivadas, activas] = await Promise.all([
+    cargarCalificaciones(),
+    cargarTodasReservas()
+  ]);
+
+  const realizadasSinCompletar = activas.filter(r =>
+    r.estado === 'realizada' && !(r.calificacionProfesor != null && r.calificacionEstudiante != null)
+  );
+
+  const historial = [];
+
+  archivadas.forEach(c => {
+    historial.push({
+      tipo: 'archivada',
+      profesor: c.profesor_nombre,
+      profesorId: c.profesor_id,
+      estudiante: c.nombre_estudiante,
+      correo: c.correo_estudiante,
+      programa: c.programa,
+      tema: c.tema,
+      fecha: c.fecha,
+      inicio: (c.hora_inicio||'').slice(0,5),
+      fin: (c.hora_fin||'').slice(0,5),
+      califProf: c.calificacion_profesor,
+      comentProf: c.comentario_profesor,
+      califEst: c.calificacion_estudiante,
+      comentEst: c.comentario_estudiante,
+      estudianteAsistio: c.estudiante_asistio,
+      profesorDio: c.profesor_dio_tutoria,
+      creado: c.creado_en
+    });
+  });
+
+  realizadasSinCompletar.forEach(r => {
+    historial.push({
+      tipo: 'pendiente-calif',
+      profesor: r.profesor,
+      profesorId: r.profesorId,
+      estudiante: r.nombre,
+      correo: r.correo,
+      programa: r.programa,
+      tema: r.tema,
+      fecha: r.fecha,
+      inicio: r.inicio,
+      fin: r.fin,
+      califProf: r.calificacionProfesor,
+      comentProf: r.comentarioProfesor,
+      califEst: r.calificacionEstudiante,
+      comentEst: r.comentarioEstudiante,
+      estudianteAsistio: r.estudianteAsistio,
+      profesorDio: r.profesorDioTutoria,
+      creado: r.creado
+    });
+  });
+
+  historial.sort((a,b) => (b.fecha + b.inicio).localeCompare(a.fecha + a.inicio));
+
+  let filtrado = historial;
+  if(filtroHistActual === 'completas'){
+    filtrado = historial.filter(h => h.tipo === 'archivada');
+  } else if(filtroHistActual === 'sin-estudiante'){
+    filtrado = historial.filter(h => h.estudianteAsistio === false);
+  } else if(filtroHistActual === 'sin-profesor'){
+    filtrado = historial.filter(h => h.profesorDio === false);
+  } else if(filtroHistActual === 'espera'){
+    filtrado = historial.filter(h => h.tipo === 'pendiente-calif');
+  }
+
+  if(!filtrado.length){
+    cont.innerHTML = '<p class="empty">No hay registros con este filtro.</p>';
+    return;
+  }
+
+  cont.innerHTML = filtrado.map(h => renderHistItem(h)).join('');
+}
+
+function renderHistItem(h){
+  const noAsistio = h.estudianteAsistio === false;
+  const profFalto = h.profesorDio === false;
+  const completa = h.tipo === 'archivada';
+  const clase = noAsistio ? 'sin-asistencia' : (completa ? 'completa' : 'pendiente');
+
+  let badges = '';
+  if(h.estudianteAsistio === true) badges += '<span class="badge badge-success">✅ Estudiante asistió</span> ';
+  if(noAsistio) badges += '<span class="badge badge-danger">❌ Estudiante no asistió</span> ';
+  if(h.profesorDio === true) badges += '<span class="badge badge-success">✅ Profesor dio tutoría</span> ';
+  if(profFalto) badges += '<span class="badge badge-danger">⚠️ Profesor no dio tutoría</span> ';
+  if(h.tipo === 'pendiente-calif') badges += '<span class="badge badge-warn">⏳ Esperando calificar</span> ';
+
+  return `
+    <div class="hist-item ${clase}">
+      <div class="hist-head">
+        <div>
+          <div class="hist-titulo">${esc(h.profesor)} · ${esc(h.fecha)} · ${h.inicio}–${h.fin}</div>
+          <div class="muted-sm">👤 ${esc(h.estudiante)} · ${esc(h.correo)}</div>
+          <div class="muted-sm">🎓 ${esc(h.programa)} · 📝 ${esc(h.tema)}</div>
+        </div>
+      </div>
+      <div class="hist-row">${badges}</div>
+      <div class="hist-row">⭐ <strong>Estudiante → Profesor:</strong> ${h.califProf ? estrellasHTML(h.califProf) : '<span style="color:#94a3b8">sin calificar</span>'}
+        ${h.comentProf ? `<div style="font-style:italic;color:#475569;font-size:.8rem;width:100%">"${esc(h.comentProf)}"</div>` : ''}
+      </div>
+      <div class="hist-row">⭐ <strong>Profesor → Estudiante:</strong> ${h.califEst ? estrellasHTML(h.califEst) : '<span style="color:#94a3b8">sin calificar</span>'}
+        ${h.comentEst ? `<div style="font-style:italic;color:#475569;font-size:.8rem;width:100%">"${esc(h.comentEst)}"</div>` : ''}
+      </div>
+    </div>`;
+}
+
+$('#filtrosHist')?.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-filtro]');
+  if(!btn) return;
+  $$('#filtrosHist button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filtroHistActual = btn.dataset.filtro;
+  renderHistorialAdmin();
+});
+
+$('#btnRefrescarHist')?.addEventListener('click', renderHistorialAdmin);
 
 $('#panelContenido')?.addEventListener('click', async (e) => {
   const btn = e.target.closest('[data-del]');
@@ -1315,21 +1550,25 @@ $('#panelContenido')?.addEventListener('click', async (e) => {
 
 $('#btnRefrescar')?.addEventListener('click', async () => {
   await renderReservasAdmin();
+  await renderHistorialAdmin();
   await renderProfesoresList();
 });
+
 $('#btnLimpiar')?.addEventListener('click', async () => {
-  if(!confirm('¿Borrar TODAS las reservas?')) return;
+  if(!confirm('¿Borrar TODAS las reservas activas?')) return;
   try{
     await eliminarTodasReservasDB();
     await renderReservasAdmin();
+    await renderHistorialAdmin();
     await renderSlots();
   }catch(err){ alert('Error: '+err.message); }
 });
+
 $('#btnCSV')?.addEventListener('click', async () => {
   const reservas = await cargarTodasReservas();
   if(!reservas.length) return alert('No hay reservas.');
-  const head = ['Fecha','Inicio','Fin','Profesor','Area','Estudiante','Correo','Programa','Tema','Estado','Calif.prof','Calif.est'];
-  const rows = reservas.map(r => [r.fecha, r.inicio, r.fin, r.profesor, r.area, r.nombre, r.correo, r.programa, r.tema, r.estado, r.calificacionProfesor||'', r.calificacionEstudiante||'']);
+  const head = ['Fecha','Inicio','Fin','Profesor','Area','Estudiante','Correo','Programa','Tema','Estado','Calif.prof','Calif.est','Asistió','Profesor dio'];
+  const rows = reservas.map(r => [r.fecha, r.inicio, r.fin, r.profesor, r.area, r.nombre, r.correo, r.programa, r.tema, r.estado, r.calificacionProfesor||'', r.calificacionEstudiante||'', r.estudianteAsistio===true?'Sí':r.estudianteAsistio===false?'No':'', r.profesorDioTutoria===true?'Sí':r.profesorDioTutoria===false?'No':'']);
   const csv = [head,...rows].map(row => row.map(v => `"${String(v??'').replace(/"/g,'""')}"`).join(',')).join('\r\n');
   const blob = new Blob(['\ufeff'+csv], {type:'text/csv;charset=utf-8;'});
   const url = URL.createObjectURL(blob);
@@ -1574,7 +1813,7 @@ $('#btnCambiarPass')?.addEventListener('click', () => {
 /* ============ INIT ============ */
 (async function init(){
   const hoy = new Date();
-  hoy.setDate(hoy.getDate() + 1); // Empieza desde mañana (24h mínimo)
+  hoy.setDate(hoy.getDate() + 1);
   const yyyy = hoy.getFullYear();
   const mm = String(hoy.getMonth()+1).padStart(2,'0');
   const dd = String(hoy.getDate()).padStart(2,'0');
