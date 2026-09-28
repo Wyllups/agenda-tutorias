@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agenda de Tutorías</title>
+<title>Agenda de Tutorías - Universidad Mayor</title>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -16,19 +16,19 @@
   body{margin:0;background:var(--bg);color:var(--ink);
     font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.5;}
   .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
-  .topbar{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;padding:22px 0 28px}
+  .topbar{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;padding:18px 0 24px}
   .topbar-row{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
-  .topbar h1{margin:0 0 4px;font-size:1.5rem}
-  .topbar p{margin:0;opacity:.9;font-size:.9rem}
-  .tabs{display:flex;gap:6px;background:rgba(255,255,255,.15);padding:5px;border-radius:11px}
-  .tab{border:none;background:transparent;color:#fff;font:inherit;font-size:.88rem;font-weight:600;
-    padding:8px 16px;border-radius:8px;cursor:pointer;transition:.15s;}
+  .topbar h1{margin:0 0 4px;font-size:1.4rem}
+  .topbar p{margin:0;opacity:.9;font-size:.85rem}
+  .tabs{display:flex;gap:4px;background:rgba(255,255,255,.15);padding:5px;border-radius:11px;flex-wrap:wrap}
+  .tab{border:none;background:transparent;color:#fff;font:inherit;font-size:.83rem;font-weight:600;
+    padding:8px 14px;border-radius:8px;cursor:pointer;transition:.15s;}
   .tab:hover{background:rgba(255,255,255,.15)}
   .tab.active{background:#fff;color:var(--brand)}
-  .tab-panel{padding:26px 0 60px}
+  .tab-panel{padding:24px 0 60px}
   .grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:22px}
   @media (max-width:900px){.grid{grid-template-columns:1fr}}
-  .card{background:var(--card);border-radius:var(--radius);padding:22px;box-shadow:0 8px 24px rgba(15,23,42,.07)}
+  .card{background:var(--card);border-radius:var(--radius);padding:22px;box-shadow:0 8px 24px rgba(15,23,42,.07);margin-bottom:18px}
   .card h2{font-size:1.05rem;margin:0 0 14px;padding-bottom:10px;border-bottom:1px solid var(--line)}
   .card h3{font-size:1rem;margin:0}
   .card h4{font-size:.9rem;margin:20px 0 10px;color:#334155}
@@ -38,6 +38,9 @@
   input,select,textarea{width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;
     font:inherit;font-size:.92rem;background:#fff;color:var(--ink);transition:border-color .15s, box-shadow .15s;}
   input:focus,select:focus,textarea:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(79,70,229,.15)}
+  input[type="range"]{padding:0;height:8px;-webkit-appearance:none;background:linear-gradient(90deg,#dc2626,#f59e0b,#059669);border-radius:99px}
+  input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;background:#fff;
+    border:3px solid var(--brand);border-radius:50%;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.2)}
   textarea{resize:vertical}
   .hint{font-size:.85rem;color:var(--muted);margin:6px 0 12px}
   .slots{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
@@ -56,6 +59,8 @@
   .badge-ok{background:#dcfce7;color:#166534}
   .badge-warn{background:#fef3c7;color:#92400e}
   .badge-full{background:#fee2e2;color:#991b1b}
+  .badge-info{background:#dbeafe;color:#1e40af}
+  .badge-gray{background:#e2e8f0;color:#475569}
   .btn-primary{width:100%;padding:13px;border:none;border-radius:11px;
     background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;
     font:inherit;font-weight:700;font-size:.95rem;cursor:pointer;transition:.15s;}
@@ -71,6 +76,9 @@
   .btn-danger{padding:8px 13px;border:1.5px solid #fecaca;border-radius:9px;background:#fff;
     font:inherit;font-size:.82rem;font-weight:600;cursor:pointer;color:#991b1b;}
   .btn-danger:hover{background:#fee2e2}
+  .btn-success{padding:8px 13px;border:1.5px solid #86efac;border-radius:9px;background:#fff;
+    font:inherit;font-size:.82rem;font-weight:600;cursor:pointer;color:#166534;}
+  .btn-success:hover{background:#dcfce7}
   .alerta{border-radius:11px;padding:13px 15px;font-size:.88rem;margin-bottom:16px;border-left:4px solid}
   .alerta.ok{background:#f0fdf4;border-color:var(--ok);color:#14532d}
   .alerta.err{background:#fef2f2;border-color:var(--danger);color:#7f1d1d}
@@ -100,9 +108,12 @@
   .prof-item{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;
     padding:12px 14px;border:1px solid var(--line);border-radius:12px;margin-bottom:10px;background:#fff;}
   .prof-item-info{flex:1;min-width:0}
-  .prof-item-name{font-weight:700;font-size:.92rem}
+  .prof-item-name{font-weight:700;font-size:.92rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
   .prof-item-meta{font-size:.8rem;color:var(--muted);margin-top:2px;word-break:break-word}
   .prof-item-actions{display:flex;gap:6px;flex-shrink:0}
+  .stars{color:#f59e0b;font-size:.9rem;letter-spacing:1px}
+  .stars-lg{font-size:1.4rem}
+  .stars-gray{color:#cbd5e1}
   .dia-row{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f1f5f9;align-items:flex-start}
   .dia-row:last-child{border-bottom:none}
   .dia-label{width:90px;flex-shrink:0;font-weight:700;font-size:.85rem;padding-top:8px;color:#334155}
@@ -114,8 +125,23 @@
   .btn-add-rango:hover{background:#e0e7ff}
   #panelContenido{max-height:520px;overflow-y:auto;margin-top:8px}
   #profesoresList{max-height:600px;overflow-y:auto}
+  #misReservas{max-height:600px;overflow-y:auto}
   .empty{color:var(--muted);font-size:.85rem;padding:14px 0;text-align:center}
   .loading{color:var(--muted);font-size:.85rem;padding:14px 0;text-align:center}
+  .reserva-item{border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:10px;background:#fff}
+  .reserva-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+  .reserva-titulo{font-weight:700;font-size:.95rem;color:var(--brand)}
+  .reserva-meta{font-size:.83rem;color:var(--muted)}
+  .reserva-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.6);display:flex;align-items:center;justify-content:center;
+    z-index:999;padding:20px;backdrop-filter:blur(4px)}
+  .modal{background:#fff;border-radius:16px;padding:24px;max-width:480px;width:100%;max-height:90vh;overflow-y:auto;
+    box-shadow:0 20px 60px rgba(15,23,42,.3)}
+  .modal h3{margin:0 0 14px;font-size:1.1rem}
+  .modal-actions{display:flex;gap:8px;margin-top:16px;justify-content:flex-end}
+  .slider-wrap{text-align:center;padding:10px 0}
+  .slider-value{font-size:2rem;font-weight:800;color:var(--brand);margin-bottom:10px}
+  .slider-labels{display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted);margin-top:6px}
 </style>
 </head>
 <body>
@@ -124,10 +150,12 @@
   <div class="wrap topbar-row">
     <div>
       <h1>📚 Agenda de Tutorías</h1>
-      <p>Reserva tu espacio · máximo 5 estudiantes por tutoría</p>
+      <p>Universidad Mayor · máximo 5 estudiantes por tutoría</p>
     </div>
     <nav class="tabs">
       <button class="tab active" data-tab="reservar">Reservar</button>
+      <button class="tab" data-tab="misreservas">Mis reservas</button>
+      <button class="tab" data-tab="profesor">Profesor</button>
       <button class="tab" data-tab="admin">Admin</button>
     </nav>
   </div>
@@ -135,6 +163,7 @@
 
 <main class="wrap">
 
+  <!-- ============ RESERVAR ============ -->
   <section id="tab-reservar" class="tab-panel">
     <div class="grid">
       <div class="card">
@@ -146,8 +175,8 @@
             <input id="nombre" type="text" required placeholder="Ej: Ana María Gómez">
           </div>
           <div class="field">
-            <label for="correo">Correo institucional *</label>
-            <input id="correo" type="email" required placeholder="ana.gomez@institucion.edu.co">
+            <label for="correo">Correo institucional * (@universidadmayor.edu.co)</label>
+            <input id="correo" type="email" required placeholder="ana.gomez@universidadmayor.edu.co">
           </div>
           <div class="field">
             <label for="programa">Programa académico *</label>
@@ -174,7 +203,7 @@
 
           <h2>2. Fecha y horario</h2>
           <div class="field">
-            <label for="fecha">Fecha *</label>
+            <label for="fecha">Fecha * (mínimo 24 horas de anticipación)</label>
             <input id="fecha" type="date" required>
           </div>
           <div id="slotsContainer">
@@ -191,19 +220,78 @@
           <li>Aparecerán las tutorías disponibles ese día, numeradas <strong>Tutoría 1, 2, 3…</strong></li>
           <li>Cada tutoría tiene un profesor asignado y un horario (máximo <strong>5 cupos</strong>).</li>
           <li>Llena tus datos, selecciona la tutoría y confirma.</li>
-          <li>El profesor recibirá un correo automático con tu solicitud.</li>
-          <li>Las tutorias deben ser agendadas con 24 horas de anticipación.</li>
-          <li>Si no puedes asistir, por favor cancela tu reserva para liberar el cupo.</li>
-          <li>Recuerda siempre respetar las normas de CEM-potencias.</li>
+          <li>El profesor recibirá un correo con tu solicitud y un link para agendarla en su calendario.</li>
+          <li>Las tutorías deben ser agendadas con <strong>24 horas de anticipación</strong>.</li>
+          <li>Si no puedes asistir, cancela tu reserva desde <strong>"Mis reservas"</strong>.</li>
+          <li>Después de asistir, podrás <strong>calificar al profesor</strong>.</li>
         </ol>
-        <p class="hint" style="margin-top:18px">
-          Los datos se guardan en la nube, así que tus reservas estarán disponibles
-          desde cualquier dispositivo.
-        </p>
       </div>
     </div>
   </section>
 
+  <!-- ============ MIS RESERVAS (ESTUDIANTE) ============ -->
+  <section id="tab-misreservas" class="tab-panel" hidden>
+    <div class="card" style="max-width:600px;margin:0 auto 20px">
+      <h2>🔍 Consulta tus reservas</h2>
+      <p class="hint">Ingresa tu correo institucional para ver tus tutorías agendadas.</p>
+      <div class="field">
+        <label for="correoConsulta">Correo institucional</label>
+        <input id="correoConsulta" type="email" placeholder="tu.nombre@universidadmayor.edu.co">
+      </div>
+      <button class="btn-primary" id="btnBuscarReservas">Ver mis reservas</button>
+    </div>
+    <div class="card">
+      <h2>📋 Tus tutorías</h2>
+      <div id="misReservas">
+        <p class="empty">Ingresa tu correo arriba para ver tus reservas.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PROFESOR ============ -->
+  <section id="tab-profesor" class="tab-panel" hidden>
+    <div id="profLogin" class="card login-card">
+      <h2>👨‍🏫 Acceso profesores</h2>
+      <div class="field">
+        <label for="profCorreo">Correo institucional</label>
+        <input type="email" id="profCorreo" placeholder="profesor@universidadmayor.edu.co">
+      </div>
+      <div class="field">
+        <label for="profDocumento">Número de documento</label>
+        <input type="text" id="profDocumento" placeholder="Ej: 1234567890">
+      </div>
+      <div class="field">
+        <label for="profPassword">Contraseña</label>
+        <input type="password" id="profPassword" placeholder="••••••••">
+      </div>
+      <button class="btn-primary" id="btnLoginProf">Entrar</button>
+      <p class="hint" style="text-align:center;margin-top:12px" id="profLoginMsg"></p>
+      <p class="hint" style="text-align:center">
+        ¿Primera vez? Tu contraseña inicial es tu número de documento.<br>
+        Cámbiala después de entrar.
+      </p>
+    </div>
+
+    <div id="profPanel" hidden>
+      <div class="admin-header">
+        <h2>Panel del profesor</h2>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn-ghost" id="btnCambiarPassProf">🔑 Cambiar contraseña</button>
+          <button class="btn-ghost" id="btnLogoutProf">Cerrar sesión</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="panel-head">
+          <h3 id="profNombreTitulo">Mis tutorías agendadas</h3>
+          <button class="btn-ghost" id="btnRefrescarProf">🔄 Refrescar</button>
+        </div>
+        <div id="profReservas"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ADMIN ============ -->
   <section id="tab-admin" class="tab-panel" hidden>
     <div id="adminLogin" class="card login-card">
       <h2>🔒 Acceso administrador</h2>
@@ -246,10 +334,17 @@
 
         <div class="card">
           <h3>⚙️ Configuración</h3>
-          <h4>Envío de correos (EmailJS)</h4>
+
+          <h4>👁️ Visibilidad de calificaciones</h4>
+          <p class="hint">Si lo desactivas, las calificaciones y comentarios no se mostrarán públicamente.</p>
+          <label style="display:flex;align-items:center;gap:10px;padding:10px;border:1.5px solid var(--line);border-radius:10px;cursor:pointer">
+            <input type="checkbox" id="cfgCalifVisibles" style="width:auto;accent-color:var(--brand)">
+            <span style="font-size:.9rem;font-weight:600">Mostrar calificaciones públicamente</span>
+          </label>
+
+          <h4>📧 Envío de correos (EmailJS)</h4>
           <p class="hint">
-            Crea una cuenta gratis en <a href="https://www.emailjs.com" target="_blank">emailjs.com</a>
-            y pega aquí tus claves.
+            Estas claves se guardan en la nube. Solo se configuran una vez.
           </p>
           <div class="field">
             <label for="cfgPublicKey">Public Key</label>
@@ -260,13 +355,17 @@
             <input type="text" id="cfgServiceId" placeholder="service_xxxxxxx">
           </div>
           <div class="field">
-            <label for="cfgTemplateId">Template ID</label>
+            <label for="cfgTemplateId">Template ID (nueva reserva)</label>
             <input type="text" id="cfgTemplateId" placeholder="template_xxxxxxx">
+          </div>
+          <div class="field">
+            <label for="cfgTemplateCancelacion">Template ID (cancelación)</label>
+            <input type="text" id="cfgTemplateCancelacion" placeholder="template_cancelacion">
           </div>
           <button class="btn-primary" id="btnGuardarConfig">Guardar configuración</button>
           <p class="hint" id="cfgMsg" style="text-align:center"></p>
 
-          <h4>Cambiar contraseña de admin</h4>
+          <h4>🔑 Cambiar contraseña de admin</h4>
           <div class="field">
             <label for="cfgNewPass">Nueva contraseña</label>
             <input type="password" id="cfgNewPass" placeholder="Mínimo 4 caracteres">
@@ -283,6 +382,8 @@
   </section>
 </main>
 
+<div id="modalContainer"></div>
+
 <script>
 /* ============ CONFIG SUPABASE ============ */
 const SUPABASE_URL = 'https://sfvvrcxrgbzdfkvdkrza.supabase.co';
@@ -291,9 +392,10 @@ const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 /* ============ CONSTANTES ============ */
 const CUPO_MAX = 5;
+const DOMINIO = '@universidadmayor.edu.co';
 const DIAS = {1:'Lunes',2:'Martes',3:'Miércoles',4:'Jueves',5:'Viernes',6:'Sábado'};
-const STORAGE_CONFIG = 'tutorias_config_v3';
 const STORAGE_SESSION = 'tutorias_admin_session';
+const STORAGE_PROF_SESSION = 'tutorias_prof_session';
 const PASS_DEFAULT = 'admin123';
 
 /* ============ UTILIDADES ============ */
@@ -307,14 +409,53 @@ function fmtFecha(fecha){
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
-function getConfig(){
-  const def = {adminPassword:PASS_DEFAULT, emailjs:{publicKey:'',serviceId:'',templateId:''}};
-  try{
-    const c = JSON.parse(localStorage.getItem(STORAGE_CONFIG));
-    return c ? {...def,...c,emailjs:{...def.emailjs,...(c.emailjs||{})}} : def;
-  }catch(e){ return def; }
+function estrellasHTML(promedio){
+  if(promedio === null || promedio === undefined) return '<span class="stars stars-gray">☆☆☆☆☆</span>';
+  const llenas = Math.round(promedio);
+  return `<span class="stars">${'★'.repeat(llenas)}${'☆'.repeat(5-llenas)}</span> <span style="color:#64748b;font-size:.8rem">${promedio.toFixed(1)}</span>`;
 }
-function setConfig(c){ localStorage.setItem(STORAGE_CONFIG, JSON.stringify(c)); }
+
+function validarCorreo(correo){
+  return correo && correo.toLowerCase().endsWith(DOMINIO);
+}
+
+/* ============ GOOGLE CALENDAR ============ */
+function linkGoogleCalendar(r){
+  const fecha = r.fecha.replace(/-/g,'');
+  const [h1,m1] = r.inicio.split(':');
+  const [h2,m2] = r.fin.split(':');
+  const start = `${fecha}T${h1.padStart(2,'0')}${m1.padStart(2,'0')}00`;
+  const end = `${fecha}T${h2.padStart(2,'0')}${m2.padStart(2,'0')}00`;
+  const titulo = encodeURIComponent(`Tutoría: ${r.nombre} (${r.programa})`);
+  const detalles = encodeURIComponent(`Estudiante: ${r.nombre}\nCorreo: ${r.correo}\nPrograma: ${r.programa}\nTema: ${r.tema}`);
+  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${titulo}&dates=${start}/${end}&details=${detalles}`;
+}
+
+/* ============ CONFIGURACIÓN GLOBAL ============ */
+let CONFIG = {
+  calificaciones_visibles: true,
+  emailjs_public_key: '',
+  emailjs_service_id: '',
+  emailjs_template_id: '',
+  emailjs_template_cancelacion: ''
+};
+
+async function cargarConfig(){
+  const {data,error} = await db.from('configuracion').select('*');
+  if(error){ console.error('Config error:', error); return; }
+  (data||[]).forEach(row => {
+    if(row.clave === 'calificaciones_visibles'){
+      CONFIG.calificaciones_visibles = row.valor === 'true';
+    } else {
+      CONFIG[row.clave] = row.valor || '';
+    }
+  });
+}
+
+async function guardarConfigDB(clave, valor){
+  const {error} = await db.from('configuracion').upsert({clave, valor: String(valor)});
+  if(error) throw error;
+}
 
 /* ============ ACCESO A DATOS ============ */
 async function cargarProfesores(){
@@ -322,6 +463,7 @@ async function cargarProfesores(){
   if(error){ console.error(error); return []; }
   return (data||[]).map(p => ({
     id:p.id, nombre:p.nombre, area:p.area, correo:p.correo,
+    documento:p.documento, password:p.password,
     agenda:(p.horarios||[]).reduce((acc,h)=>{
       const d = h.dia_semana;
       acc[d] = acc[d] || [];
@@ -363,7 +505,7 @@ async function eliminarProfesorSupabase(id){
 }
 
 async function cargarReservasPorFecha(fecha){
-  const {data,error} = await db.from('reservas').select('profesor_id, hora_inicio').eq('fecha', fecha);
+  const {data,error} = await db.from('reservas').select('profesor_id, hora_inicio, estado').eq('fecha', fecha);
   if(error){ console.error(error); return []; }
   return data||[];
 }
@@ -371,7 +513,11 @@ async function cargarReservasPorFecha(fecha){
 async function cargarTodasReservas(){
   const {data,error} = await db.from('reservas').select('*, profesores(*)').order('fecha');
   if(error){ console.error(error); return []; }
-  return (data||[]).map(r => ({
+  return (data||[]).map(r => mapReserva(r));
+}
+
+function mapReserva(r){
+  return {
     id:r.id,
     profesorId:r.profesor_id,
     profesor:(r.profesores||{}).nombre || '—',
@@ -385,8 +531,29 @@ async function cargarTodasReservas(){
     correo:r.correo_estudiante,
     programa:r.programa,
     tema:r.tema,
+    estado:r.estado || 'pendiente',
+    calificacionProfesor:r.calificacion_profesor,
+    comentarioProfesor:r.comentario_profesor,
+    calificacionEstudiante:r.calificacion_estudiante,
+    comentarioEstudiante:r.comentario_estudiante,
     creado:r.creado_en
-  }));
+  };
+}
+
+async function cargarReservasPorCorreo(correo){
+  const {data,error} = await db.from('reservas').select('*, profesores(*)')
+    .eq('correo_estudiante', correo.toLowerCase())
+    .order('fecha', {ascending:false});
+  if(error){ console.error(error); return []; }
+  return (data||[]).map(r => mapReserva(r));
+}
+
+async function cargarReservasPorProfesor(profesorId){
+  const {data,error} = await db.from('reservas').select('*, profesores(*)')
+    .eq('profesor_id', profesorId)
+    .order('fecha', {ascending:false});
+  if(error){ console.error(error); return []; }
+  return (data||[]).map(r => mapReserva(r));
 }
 
 async function crearReservaDB(r){
@@ -398,10 +565,16 @@ async function crearReservaDB(r){
     nombre_estudiante:r.nombre,
     correo_estudiante:r.correo,
     programa:r.programa,
-    tema:r.tema
+    tema:r.tema,
+    estado:'pendiente'
   }).select().single();
   if(error) throw error;
   return data;
+}
+
+async function actualizarReservaDB(id, campos){
+  const {error} = await db.from('reservas').update(campos).eq('id', id);
+  if(error) throw error;
 }
 
 async function eliminarReservaDB(id){
@@ -414,6 +587,22 @@ async function eliminarTodasReservasDB(){
   if(error) throw error;
 }
 
+async function promediosProfesores(){
+  const {data,error} = await db.from('reservas').select('profesor_id, calificacion_profesor').not('calificacion_profesor','is',null);
+  if(error){ console.error(error); return {}; }
+  const acc = {};
+  (data||[]).forEach(r => {
+    if(!acc[r.profesor_id]) acc[r.profesor_id] = {suma:0, n:0};
+    acc[r.profesor_id].suma += r.calificacion_profesor;
+    acc[r.profesor_id].n++;
+  });
+  const out = {};
+  Object.keys(acc).forEach(id => {
+    out[id] = {promedio: acc[id].suma / acc[id].n, total: acc[id].n};
+  });
+  return out;
+}
+
 /* ============ GENERACIÓN DE SLOTS ============ */
 async function generarSlots(fecha){
   const dia = new Date(fecha+'T00:00:00').getDay();
@@ -421,6 +610,7 @@ async function generarSlots(fecha){
 
   const conteo = {};
   reservas.forEach(r => {
+    if(r.estado === 'cancelada') return;
     const k = `${r.profesor_id}|${r.hora_inicio.slice(0,5)}`;
     conteo[k] = (conteo[k] || 0) + 1;
   });
@@ -452,6 +642,7 @@ const btnReservar = $('#btnReservar');
 const form = $('#formReserva');
 const mensajeBox = $('#mensaje');
 let slotSeleccionado = null;
+let promediosCache = {};
 
 async function renderSlots(){
   const fecha = fechaInput.value;
@@ -464,6 +655,7 @@ async function renderSlots(){
   }
 
   slotsBox.innerHTML = '<p class="loading">⏳ Cargando horarios…</p>';
+  promediosCache = await promediosProfesores();
 
   let slots;
   try { slots = await generarSlots(fecha); }
@@ -477,6 +669,8 @@ async function renderSlots(){
   let html = `<p class="hint">Horarios para <strong>${esc(fmtFecha(fecha))}</strong> · elige una tutoría (máx. ${CUPO_MAX} estudiantes cada una).</p><div class="slots">`;
   slots.forEach(s => {
     const cb = s.lleno ? 'badge-full' : (s.ocupados >= CUPO_MAX-1 ? 'badge-warn' : 'badge-ok');
+    const stars = CONFIG.calificaciones_visibles && promediosCache[s.profesorId]
+      ? ` · ${estrellasHTML(promediosCache[s.profesorId].promedio)}` : '';
     html += `
       <label class="slot ${s.lleno?'full':''}" data-slot="${esc(s.id)}">
         <input type="radio" name="slot" value="${esc(s.id)}" ${s.lleno?'disabled':''}>
@@ -485,7 +679,7 @@ async function renderSlots(){
             <span class="slot-num">Tutoría ${s.numero}</span>
             <span class="badge ${cb}">${s.ocupados}/${CUPO_MAX} cupos</span>
           </div>
-          <div class="slot-prof">${esc(s.profesor)} · ${esc(s.area)}</div>
+          <div class="slot-prof">${esc(s.profesor)} · ${esc(s.area)}${stars}</div>
           <div class="slot-hora">🕒 ${s.inicio} – ${s.fin}</div>
         </div>
       </label>`;
@@ -503,28 +697,45 @@ async function renderSlots(){
   });
 }
 
-/* ============ NOTIFICACIÓN ============ */
-async function notificarProfesor(reserva){
-  const cfg = getConfig();
-  const destino = reserva.correoProfesor || 'sin-correo@institucion.edu.co';
-  const {publicKey, serviceId, templateId} = cfg.emailjs;
+/* ============ NOTIFICACIONES ============ */
+async function notificarNuevaReserva(reserva){
+  const destino = reserva.correoProfesor;
+  const linkCal = linkGoogleCalendar(reserva);
 
-  if(!publicKey || !serviceId || !templateId || typeof emailjs === 'undefined'){
-    console.info('[SIMULACIÓN] Correo al profesor', {para:destino, ...reserva});
+  if(!CONFIG.emailjs_public_key || !CONFIG.emailjs_service_id || !CONFIG.emailjs_template_id || typeof emailjs === 'undefined'){
+    console.info('[SIMULACIÓN] Correo nueva reserva', {para:destino, linkCal, ...reserva});
     return {ok:false, simulado:true, destino};
   }
   try{
-    await emailjs.send(serviceId, templateId, {
+    await emailjs.send(CONFIG.emailjs_service_id, CONFIG.emailjs_template_id, {
       to_email:destino, profesor:reserva.profesor,
       tutoria:`Tutoría ${reserva.numeroTutoria}`, fecha:reserva.fechaTexto,
       hora:`${reserva.inicio} - ${reserva.fin}`, estudiante:reserva.nombre,
-      correo_estudiante:reserva.correo, programa:reserva.programa, tema:reserva.tema
-    }, {publicKey});
+      correo_estudiante:reserva.correo, programa:reserva.programa, tema:reserva.tema,
+      link_calendario:linkCal
+    }, {publicKey:CONFIG.emailjs_public_key});
     return {ok:true, destino};
   }catch(err){ console.error(err); return {ok:false, error:err, destino}; }
 }
 
-/* ============ SUBMIT ============ */
+async function notificarCancelacion(reserva){
+  const destino = reserva.correoProfesor;
+  if(!CONFIG.emailjs_public_key || !CONFIG.emailjs_service_id || !CONFIG.emailjs_template_cancelacion || typeof emailjs === 'undefined'){
+    console.info('[SIMULACIÓN] Correo cancelación', {para:destino, ...reserva});
+    return {ok:false, simulado:true, destino};
+  }
+  try{
+    await emailjs.send(CONFIG.emailjs_service_id, CONFIG.emailjs_template_cancelacion, {
+      to_email:destino, profesor:reserva.profesor,
+      tutoria:`Tutoría ${reserva.numeroTutoria || ''}`, fecha:reserva.fechaTexto,
+      hora:`${reserva.inicio} - ${reserva.fin}`, estudiante:reserva.nombre,
+      correo_estudiante:reserva.correo, programa:reserva.programa, tema:reserva.tema
+    }, {publicKey:CONFIG.emailjs_public_key});
+    return {ok:true, destino};
+  }catch(err){ console.error(err); return {ok:false, error:err, destino}; }
+}
+
+/* ============ SUBMIT RESERVA ============ */
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
   mensajeBox.innerHTML = '';
@@ -534,12 +745,28 @@ form.addEventListener('submit', async (e) => {
     return;
   }
 
+  const correo = $('#correo').value.trim().toLowerCase();
+  if(!validarCorreo(correo)){
+    mensajeBox.innerHTML = `<div class="alerta err">❌ El correo debe terminar en <strong>${DOMINIO}</strong>.</div>`;
+    return;
+  }
+
+  // Validar 24 horas
+  const fechaSel = new Date(slotSeleccionado.fecha + 'T' + slotSeleccionado.inicio);
+  const ahora = new Date();
+  const diffHoras = (fechaSel - ahora) / 3600000;
+  if(diffHoras < 24){
+    mensajeBox.innerHTML = '<div class="alerta err">⏰ Debes agendar con al menos 24 horas de anticipación.</div>';
+    return;
+  }
+
   btnReservar.disabled = true;
   btnReservar.textContent = 'Guardando…';
 
   try{
     const reservasFecha = await cargarReservasPorFecha(slotSeleccionado.fecha);
     const ocupados = reservasFecha.filter(r =>
+      r.estado !== 'cancelada' &&
       r.profesor_id === slotSeleccionado.profesorId &&
       r.hora_inicio.slice(0,5) === slotSeleccionado.inicio
     ).length;
@@ -548,8 +775,6 @@ form.addEventListener('submit', async (e) => {
       await renderSlots();
       return;
     }
-
-    const correo = $('#correo').value.trim().toLowerCase();
 
     const reserva = {
       profesorId:slotSeleccionado.profesorId,
@@ -568,14 +793,13 @@ form.addEventListener('submit', async (e) => {
     };
 
     await crearReservaDB(reserva);
-
     btnReservar.textContent = 'Enviando notificación…';
-    const r = await notificarProfesor(reserva);
+    const r = await notificarNuevaReserva(reserva);
     btnReservar.textContent = 'Confirmar reserva';
 
     let nota = '';
     if(r.ok) nota = `📧 Se envió la notificación a <strong>${esc(r.destino)}</strong>.`;
-    else if(r.simulado) nota = `📧 Modo demo: configura EmailJS en el panel Admin para enviar el correo real a <strong>${esc(r.destino)}</strong>.`;
+    else if(r.simulado) nota = `📧 Modo demo: configura EmailJS en el panel Admin.`;
     else nota = '⚠️ Reserva guardada, pero el correo falló.';
 
     mensajeBox.innerHTML = `
@@ -583,7 +807,8 @@ form.addEventListener('submit', async (e) => {
         <strong>✅ ¡Reserva confirmada!</strong><br>
         <strong>Tutoría ${reserva.numeroTutoria}</strong> · ${esc(reserva.profesor)}<br>
         ${esc(reserva.fechaTexto)} · ${reserva.inicio} – ${reserva.fin}<br>
-        <span style="font-size:.85rem">${nota}</span>
+        <span style="font-size:.85rem">${nota}</span><br>
+        <span style="font-size:.85rem">Puedes gestionarla desde <strong>"Mis reservas"</strong>.</span>
       </div>`;
 
     const fg = fechaInput.value;
@@ -595,7 +820,7 @@ form.addEventListener('submit', async (e) => {
 
   }catch(err){
     console.error(err);
-    mensajeBox.innerHTML = '<div class="alerta err">❌ Error al guardar la reserva.</div>';
+    mensajeBox.innerHTML = '<div class="alerta err">❌ Error al guardar la reserva: ' + err.message + '</div>';
     btnReservar.disabled = false;
     btnReservar.textContent = 'Confirmar reserva';
   }
@@ -605,9 +830,383 @@ form.addEventListener('submit', async (e) => {
 function switchTab(name){
   $$('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
   $('#tab-reservar').hidden = name !== 'reservar';
+  $('#tab-misreservas').hidden = name !== 'misreservas';
+  $('#tab-profesor').hidden = name !== 'profesor';
   $('#tab-admin').hidden = name !== 'admin';
 }
 $$('.tab').forEach(t => t.addEventListener('click', () => switchTab(t.dataset.tab)));
+
+/* ============ MODAL GENÉRICO ============ */
+function mostrarModal(html, onClose){
+  const cont = $('#modalContainer');
+  cont.innerHTML = `<div class="modal-bg"><div class="modal">${html}</div></div>`;
+  const bg = cont.querySelector('.modal-bg');
+  bg.addEventListener('click', (e) => {
+    if(e.target === bg){ cerrarModal(); if(onClose) onClose(); }
+  });
+  return cont;
+}
+function cerrarModal(){ $('#modalContainer').innerHTML = ''; }
+
+/* ============ MIS RESERVAS (ESTUDIANTE) ============ */
+$('#btnBuscarReservas')?.addEventListener('click', async () => {
+  const correo = $('#correoConsulta').value.trim().toLowerCase();
+  const cont = $('#misReservas');
+  if(!validarCorreo(correo)){
+    cont.innerHTML = `<div class="alerta err">El correo debe terminar en ${DOMINIO}</div>`;
+    return;
+  }
+  cont.innerHTML = '<p class="loading">⏳ Cargando…</p>';
+  const reservas = await cargarReservasPorCorreo(correo);
+  if(!reservas.length){
+    cont.innerHTML = '<p class="empty">No tienes reservas registradas con ese correo.</p>';
+    return;
+  }
+  cont.innerHTML = reservas.map(r => {
+    let estadoBadge = '';
+    if(r.estado === 'realizada') estadoBadge = '<span class="badge badge-info">Realizada</span>';
+    else if(r.estado === 'cancelada') estadoBadge = '<span class="badge badge-gray">Cancelada</span>';
+    else estadoBadge = '<span class="badge badge-ok">Pendiente</span>';
+
+    // Calendario solo si está pendiente
+    const linkCal = r.estado === 'pendiente' ? linkGoogleCalendar(r) : '';
+
+    // ¿Puede cancelar? Solo si está pendiente y faltan más de 24h
+    const fechaRes = new Date(r.fecha + 'T' + r.inicio);
+    const puedeCancelar = r.estado === 'pendiente' && ((fechaRes - new Date())/3600000) > 24;
+
+    // ¿Puede calificar? Solo si está realizada y aún no calificó
+    const puedeCalificar = r.estado === 'realizada' && !r.calificacionProfesor;
+
+    // Mostrar calificación si existe
+    let califHTML = '';
+    if(r.calificacionProfesor){
+      califHTML = `<div style="margin-top:8px;padding:8px;background:#fffbeb;border-radius:8px;font-size:.83rem">
+        <strong>Tu calificación:</strong> ${estrellasHTML(r.calificacionProfesor)}
+        ${r.comentarioProfesor ? `<div style="margin-top:4px;color:#475569;font-style:italic">"${esc(r.comentarioProfesor)}"</div>` : ''}
+      </div>`;
+    }
+
+    return `
+      <div class="reserva-item">
+        <div class="reserva-head">
+          <div>
+            <div class="reserva-titulo">${esc(r.profesor)} · ${esc(r.area)}</div>
+            <div class="reserva-meta">📅 ${esc(r.fechaTexto)} · 🕒 ${r.inicio}–${r.fin}</div>
+            <div class="reserva-meta">📝 ${esc(r.tema)}</div>
+          </div>
+          ${estadoBadge}
+        </div>
+        <div class="reserva-actions">
+          ${linkCal ? `<a href="${linkCal}" target="_blank" class="btn-ghost" style="text-decoration:none">📅 Añadir a calendario</a>` : ''}
+          ${puedeCancelar ? `<button class="btn-danger" data-cancelar="${esc(r.id)}">❌ Cancelar</button>` : ''}
+          ${puedeCalificar ? `<button class="btn-success" data-calificar="${esc(r.id)}" data-prof="${esc(r.profesor)}">⭐ Calificar profesor</button>` : ''}
+        </div>
+        ${califHTML}
+      </div>`;
+  }).join('');
+
+  // Eventos
+  $$('[data-cancelar]', cont).forEach(btn => {
+    btn.addEventListener('click', () => cancelarReservaEstudiante(btn.dataset.cancelar, reservas));
+  });
+  $$('[data-calificar]', cont).forEach(btn => {
+    btn.addEventListener('click', () => abrirCalificarProfesor(btn.dataset.calificar, btn.dataset.prof));
+  });
+});
+
+async function cancelarReservaEstudiante(id, reservas){
+  if(!confirm('¿Cancelar esta reserva? Se notificará al profesor.')) return;
+  const r = reservas.find(x => x.id === id);
+  if(!r) return;
+  try{
+    await actualizarReservaDB(id, {estado: 'cancelada'});
+    await notificarCancelacion(r);
+    alert('✅ Reserva cancelada. Se notificó al profesor.');
+    $('#btnBuscarReservas').click();
+  }catch(err){ alert('Error: ' + err.message); }
+}
+
+function abrirCalificarProfesor(reservaId, nombreProfesor){
+  mostrarModal(`
+    <h3>⭐ Calificar a ${esc(nombreProfesor)}</h3>
+    <p class="hint">Desliza para dar tu calificación y déjale un comentario (opcional).</p>
+    <div class="slider-wrap">
+      <div class="slider-value" id="sliderVal">5</div>
+      <input type="range" min="1" max="5" value="5" id="sliderCalif" style="width:100%">
+      <div class="slider-labels"><span>1 - Muy mala</span><span>5 - Excelente</span></div>
+    </div>
+    <div class="field">
+      <label>Comentario o recomendación (opcional)</label>
+      <textarea id="comentarioCalif" rows="3" placeholder="Ej: Excelente explicación, muy clara. ¡Gracias!"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn-primary" id="btnEnviarCalif" style="width:auto;padding:10px 24px">Enviar calificación</button>
+    </div>
+  `);
+
+  const slider = $('#sliderCalif');
+  const val = $('#sliderVal');
+  const emojis = ['😞','😐','🙂','😊','🤩'];
+  slider.addEventListener('input', () => {
+    val.textContent = `${slider.value} ${emojis[slider.value-1]}`;
+  });
+
+  $('#btnEnviarCalif').addEventListener('click', async () => {
+    const calificacion = parseInt(slider.value);
+    const comentario = $('#comentarioCalif').value.trim();
+    try{
+      await actualizarReservaDB(reservaId, {
+        calificacion_profesor: calificacion,
+        comentario_profesor: comentario || null,
+        fecha_calificacion_profesor: new Date().toISOString()
+      });
+      cerrarModal();
+      alert('✅ ¡Gracias por tu calificación!');
+      $('#btnBuscarReservas').click();
+    }catch(err){ alert('Error: ' + err.message); }
+  });
+}
+
+/* ============ PROFESOR ============ */
+function isProfLogged(){
+  try { return JSON.parse(sessionStorage.getItem(STORAGE_PROF_SESSION)); }
+  catch(e){ return null; }
+}
+function setProfLogged(p){
+  if(p) sessionStorage.setItem(STORAGE_PROF_SESSION, JSON.stringify(p));
+  else sessionStorage.removeItem(STORAGE_PROF_SESSION);
+}
+
+$('#btnLoginProf')?.addEventListener('click', async () => {
+  const correo = $('#profCorreo').value.trim().toLowerCase();
+  const doc = $('#profDocumento').value.trim();
+  const pass = $('#profPassword').value;
+  const msg = $('#profLoginMsg');
+
+  if(!correo || !doc || !pass){
+    msg.innerHTML = '<span style="color:#dc2626">Completa todos los campos.</span>';
+    return;
+  }
+
+  msg.textContent = 'Verificando…';
+  const {data,error} = await db.from('profesores').select('*').eq('correo', correo).maybeSingle();
+  if(error || !data){
+    msg.innerHTML = '<span style="color:#dc2626">Correo no registrado.</span>';
+    return;
+  }
+  if(data.documento !== doc){
+    msg.innerHTML = '<span style="color:#dc2626">Número de documento incorrecto.</span>';
+    return;
+  }
+  if(data.password !== pass){
+    msg.innerHTML = '<span style="color:#dc2626">Contraseña incorrecta.</span>';
+    return;
+  }
+
+  setProfLogged({id:data.id, nombre:data.nombre, correo:data.correo});
+  $('#profPassword').value = '';
+  msg.textContent = '';
+  await renderProfesorPanel();
+});
+
+$('#btnLogoutProf')?.addEventListener('click', () => {
+  setProfLogged(null);
+  renderProfesorPanel();
+});
+
+async function renderProfesorPanel(){
+  const prof = isProfLogged();
+  $('#profLogin').hidden = !!prof;
+  $('#profPanel').hidden = !prof;
+  if(prof){
+    $('#profNombreTitulo').textContent = `Tutorías de ${prof.nombre}`;
+    await renderProfReservas();
+  }
+}
+
+async function renderProfReservas(){
+  const prof = isProfLogged();
+  if(!prof) return;
+  const cont = $('#profReservas');
+  cont.innerHTML = '<p class="loading">⏳ Cargando…</p>';
+  const reservas = await cargarReservasPorProfesor(prof.id);
+
+  if(!reservas.length){
+    cont.innerHTML = '<p class="empty">Aún no tienes tutorías agendadas.</p>';
+    return;
+  }
+
+  // Agrupar por fecha
+  const porFecha = {};
+  reservas.forEach(r => {
+    if(!porFecha[r.fecha]) porFecha[r.fecha] = [];
+    porFecha[r.fecha].push(r);
+  });
+
+  cont.innerHTML = Object.keys(porFecha).sort().map(fecha => {
+    const items = porFecha[fecha];
+    return `
+      <div style="margin-bottom:20px">
+        <h4 style="font-size:.95rem;color:#334155;margin-bottom:10px">📅 ${esc(fmtFecha(fecha))}</h4>
+        ${items.map(r => {
+          let estadoBadge = '';
+          if(r.estado === 'realizada') estadoBadge = '<span class="badge badge-info">Realizada</span>';
+          else if(r.estado === 'cancelada') estadoBadge = '<span class="badge badge-gray">Cancelada</span>';
+          else estadoBadge = '<span class="badge badge-ok">Pendiente</span>';
+
+          const linkCal = r.estado !== 'cancelada' ? linkGoogleCalendar(r) : '';
+
+          let califEstHTML = '';
+          if(r.calificacionEstudiante){
+            califEstHTML = `<div style="margin-top:6px;padding:6px;background:#eff6ff;border-radius:8px;font-size:.82rem">
+              <strong>Tu calificación del estudiante:</strong> ${estrellasHTML(r.calificacionEstudiante)}
+              ${r.comentarioEstudiante ? `<div style="font-style:italic;color:#475569">"${esc(r.comentarioEstudiante)}"</div>` : ''}
+            </div>`;
+          }
+
+          let califProfHTML = '';
+          if(r.calificacionProfesor){
+            califProfHTML = `<div style="margin-top:6px;padding:6px;background:#fffbeb;border-radius:8px;font-size:.82rem">
+              <strong>El estudiante te calificó:</strong> ${estrellasHTML(r.calificacionProfesor)}
+              ${r.comentarioProfesor ? `<div style="font-style:italic;color:#475569">"${esc(r.comentarioProfesor)}"</div>` : ''}
+            </div>`;
+          }
+
+          return `
+            <div class="reserva-item" style="margin-left:16px">
+              <div class="reserva-head">
+                <div>
+                  <div class="reserva-titulo">${r.inicio} – ${r.fin}</div>
+                  <div class="reserva-meta"><strong>${esc(r.nombre)}</strong> · ${esc(r.correo)}</div>
+                  <div class="reserva-meta">🎓 ${esc(r.programa)}</div>
+                  <div class="reserva-meta">📝 ${esc(r.tema)}</div>
+                </div>
+                ${estadoBadge}
+              </div>
+              <div class="reserva-actions">
+                ${linkCal ? `<a href="${linkCal}" target="_blank" class="btn-ghost" style="text-decoration:none;font-size:.78rem">📅 Añadir a mi calendario</a>` : ''}
+                ${r.estado === 'pendiente' ? `<button class="btn-success" data-realizada="${esc(r.id)}">✅ Marcar como realizada</button>` : ''}
+                ${r.estado === 'realizada' && !r.calificacionEstudiante ? `<button class="btn-primary-sm" data-calif-est="${esc(r.id)}" data-est="${esc(r.nombre)}">⭐ Calificar estudiante</button>` : ''}
+              </div>
+              ${califProfHTML}
+              ${califEstHTML}
+            </div>`;
+        }).join('')}
+      </div>`;
+  }).join('');
+
+  // Eventos
+  $$('[data-realizada]', cont).forEach(btn => {
+    btn.addEventListener('click', async () => {
+      if(!confirm('¿Marcar esta tutoría como realizada?')) return;
+      try{
+        await actualizarReservaDB(btn.dataset.realizada, {estado: 'realizada'});
+        await renderProfReservas();
+      }catch(err){ alert('Error: ' + err.message); }
+    });
+  });
+  $$('[data-calif-est]', cont).forEach(btn => {
+    btn.addEventListener('click', () => abrirCalificarEstudiante(btn.dataset.califEst, btn.dataset.est));
+  });
+}
+
+$('#btnRefrescarProf')?.addEventListener('click', renderProfReservas);
+
+function abrirCalificarEstudiante(reservaId, nombreEst){
+  mostrarModal(`
+    <h3>⭐ Calificar a ${esc(nombreEst)}</h3>
+    <p class="hint">Desliza para dar tu calificación y déjale un comentario (opcional).</p>
+    <div class="slider-wrap">
+      <div class="slider-value" id="sliderValE">5</div>
+      <input type="range" min="1" max="5" value="5" id="sliderCalifE" style="width:100%">
+      <div class="slider-labels"><span>1 - Muy mala</span><span>5 - Excelente</span></div>
+    </div>
+    <div class="field">
+      <label>Recomendación u observación (opcional)</label>
+      <textarea id="comentarioCalifE" rows="3" placeholder="Ej: Excelente participación, sigue así."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn-primary" id="btnEnviarCalifE" style="width:auto;padding:10px 24px">Enviar calificación</button>
+    </div>
+  `);
+
+  const slider = $('#sliderCalifE');
+  const val = $('#sliderValE');
+  const emojis = ['😞','😐','🙂','😊','🤩'];
+  slider.addEventListener('input', () => {
+    val.textContent = `${slider.value} ${emojis[slider.value-1]}`;
+  });
+
+  $('#btnEnviarCalifE').addEventListener('click', async () => {
+    const calificacion = parseInt(slider.value);
+    const comentario = $('#comentarioCalifE').value.trim();
+    try{
+      await actualizarReservaDB(reservaId, {
+        calificacion_estudiante: calificacion,
+        comentario_estudiante: comentario || null,
+        fecha_calificacion_estudiante: new Date().toISOString()
+      });
+      cerrarModal();
+      alert('✅ Calificación enviada.');
+      await renderProfReservas();
+    }catch(err){ alert('Error: ' + err.message); }
+  });
+}
+
+$('#btnCambiarPassProf')?.addEventListener('click', () => {
+  const prof = isProfLogged();
+  if(!prof) return;
+  mostrarModal(`
+    <h3>🔑 Cambiar contraseña</h3>
+    <div class="field">
+      <label>Contraseña actual</label>
+      <input type="password" id="cpActual">
+    </div>
+    <div class="field">
+      <label>Nueva contraseña</label>
+      <input type="password" id="cpNueva" placeholder="Mínimo 4 caracteres">
+    </div>
+    <div class="field">
+      <label>Confirmar nueva contraseña</label>
+      <input type="password" id="cpNueva2">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn-primary" id="btnGuardarPassProf" style="width:auto;padding:10px 24px">Cambiar</button>
+    </div>
+    <p class="hint" id="cpMsg" style="text-align:center"></p>
+  `);
+
+  $('#btnGuardarPassProf').addEventListener('click', async () => {
+    const msg = $('#cpMsg');
+    const actual = $('#cpActual').value;
+    const nueva = $('#cpNueva').value;
+    const nueva2 = $('#cpNueva2').value;
+
+    const {data} = await db.from('profesores').select('password').eq('id', prof.id).single();
+    if(data.password !== actual){
+      msg.innerHTML = '<span style="color:#dc2626">Contraseña actual incorrecta.</span>';
+      return;
+    }
+    if(nueva.length < 4){
+      msg.innerHTML = '<span style="color:#dc2626">La nueva debe tener al menos 4 caracteres.</span>';
+      return;
+    }
+    if(nueva !== nueva2){
+      msg.innerHTML = '<span style="color:#dc2626">No coinciden.</span>';
+      return;
+    }
+    try{
+      const {error} = await db.from('profesores').update({password: nueva}).eq('id', prof.id);
+      if(error) throw error;
+      cerrarModal();
+      alert('✅ Contraseña actualizada.');
+    }catch(err){ msg.innerHTML = '<span style="color:#dc2626">Error: ' + err.message + '</span>'; }
+  });
+});
 
 /* ============ ADMIN ============ */
 function isAdminLogged(){ return sessionStorage.getItem(STORAGE_SESSION) === '1'; }
@@ -620,14 +1219,14 @@ async function renderAdmin(){
   if(l){
     await renderReservasAdmin();
     await renderProfesoresList();
-    renderConfig();
+    renderConfigForm();
   }
 }
 
 $('#btnLogin').addEventListener('click', () => {
-  const cfg = getConfig();
+  const cfg = localStorage.getItem('tutorias_admin_pass') || PASS_DEFAULT;
   const msg = $('#loginMsg');
-  if($('#adminPass').value === cfg.adminPassword){
+  if($('#adminPass').value === cfg){
     setAdminLogged(true);
     $('#adminPass').value = '';
     msg.textContent = '';
@@ -639,7 +1238,6 @@ $('#btnLogin').addEventListener('click', () => {
 $('#adminPass').addEventListener('keydown', e => { if(e.key === 'Enter') $('#btnLogin').click(); });
 $('#btnLogout').addEventListener('click', () => { setAdminLogged(false); renderAdmin(); });
 
-/* ---- RESERVAS ---- */
 async function renderReservasAdmin(){
   const cont = $('#panelContenido');
   const resumen = $('#panelResumen');
@@ -673,7 +1271,8 @@ async function renderReservasAdmin(){
   cont.innerHTML = ord.map(([k,g])=>{
     numero++;
     const r = g.meta;
-    const clase = g.lista.length >= CUPO_MAX ? 'badge-full' : 'badge-ok';
+    const activas = g.lista.filter(x => x.estado !== 'cancelada').length;
+    const clase = activas >= CUPO_MAX ? 'badge-full' : 'badge-ok';
     return `
       <div class="grupo">
         <div class="grupo-head">
@@ -681,18 +1280,23 @@ async function renderReservasAdmin(){
             <strong>Tutoría ${numero}</strong> · ${esc(r.profesor)} · ${r.inicio}–${r.fin}
             <div class="muted-sm">${esc(r.fechaTexto)}</div>
           </div>
-          <span class="badge ${clase}">${g.lista.length}/${CUPO_MAX}</span>
+          <span class="badge ${clase}">${activas}/${CUPO_MAX}</span>
         </div>
         <ul class="alumnos">
-          ${g.lista.map(a => `
+          ${g.lista.map(a => {
+            let badge = '';
+            if(a.estado === 'realizada') badge = '<span class="badge badge-info" style="font-size:.65rem">Realizada</span>';
+            else if(a.estado === 'cancelada') badge = '<span class="badge badge-gray" style="font-size:.65rem">Cancelada</span>';
+            return `
             <li>
-              <div>
-                <strong>${esc(a.nombre)}</strong>
+              <div style="flex:1">
+                <strong>${esc(a.nombre)}</strong> ${badge}
                 <div class="muted-sm">${esc(a.correo)} · ${esc(a.programa)}</div>
                 <div class="muted-sm">📝 ${esc(a.tema)}</div>
               </div>
               <button class="btn-x" data-del="${esc(a.id)}" title="Eliminar">✕</button>
-            </li>`).join('')}
+            </li>`;
+          }).join('')}
         </ul>
       </div>`;
   }).join('');
@@ -713,7 +1317,6 @@ $('#btnRefrescar')?.addEventListener('click', async () => {
   await renderReservasAdmin();
   await renderProfesoresList();
 });
-
 $('#btnLimpiar')?.addEventListener('click', async () => {
   if(!confirm('¿Borrar TODAS las reservas?')) return;
   try{
@@ -722,12 +1325,11 @@ $('#btnLimpiar')?.addEventListener('click', async () => {
     await renderSlots();
   }catch(err){ alert('Error: '+err.message); }
 });
-
 $('#btnCSV')?.addEventListener('click', async () => {
   const reservas = await cargarTodasReservas();
   if(!reservas.length) return alert('No hay reservas.');
-  const head = ['Fecha','Inicio','Fin','Profesor','Area','Correo profesor','Estudiante','Correo','Programa','Tema'];
-  const rows = reservas.map(r => [r.fecha, r.inicio, r.fin, r.profesor, r.area, r.correoProfesor, r.nombre, r.correo, r.programa, r.tema]);
+  const head = ['Fecha','Inicio','Fin','Profesor','Area','Estudiante','Correo','Programa','Tema','Estado','Calif.prof','Calif.est'];
+  const rows = reservas.map(r => [r.fecha, r.inicio, r.fin, r.profesor, r.area, r.nombre, r.correo, r.programa, r.tema, r.estado, r.calificacionProfesor||'', r.calificacionEstudiante||'']);
   const csv = [head,...rows].map(row => row.map(v => `"${String(v??'').replace(/"/g,'""')}"`).join(',')).join('\r\n');
   const blob = new Blob(['\ufeff'+csv], {type:'text/csv;charset=utf-8;'});
   const url = URL.createObjectURL(blob);
@@ -738,7 +1340,7 @@ $('#btnCSV')?.addEventListener('click', async () => {
   URL.revokeObjectURL(url);
 });
 
-/* ---- PROFESORES ---- */
+/* ---- PROFESORES ADMIN ---- */
 async function renderProfesoresList(){
   const cont = $('#profesoresList');
   if(!cont) return;
@@ -751,15 +1353,22 @@ async function renderProfesoresList(){
     cont.innerHTML = '<p class="empty">No hay profesores. Agrega el primero.</p>';
     return;
   }
+  const promedios = await promediosProfesores();
+
   cont.innerHTML = profes.map(p => {
     const total = Object.values(p.agenda||{}).reduce((a,r)=>a+r.length,0);
+    const califHTML = CONFIG.calificaciones_visibles && promedios[p.id]
+      ? `<div class="prof-item-meta">${estrellasHTML(promedios[p.id].promedio)} <span style="font-size:.75rem">(${promedios[p.id].total} calif.)</span></div>`
+      : '';
     return `
       <div class="prof-item">
         <div class="prof-item-info">
           <div class="prof-item-name">${esc(p.nombre)}</div>
           <div class="prof-item-meta">${esc(p.area)}</div>
           <div class="prof-item-meta">📧 ${esc(p.correo)}</div>
+          ${p.documento ? `<div class="prof-item-meta">🆔 ${esc(p.documento)}</div>` : '<div class="prof-item-meta" style="color:#dc2626">⚠️ Sin documento/contraseña</div>'}
           <div class="prof-item-meta">🗓️ ${total} horario(s) semanales</div>
+          ${califHTML}
         </div>
         <div class="prof-item-actions">
           <button class="btn-ghost" data-edit="${esc(p.id)}">Editar</button>
@@ -781,7 +1390,7 @@ $('#btnNuevoProf')?.addEventListener('click', () => abrirEditorProfesor(null));
 async function abrirEditorProfesor(profId){
   const editor = $('#profesorEditor');
   const lista = $('#profesoresList');
-  let p = {id:'',nombre:'',area:'',correo:'',agenda:{}};
+  let p = {id:'',nombre:'',area:'',correo:'',documento:'',password:'',agenda:{}};
   if(profId){
     const todos = await cargarProfesores();
     const encontrado = todos.find(x => x.id === profId);
@@ -795,8 +1404,12 @@ async function abrirEditorProfesor(profId){
       <input type="text" id="pe_nombre" value="${esc(p.nombre)}" placeholder="Ej: Profesor 6"></div>
     <div class="field"><label>Área / Materia *</label>
       <input type="text" id="pe_area" value="${esc(p.area)}" placeholder="Ej: Álgebra Lineal"></div>
-    <div class="field"><label>Correo del profesor *</label>
-      <input type="email" id="pe_correo" value="${esc(p.correo)}" placeholder="profesor6@institucion.edu.co"></div>
+    <div class="field"><label>Correo institucional *</label>
+      <input type="email" id="pe_correo" value="${esc(p.correo)}" placeholder="profesor6@universidadmayor.edu.co"></div>
+    <div class="field"><label>Número de documento *</label>
+      <input type="text" id="pe_documento" value="${esc(p.documento||'')}" placeholder="Ej: 1234567890"></div>
+    <div class="field"><label>Contraseña (dejar vacío = usar el documento)</label>
+      <input type="text" id="pe_password" value="${esc(p.password||'')}" placeholder="Se usará el documento si está vacío"></div>
     <h4>🗓️ Horarios por día</h4>
     <p class="hint">Agrega los rangos horarios en los que este profesor puede recibir tutorías.</p>
     <div id="agendaEditor"></div>
@@ -853,8 +1466,19 @@ function rangoHTML(ini, fin){
 async function guardarProfesorDesdeFormulario(profId){
   const nombre = $('#pe_nombre').value.trim();
   const area = $('#pe_area').value.trim();
-  const correo = $('#pe_correo').value.trim();
-  if(!nombre || !area || !correo){ alert('Todos los campos son obligatorios.'); return; }
+  const correo = $('#pe_correo').value.trim().toLowerCase();
+  const documento = $('#pe_documento').value.trim();
+  let password = $('#pe_password').value.trim();
+
+  if(!nombre || !area || !correo || !documento){
+    alert('Todos los campos (excepto contraseña) son obligatorios.');
+    return;
+  }
+  if(!validarCorreo(correo)){
+    alert(`El correo debe terminar en ${DOMINIO}`);
+    return;
+  }
+  if(!password) password = documento;
 
   const agenda = {};
   $$('#agendaEditor .rangos').forEach(wrap => {
@@ -873,7 +1497,7 @@ async function guardarProfesorDesdeFormulario(profId){
   btn.textContent = 'Guardando…';
 
   try{
-    await guardarProfesorSupabase(profId, {nombre, area, correo}, agenda);
+    await guardarProfesorSupabase(profId, {nombre, area, correo, documento, password}, agenda);
     cerrarEditorProfesor();
     await renderProfesoresList();
     await renderSlots();
@@ -899,24 +1523,41 @@ async function eliminarProfesorConConfirmacion(id){
 }
 
 /* ---- CONFIG ---- */
-function renderConfig(){
-  const cfg = getConfig();
-  $('#cfgPublicKey').value = cfg.emailjs.publicKey || '';
-  $('#cfgServiceId').value = cfg.emailjs.serviceId || '';
-  $('#cfgTemplateId').value = cfg.emailjs.templateId || '';
+function renderConfigForm(){
+  $('#cfgPublicKey').value = CONFIG.emailjs_public_key || '';
+  $('#cfgServiceId').value = CONFIG.emailjs_service_id || '';
+  $('#cfgTemplateId').value = CONFIG.emailjs_template_id || '';
+  $('#cfgTemplateCancelacion').value = CONFIG.emailjs_template_cancelacion || '';
+  $('#cfgCalifVisibles').checked = !!CONFIG.calificaciones_visibles;
 }
 
-$('#btnGuardarConfig')?.addEventListener('click', () => {
-  const cfg = getConfig();
-  cfg.emailjs = {
-    publicKey:$('#cfgPublicKey').value.trim(),
-    serviceId:$('#cfgServiceId').value.trim(),
-    templateId:$('#cfgTemplateId').value.trim()
-  };
-  setConfig(cfg);
+$('#cfgCalifVisibles')?.addEventListener('change', async (e) => {
+  const valor = e.target.checked;
+  try{
+    await guardarConfigDB('calificaciones_visibles', valor);
+    CONFIG.calificaciones_visibles = valor;
+    await renderProfesoresList();
+    await renderSlots();
+  }catch(err){
+    alert('Error: ' + err.message);
+    e.target.checked = !valor;
+  }
+});
+
+$('#btnGuardarConfig')?.addEventListener('click', async () => {
   const m = $('#cfgMsg');
-  m.innerHTML = '<span style="color:#059669">✅ Guardado.</span>';
-  setTimeout(()=>{ m.textContent=''; }, 3000);
+  m.textContent = 'Guardando…';
+  try{
+    await guardarConfigDB('emailjs_public_key', $('#cfgPublicKey').value.trim());
+    await guardarConfigDB('emailjs_service_id', $('#cfgServiceId').value.trim());
+    await guardarConfigDB('emailjs_template_id', $('#cfgTemplateId').value.trim());
+    await guardarConfigDB('emailjs_template_cancelacion', $('#cfgTemplateCancelacion').value.trim());
+    await cargarConfig();
+    m.innerHTML = '<span style="color:#059669">✅ Guardado en la nube.</span>';
+    setTimeout(()=>{ m.textContent=''; }, 3000);
+  }catch(err){
+    m.innerHTML = '<span style="color:#dc2626">Error: ' + err.message + '</span>';
+  }
 });
 
 $('#btnCambiarPass')?.addEventListener('click', () => {
@@ -924,9 +1565,7 @@ $('#btnCambiarPass')?.addEventListener('click', () => {
   const m = $('#passMsg');
   if(p1.length < 4){ m.innerHTML = '<span style="color:#dc2626">Mínimo 4 caracteres.</span>'; return; }
   if(p1 !== p2){ m.innerHTML = '<span style="color:#dc2626">No coinciden.</span>'; return; }
-  const cfg = getConfig();
-  cfg.adminPassword = p1;
-  setConfig(cfg);
+  localStorage.setItem('tutorias_admin_pass', p1);
   $('#cfgNewPass').value = ''; $('#cfgNewPass2').value = '';
   m.innerHTML = '<span style="color:#059669">✅ Actualizada.</span>';
   setTimeout(()=>{ m.textContent=''; }, 3000);
@@ -935,13 +1574,21 @@ $('#btnCambiarPass')?.addEventListener('click', () => {
 /* ============ INIT ============ */
 (async function init(){
   const hoy = new Date();
+  hoy.setDate(hoy.getDate() + 1); // Empieza desde mañana (24h mínimo)
   const yyyy = hoy.getFullYear();
   const mm = String(hoy.getMonth()+1).padStart(2,'0');
   const dd = String(hoy.getDate()).padStart(2,'0');
   fechaInput.min = `${yyyy}-${mm}-${dd}`;
+
+  await cargarConfig();
+  if(CONFIG.emailjs_public_key && typeof emailjs !== 'undefined'){
+    emailjs.init(CONFIG.emailjs_public_key);
+  }
+
   fechaInput.addEventListener('change', renderSlots);
   await renderSlots();
   await renderAdmin();
+  await renderProfesorPanel();
 })();
 </script>
 </body>
